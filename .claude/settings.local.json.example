@@ -1,0 +1,12 @@
+{
+  "$comment": "Copy to .claude/settings.local.json and add that path to .git/info/exclude. This file is yours alone and layers on top of the committed .claude/settings.json. Machine-specific paths, personal permission relaxations and your preferred model go here, never in the shared file.",
+  "permissions": {
+    "allow": [
+      "Bash(php -S 0.0.0.0:8080 -t public)"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline.sh"
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "$comment": "Dotkernel project settings for Claude Code. Commit this file. Personal overrides go in .claude/settings.local.json (git-ignored). Verify the permission-rule glob syntax and the 'ask' array against your Claude Code version; the hooks are the layer that always holds.",
+  "env": {
+    "COMPOSER_MEMORY_LIMIT": "-1"
+  },
+  "permissions": {
+	"additionalDirectories": [],
+    "defaultMode": "plan",
+    "deny": [
+      "Bash(composer require:*)",
+      "Bash(composer remove:*)",
+      "Bash(composer update:*)",
+      "Bash(composer install:*)",
+      "Bash(composer global:*)",
+      "Bash(npm install:*)",
+      "Bash(npm i:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm update:*)",
+      "Bash(yarn add:*)",
+      "Bash(yarn remove:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm remove:*)",
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(git submodule:*)",
+      "Bash(rm -rf:*)",
+      "Edit(composer.json)",
+      "Edit(composer.lock)",
+      "Edit(package.json)",
+      "Edit(package-lock.json)",
+      "Edit(vendor/**)",
+      "Edit(node_modules/**)",
+      "Edit(data/**)",
+      "Edit(log/**)",
+      "Edit(public/uploads/**)",
+      "Edit(**/Migration/**)",
+      "Edit(**/Migrations/**)",
+      "Edit(**/*.local.php)",
+      "Edit(config/autoload/local.php)",
+      "Edit(config/autoload/local.test.php)",
+      "Write(composer.json)",
+      "Write(composer.lock)",
+      "Write(package.json)",
+      "Write(vendor/**)",
+      "Write(node_modules/**)",
+      "Write(data/**)",
+      "Write(log/**)",
+      "Write(public/uploads/**)",
+      "Write(**/Migration/**)",
+      "Write(**/Migrations/**)",
+      "Read(.env)",
+      "Read(**/*.local.php)",
+      "Read(config/autoload/local.php)",
+      "Read(config/autoload/local.test.php)",
+      "Read(data/oauth/**)"
+    ],
+    "ask": [
+      "Bash(php ./vendor/bin/doctrine-migrations:*)",
+      "Bash(vendor/bin/doctrine-migrations:*)",
+      "Bash(php bin/doctrine:*)",
+      "Bash(php ./bin/doctrine:*)",
+      "Bash(php bin/cli.php:*)",
+      "Bash(mysql:*)",
+      "Bash(mariadb:*)",
+      "Bash(git commit:*)",
+      "Bash(git add:*)",
+      "Bash(git checkout:*)",
+      "Bash(git rebase:*)",
+      "Bash(git merge:*)",
+      "Edit(config/pipeline.php)",
+      "Edit(config/config.php)",
+      "Edit(config/autoload/authorization.global.php)",
+      "Edit(config/autoload/authorization-guards.global.php)",
+      "Edit(phpcs.xml)",
+      "Edit(phpstan.neon)",
+      "Edit(phpunit.xml)",
+      "Edit(.github/**)",
+      "Edit(CHANGELOG.md)",
+      "Edit(README.md)",
+      "Edit(SECURITY.md)"
+    ],
+    "allow": [
+      "Bash(composer check)",
+      "Bash(composer cs-check)",
+      "Bash(composer cs-fix)",
+      "Bash(composer static-analysis)",
+      "Bash(composer test)",
+      "Bash(composer clear-config-cache)",
+      "Bash(composer development-status)",
+      "Bash(composer dump-autoload)",
+      "Bash(php ./vendor/bin/phpcs:*)",
+      "Bash(php ./vendor/bin/phpcbf:*)",
+      "Bash(php ./vendor/bin/phpstan:*)",
+      "Bash(php ./vendor/bin/phpunit:*)",
+      "Bash(php -l:*)",
+      "Bash(php -v)",
+      "Bash(php -m)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git config --get:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-protected-paths.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash.sh\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/normalize-file.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/php-lint.sh\""
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+	"command": "bash \"$CLAUDE_PROJECT_DIR/.claude/statusline.sh\"",
+    "padding": 0
+  },
+  "tui": "fullscreen",
+  "theme": "dark"
+}
