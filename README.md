@@ -21,6 +21,7 @@ Then:
 
 ```bash
 chmod +x .claude/hooks/*.sh
+chmod +x .claude/statusline.sh
 echo '.claude/settings.local.json' >> .git/info/exclude
 ```
 
