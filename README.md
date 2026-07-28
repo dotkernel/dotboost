@@ -133,7 +133,7 @@ per edit.
 
 ## Verify against current docs
 
-Claude Code's `settings.json` schema and hook event names move faster than most things. If a
+Claude Code's `.claude/settings.json` schema and hook event names move faster than most things. If a
 permission rule or hook does not take effect, check
 <https://docs.claude.com/en/docs/claude-code/overview> — in particular the glob syntax accepted by
 `permissions.deny` and whether `permissions.ask` exists in your version. The hooks are the reliable
