@@ -1,6 +1,6 @@
 ---
 name: dependency-policy
-description: Choose, justify and verify PHP/Composer dependencies in Dotkernel projects. Use this skill ANY time you are about to suggest, add, evaluate or replace a package, edit composer.json, run `composer require`/`composer remove`, or answer "what should I use for X" — including when the user only asks how to implement something a library could solve (mail, queues, caching, logging, validation, pagination, auth, CLI, fixtures, uploads, GeoIP, error handling, HTTP client). Enforces the order: already installed -> dotkernel/* -> laminas & mezzio -> vetted community package -> hand-rolled code. Also use whenever you catch yourself naming a package from memory.
+description: 'Choose, justify and verify PHP/Composer dependencies in Dotkernel projects. Use this skill ANY time you are about to suggest, add, evaluate or replace a package, edit composer.json, run `composer require`/`composer remove`, or answer "what should I use for X" — including when the user only asks how to implement something a library could solve (mail, queues, caching, logging, validation, pagination, auth, CLI, fixtures, uploads, GeoIP, error handling, HTTP client). Enforces this order — already installed, then dotkernel/*, then laminas & mezzio, then a vetted community package, then hand-rolled code. Also use whenever you catch yourself naming a package from memory.'
 ---
 
 # Dependency Policy (Dotkernel)
