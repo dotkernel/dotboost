@@ -159,6 +159,38 @@
 	"command": "bash \"$CLAUDE_PROJECT_DIR/.claude/statusline.sh\"",
     "padding": 0
   },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Bribing the garbage collector",
+      "Blaming the cache",
+      "Escaping vim",
+      "Refactoring your regrets",
+      "Deleting node_modules",
+      "Warming Doctrine's lazy ghosts",
+      "Dumping autoload, dumping hope",
+      "Mocking every interface",
+      "Reading docs, allegedly",
+      "Consulting the rubber duck",
+      "Nullifying the null coalescer",
+      "Silently swallowing exceptions",
+      "Deadlocking politely",
+      "Padding the estimate",
+      "Piping through middleware",
+      "Flushing the EntityManager",
+      "Summoning Diactoros",
+      "Bribing the ServiceManager",
+      "Mezzio-ing about",
+      "Waiting on composer update",
+      "Queueing async regrets",
+      "Consulting the debugbar",
+      "Being opinionated, framework-lessly",
+      "Injecting unsolicited dependencies",
+      "Sniffing your user agent",
+      "Fixturing fake users",
+      "Twigging the templates"
+    ]
+  },
   "tui": "fullscreen",
   "theme": "dark"
 }
