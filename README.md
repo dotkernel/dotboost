@@ -43,18 +43,51 @@ Three things worth knowing about how that behaves:
 
 ## Install
 
-Clone this repo once, then copy `.claude/` into each project that should use it:
+The payload is the `.claude/` directory and it has to sit at the root of your project. Two ways to
+get it there — same files either way, pick whichever suits the machine you are on.
+
+### Clone it inside the project
 
 ```bash
-git clone https://github.com/dotkernel/dotboost.git ~/dotboost
-
-cp -r ~/dotboost/.claude <project>/.claude
-chmod +x <project>/.claude/hooks/*.sh <project>/.claude/statusline.sh \
-         <project>/.claude/skills/dependency-policy/scripts/*.sh
-echo '.claude/settings.local.json' >> <project>/.git/info/exclude
+cd <project>
+git clone --depth 1 https://github.com/dotkernel/dotboost.git .dotboost
+cp -r .dotboost/.claude .claude
+rm -rf .dotboost
 ```
 
-That is the whole install. What lands in the project:
+`--depth 1` because only the current state of `main` is of any use in a target project. The clone
+goes away right after the copy, so nothing nested is left for a `git add .` to trip over.
+
+### Download the zip
+
+No git needed, which is the point:
+
+```bash
+cd <project>
+curl -L -o dotboost.zip https://github.com/dotkernel/dotboost/archive/refs/heads/main.zip
+unzip -q dotboost.zip
+cp -r dotboost-main/.claude .claude
+rm -rf dotboost-main dotboost.zip
+```
+
+The archive unpacks to `dotboost-main/` and does carry the dotfiles, `.claude/` included. No `unzip`
+— Git Bash on Windows ships without one — then take the ZIP from the green **Code** button on the
+repo page, extract it anywhere, and copy the `.claude` folder into your project root by hand.
+
+### Then, either way
+
+```bash
+chmod +x .claude/hooks/*.sh .claude/statusline.sh \
+         .claude/skills/dependency-policy/scripts/*.sh
+echo '.claude/settings.local.json' >> .git/info/exclude
+```
+
+Nothing here is committed with an executable bit, and a zip extracted on Windows carries no
+permission bits at all. `settings.json` invokes the hooks and the status line as `bash <path>`, so
+those run regardless; the `dependency-policy` sync script is the one called by its own name, so
+`chmod` it and be done.
+
+What lands in the project:
 
 ```
 <project>/.claude/
@@ -76,8 +109,8 @@ cp .claude/settings.local.json.example .claude/settings.local.json
 If the project already has its own `.claude/settings.json` or its own `.claude/commands/`, merge
 by hand rather than running the `cp -r` blind — same-named files are overwritten.
 
-To update later, re-run the `cp -r` after a `git pull` in `~/dotboost`. Anything you changed in the
-project's copy is lost, which is the reason personal changes belong in `settings.local.json`.
+To update later, run the whole install again over the top. Anything you changed in the project's
+copy is lost, which is the reason personal changes belong in `settings.local.json`.
 
 ## What `settings.json` decides for you
 
@@ -161,8 +194,8 @@ Two placements, and the shipped files disagree on purpose — pick one:
 - `settings.json` points at `$CLAUDE_PROJECT_DIR/.claude/statusline.sh` — the per-project copy,
   which is what you get from the install above and needs nothing further.
 - `settings.local.json.example` points at `~/.claude/statusline.sh` — one shared copy for every
-  project. If you prefer that, `cp ~/dotboost/.claude/statusline.sh ~/.claude/` first, or the
-  status line comes up empty.
+  project. If you prefer that, `cp .claude/statusline.sh ~/.claude/` from a project that already has
+  the install, or the status line comes up empty.
 
 ## Line endings on Windows
 
