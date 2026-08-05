@@ -1,0 +1,15 @@
+// Markdownlint config for every .md file in this project.
+// Referenced explicitly via --config from .claude/hooks/markdown-lint.sh, because
+// markdownlint-cli2 only inherits config from ancestor directories of the linted
+// file, which would never reach .claude/ for files outside it.
+{
+  "default": true,
+  "MD007": { "indent": 4 },
+  "MD013": false,
+  "MD014": false,
+  "MD024": false,
+  "MD025": { "front_matter_title": "" },
+  "MD028": false,
+  "MD031": { "list_items": false },
+  "MD034": false
+}

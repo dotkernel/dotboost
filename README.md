@@ -61,7 +61,8 @@ That is the whole install. What lands in the project:
 ├── settings.json                  permission guardrails, hook registration, status line
 ├── settings.local.json.example    template for personal, git-ignored overrides
 ├── statusline.sh                  5h / 7d account usage in the status bar
-├── hooks/                         five bash hooks (guards, normaliser, php -l, briefing)
+├── markdownlint.jsonc             the markdown rule set, passed to markdownlint-cli2 via --config
+├── hooks/                         six bash hooks (guards, normaliser, php -l, markdownlint, briefing)
 ├── agents/                        the review subagent
 ├── commands/                      the nine /dk-* commands
 └── skills/                        sixteen skills: fifteen dotkernel-* plus dependency-policy
@@ -78,6 +79,21 @@ by hand rather than running the `cp -r` blind — same-named files are overwritt
 
 To update later, re-run the `cp -r` after a `git pull` in `~/dotboost`. Anything you changed in the
 project's copy is lost, which is the reason personal changes belong in `settings.local.json`.
+
+### Optional: markdown linting
+
+`.claude/hooks/markdown-lint.sh` checks every `.md` file Claude writes against
+`.claude/markdownlint.jsonc`. It needs `markdownlint-cli2`, which is not bundled — install it once,
+yourself:
+
+```bash
+npm install -g markdownlint-cli2
+```
+
+A project-local `devDependency` works too; the hook prefers `./node_modules/.bin/markdownlint-cli2`
+and falls back to the global one. Claude cannot run either install for you — the `npm` install verbs
+are in the `deny` tier. Until the binary is resolvable the hook exits silently, so `.claude/` stays
+drop-in for projects with no Node toolchain at all.
 
 ## What `settings.json` decides for you
 
@@ -223,6 +239,7 @@ README.md                                       this file
 .claude/settings.json                           permission guardrails + hook registration
 .claude/settings.local.json.example             template for personal, git-ignored overrides
 .claude/statusline.sh                           5h / 7d account usage in the status bar
+.claude/markdownlint.jsonc                      markdown rule set for markdown-lint.sh (--config)
 
 .claude/hooks/guard-protected-paths.sh          PreToolUse (Edit/Write): blocks vendor/, node_modules/,
                                                 migrations, data/cache|lock|oauth/, log/,
@@ -237,6 +254,9 @@ README.md                                       this file
                                                 newline. Skips whitespace stripping on .md, where two
                                                 trailing spaces are a hard line break
 .claude/hooks/php-lint.sh                       PostToolUse: php -l on every edited PHP file
+.claude/hooks/markdown-lint.sh                  PostToolUse: markdownlint-cli2 on every edited .md
+                                                file. Silent no-op unless markdownlint-cli2 is
+                                                installed
 .claude/hooks/session-start.sh                  SessionStart: variant detection, setup gaps, CRLF warning
 
 .claude/agents/dotkernel-reviewer.md            review subagent (keeps the main context clean)
@@ -278,10 +298,16 @@ dated snapshot, and is regenerated in the project where it is used.
 
 ## A note on the PostToolUse hooks
 
-`normalize-file.sh` rewrites the file Claude just wrote (whitespace only). `php-lint.sh` is
-deliberately **report-only** and does not run `phpcbf`, because reformatting a file immediately
-after Claude writes it invalidates its in-memory copy and can break the next targeted edit. Bulk
-formatting belongs at the end of a task, via `composer cs-fix` or `/dk-check`.
+`normalize-file.sh` rewrites the file Claude just wrote (whitespace only). `php-lint.sh` and
+`markdown-lint.sh` are deliberately **report-only** — no `phpcbf`, no `markdownlint --fix` — because
+reformatting a file immediately after Claude writes it invalidates its in-memory copy and can break
+the next targeted edit. Bulk formatting belongs at the end of a task, via `composer cs-fix` or
+`/dk-check`.
+
+Both linters skip themselves out of the way rather than failing: `php-lint.sh` when `php` is not on
+`PATH`, `markdown-lint.sh` when `markdownlint-cli2` is not resolvable or
+`.claude/markdownlint.jsonc` is absent. A project that has not adopted the markdown rule set sees
+nothing from the hook.
 
 If you ever see "string not found" errors on consecutive edits to one file, move
 `normalize-file.sh` from `PostToolUse` to the `Stop` event so it runs once per turn instead of once
