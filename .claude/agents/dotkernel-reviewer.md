@@ -16,7 +16,8 @@ API rules to an Admin repo — or the reverse — produces confident nonsense.
 
 Then load: `dotkernel-module-structure`, `dotkernel-handler-naming`,
 `dotkernel-input-validation`, `dotkernel-responses`, `dotkernel-evolution-pattern`,
-`dotkernel-security`, `dotkernel-core-submodule`, `dotkernel-psr-standards`, `dotkernel-qa-gate`.
+`dotkernel-security`, `dotkernel-core-submodule`, `dotkernel-psr-standards`, `dotkernel-qa-gate`,
+`dotkernel-feature-docs`.
 
 Method:
 
@@ -40,6 +41,8 @@ Method:
    - secrets in committed config; hardcoded credentials
    - removed or renamed response fields, or changed route URLs, on existing surfaces — breaking
      without a sunset window or redirect
+   - new route names in `RoutesDelegator` absent from every feature doc's `routes:` frontmatter
+     under `docs/features/` or `documentation/features/`
 5. Run the repo's `cs-check` and `static-analysis` if they have not already been run.
 
 Output format:

@@ -5,7 +5,7 @@ API, Admin, Frontend, Light, Queue, or a project derived from one of them. Every
 variant first and applies the matching dialect.
 
 This repository is not itself a Dotkernel application. Its entire payload is the `.claude/`
-directory: settings, hooks, a status line, a review subagent, nine `/dk-*` commands and sixteen
+directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and seventeen
 skills. You install it by copying that directory into the Dotkernel project you are working on.
 
 Maintained by Borsan Sergiu.
@@ -192,8 +192,8 @@ In PhpStorm: *Editor → Code Style → Line separator = Unix (\n)*, and *File E
 Start Claude Code in the project:
 
 ```
-/help        # commands: dk-bootstrap, dk-module, dk-route, dk-trace, dk-test, dk-check,
-             #           dk-deprecate, dk-review, dk-hygiene
+/help        # commands: dk-bootstrap, dk-module, dk-route, dk-trace, dk-test, dk-document,
+             #           dk-check, dk-deprecate, dk-review, dk-hygiene
 ```
 
 The session-start hook should open with a short briefing: which variant it detected, the root
@@ -246,6 +246,7 @@ README.md                                       this file
 .claude/commands/dk-route.md                    add a fully wired endpoint or page
 .claude/commands/dk-trace.md                    trace a request through pipeline → handler → response
 .claude/commands/dk-test.md                     write and run tests
+.claude/commands/dk-document.md                 write or update a feature doc
 .claude/commands/dk-check.md                    run and fix the QA gate
 .claude/commands/dk-deprecate.md                evolution-pattern breaking change
 .claude/commands/dk-review.md                   pre-PR convention review
@@ -258,6 +259,7 @@ README.md                                       this file
 .claude/skills/dotkernel-input-validation/       InputFilters, Inputs, forms, CSRF, query whitelisting
 .claude/skills/dotkernel-responses/              HAL and collections, or templates and redirects; errors
 .claude/skills/dotkernel-openapi/                swagger-php attributes, for apps that publish OpenAPI
+.claude/skills/dotkernel-feature-docs/           feature docs: template, where they live, staleness
 .claude/skills/dotkernel-testing/                unit + functional patterns, test config, coverage matrix
 .claude/skills/dotkernel-evolution-pattern/      sunset headers instead of versioning
 .claude/skills/dotkernel-security/               auth, authorization, secrets, CORS, dependencies
@@ -275,6 +277,40 @@ README.md                                       this file
 Every skill directory holds a `SKILL.md`. `dependency-policy` additionally carries `scripts/` and
 the `references/dotkernel-packages.json` it generates — that manifest is git-ignored here, being a
 dated snapshot, and is regenerated in the project where it is used.
+
+## Feature documentation
+
+`/dk-document` writes one markdown file per feature into the project — what it does, why, the routes
+and the roles that reach them, the data added, and how to exercise it. It is the part a cleared
+session cannot reconstruct from `src/`, and the reason it is a file in the repo rather than a note
+in a chat.
+
+Where it lands is detected, not assumed. Many Dotkernel repositories already carry a
+`documentation/` directory — command docs, a generated `openapi.json`, Postman collections — and
+which ones do is not predictable from the variant, so the skill checks rather than inferring: it
+writes to `documentation/features/` when that directory exists and `docs/features/` otherwise, never
+a second documentation root next to an existing one. Both paths are in the `allow` tier, prose in a
+docs directory being the lowest-risk write in the tree.
+
+The frontmatter is load-bearing: `/dk-review` greps each doc's `routes:` and `handlers:` to decide
+whether a new route in the diff is documented, and reports a missing or stale doc as *Should fix*.
+It never writes one — that command is read-only by design, and it tells you to run `/dk-document`
+instead.
+
+The generation half is a command, so it only runs when asked. To make Claude *read* the docs before
+it rebuilds something that already exists, add this to your project's `CLAUDE.md` alongside the
+dependency-policy block:
+
+```markdown
+## Feature docs
+
+Before adding or changing behaviour, check `docs/features/` (or `documentation/features/`) for a doc
+covering that area and read it. After the change, update that doc or write a new one with
+`/dk-document`. A doc that contradicts the code is a bug in the doc.
+```
+
+The session-start hook prints the directory and a doc count, so the files are at least discoverable
+without the block. The block is what makes them read.
 
 ## A note on the PostToolUse hooks
 

@@ -56,6 +56,12 @@ for d in config/autoload/*.dist config/*.dist; do
   echo "- missing ${target} (copy from ${d})"
 done
 
+for d in docs/features documentation/features; do
+  [ -d "$d" ] || continue
+  n=$(ls -1 "$d"/*.md 2>/dev/null | grep -vc '/README\.md$' || true)
+  echo "- ${d}/: ${n:-0} feature doc(s) — read the relevant one before adding behaviour there"
+done
+
 [ -f config/development.config.php ] && echo "- development mode is ENABLED"
 [ -f data/cache/config-cache.php ] && echo "- config cache present; clear it after config edits"
 
