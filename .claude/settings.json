@@ -94,6 +94,8 @@
       "Bash(php ./vendor/bin/phpcbf:*)",
       "Bash(php ./vendor/bin/phpstan:*)",
       "Bash(php ./vendor/bin/phpunit:*)",
+      "Bash(markdownlint-cli2:*)",
+      "Bash(./node_modules/.bin/markdownlint-cli2:*)",
       "Bash(php -l:*)",
       "Bash(php -v)",
       "Bash(php -m)",
@@ -154,6 +156,10 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/php-lint.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/markdown-lint.sh\""
           }
         ]
       }
