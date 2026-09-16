@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="description" content="Claude Code configuration for Dotkernel projects">
+        
+        
+
+        
+        
+            
+        
+        <meta name="docsearch:version" content="1.0.0,latest">
+        <meta name="docsearch:language" content="en">
+        <meta name="docsearch:component" content="dotboost">
+
+        
+        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
+
+        <title>dotboost - Dotkernel Documentation</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/docs.css">
+        <script src="https://docs.dotkernel.org/js/bootstrap.js" defer></script>
+        <script src="https://docs.dotkernel.org/js/docs.js" defer></script>
+        <script src="https://docs.dotkernel.org/js/scripts.js" defer></script>
+    </head>
+    <body data-bs-spy="scroll" data-bs-target=".toc" data-bs-offset="100">
+
+        
+        <nav class="navbar navbar-expand-lg dk-docs-nav py-2" data-bs-theme="dark">
+    <div class="container-fluid dk-docs-nav__inner">
+        <a class="navbar-brand dk-docs-nav__brand" href="https://docs.dotkernel.org/">
+            <img alt="Dotkernel" class="d-inline-block align-text-top" height="28"
+                 src="https://docs.dotkernel.org/img/dk_logo_2024_white.svg" width="152"/>
+        </a>
+
+        <ul class="dk-docs-nav__projects list-unstyled d-none d-lg-flex align-items-center mb-0">
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/frontend-documentation/">Frontend</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/packages/">Packages</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/development/">Development</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/headless-documentation/">Headless Platform</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+            </li>
+            
+        </ul>
+
+        <div class="flex-grow-1"></div>
+
+        <a href="#" class="dk-docs-nav__search d-none d-md-flex align-items-center" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal" title="Open search">
+            <i class="bi bi-search"></i>
+            <span>Search docs</span>
+            <span class="dk-docs-nav__search-key">/</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse flex-grow-0" id="navbarText">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 dk-docs-nav__projects dk-docs-nav__projects--collapsed d-lg-none">
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/frontend-documentation/">Frontend</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/packages/">Packages</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/development/">Development</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/headless-documentation/">Headless Platform</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+                </li>
+                
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-white" href="https://github.com/dotkernel/dotboost" title="Go to dotboost repository" target="_blank">
+                        <i class="bi bi-github"></i>
+                        GitHub
+                    </a>
+                </li>
+                <li class="nav-item">
+                    
+    
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        
+        <div class="container-fluid docs-shell">
+            <div class="row gx-0">
+                <div class="col-lg-3 col-xl-2 right_sidebar">
+                    
+                    
+    <div class="subnavigation hidden-print">
+<!--        <h4 class="subnavigation__title">-->
+<!--            <a href="../.">dotboost</a>-->
+<!--        </h4>-->
+
+        <h5 class="subnavigation__title">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                
+            
+        </ul>
+    </div>
+
+                    
+                </div>
+                <div class="col-lg-9 col-xl-8 main_docs">
+                    
+                    <nav aria-label="breadcrumb" class="nav_breadcrumb">
+    <ol class="breadcrumb">
+        
+            <li class="breadcrumb-item"><a href="https://docs.dotkernel.org/">Overview</a></li>
+            
+
+            
+                <li class="breadcrumb-item"><a href="../.">dotboost</a></li>
+
+                
+
+                <li class="breadcrumb-item active" aria-current="page"></li>
+            
+        
+    </ol>
+</nav>
+
+                    
+
+<h1 class="content__title">404</h1>
+<blockquote>
+    <h3>Something went wrong!</h3>
+    <p>
+        We're sorry, but the page you are looking for does not exist.
+    </p>
+</blockquote>
+
+<a href="../." class="btn btn-default" role="button">Go to homepage</a>
+
+
+                </div>
+
+                
+                
+                <div class="col-xl-2 d-none d-xl-block page_toc">
+                    
+                </div>
+                
+            </div>
+        </div>
+
+        
+        <footer class="dk-home-footer">
+    <div class="dk-home-footer__grid">
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Products</div>
+            <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+            <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+            <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+            <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Resources</div>
+            <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+            <a href="https://docs.dotkernel.org/headless-documentation/">Architecture</a>
+            <a href="https://www.dotkernel.com/dotkernel-packages-oss-lifecycle/">Packages Lifecycle</a>
+            <a href="https://docs.dotkernel.org/development/">WSL2 Dev Stack</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">More</div>
+            <a href="https://www.dotkernel.com/">Categories</a>
+            <a href="https://www.dotkernel.com/blog/">Blog</a>
+            <a href="https://github.com/orgs/dotkernel/discussions">Discussion</a>
+            <a href="https://www.dotkernel.com/about/">About</a>
+            <a href="https://www.dotkernel.com/contact/">Contact us</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Follow</div>
+            <a href="https://github.com/dotkernel" target="_blank">GitHub</a>
+            <a href="https://www.dotkernel.com/feed/" target="_blank">Dotkernel RSS Feed</a>
+            <div class="dk-home-footer__note">Open-source tooling supported by JetBrains.</div>
+        </div>
+    </div>
+
+    <div class="dk-home-footer__bottom">
+        <img src="https://docs.dotkernel.org/img/dk_logo_2024_white.svg" alt="Dotkernel" width="112" height="21" style="opacity:.75" />
+        <div class="dk-home-footer__tagline">Built with Mezzio, Laminas &amp; Doctrine &mdash; for PHP developers, by PHP developers. The Laminas logo is copyright of the Laminas Foundation.</div>
+        <div class="flex-grow-1"></div>
+        <div class="dk-home-footer__copyright">&#169; Copyright Dotkernel <span id="current-year"></span>. All rights reserved.</div>
+    </div>
+</footer>
+
+        <script>
+            let base_url = '..',
+                project  = "dotboost",
+                siteName = 'dotboost';
+
+                document.addEventListener("DOMContentLoaded", function() {
+                    document.querySelectorAll('.subnavigation__link').forEach(function(link) {
+                        if (link.getAttribute('href') === './') {
+                            link.parentNode.parentNode.classList.add('show');
+                        }
+                    });
+                });
+        </script>
+        
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search in dotboost" id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+</html>

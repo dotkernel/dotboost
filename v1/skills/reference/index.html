@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="description" content="Claude Code configuration for Dotkernel projects">
+        
+        
+
+        
+        
+            
+        
+        <meta name="docsearch:version" content="1.0.0,latest">
+        <meta name="docsearch:language" content="en">
+        <meta name="docsearch:component" content="dotboost">
+
+        
+        <link rel="canonical" href="https://docs.dotkernel.org/dotboost/v1/skills/reference/">
+        
+        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
+
+        <title>Reference - dotboost - Dotkernel Documentation</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/docs.css">
+        <script src="https://docs.dotkernel.org/js/bootstrap.js" defer></script>
+        <script src="https://docs.dotkernel.org/js/docs.js" defer></script>
+        <script src="https://docs.dotkernel.org/js/scripts.js" defer></script>
+    </head>
+    <body data-bs-spy="scroll" data-bs-target=".toc" data-bs-offset="100">
+
+        
+        <nav class="navbar navbar-expand-lg dk-docs-nav py-2" data-bs-theme="dark">
+    <div class="container-fluid dk-docs-nav__inner">
+        <a class="navbar-brand dk-docs-nav__brand" href="https://docs.dotkernel.org/">
+            <img alt="Dotkernel" class="d-inline-block align-text-top" height="28"
+                 src="https://docs.dotkernel.org/img/dk_logo_2024_white.svg" width="152"/>
+        </a>
+
+        <ul class="dk-docs-nav__projects list-unstyled d-none d-lg-flex align-items-center mb-0">
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/frontend-documentation/">Frontend</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/packages/">Packages</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/development/">Development</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/headless-documentation/">Headless Platform</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+            </li>
+            
+        </ul>
+
+        <div class="flex-grow-1"></div>
+
+        <a href="#" class="dk-docs-nav__search d-none d-md-flex align-items-center" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal" title="Open search">
+            <i class="bi bi-search"></i>
+            <span>Search docs</span>
+            <span class="dk-docs-nav__search-key">/</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse flex-grow-0" id="navbarText">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 dk-docs-nav__projects dk-docs-nav__projects--collapsed d-lg-none">
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/frontend-documentation/">Frontend</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/packages/">Packages</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/development/">Development</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/headless-documentation/">Headless Platform</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+                </li>
+                
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-white" href="https://github.com/dotkernel/dotboost" title="Go to dotboost repository" target="_blank">
+                        <i class="bi bi-github"></i>
+                        GitHub
+                    </a>
+                </li>
+                <li class="nav-item">
+                    
+    
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        
+        <div class="container-fluid docs-shell">
+            <div class="row gx-0">
+                <div class="col-lg-3 col-xl-2 right_sidebar">
+                    
+                    
+    <div class="subnavigation hidden-print">
+<!--        <h4 class="subnavigation__title">-->
+<!--            <a href="../../..">dotboost</a>-->
+<!--        </h4>-->
+
+        <h5 class="subnavigation__title">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../introduction/" class="subnavigation__link">Introduction</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../architecture/" class="subnavigation__link">Architecture Overview</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../getting-started/" class="subnavigation__link">Getting Started</a>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#permissions" role="button" aria-expanded="false" aria-controls="permissions">
+        <span class="subnavigation__headline">Permissions</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="permissions">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../permissions/introduction/" class="subnavigation__link">Introduction</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../permissions/reference/" class="subnavigation__link">Reference</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../permissions/customization/" class="subnavigation__link">Customization</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#hooks" role="button" aria-expanded="false" aria-controls="hooks">
+        <span class="subnavigation__headline">Hooks</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="hooks">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../hooks/introduction/" class="subnavigation__link">Introduction</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../hooks/reference/" class="subnavigation__link">Reference</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../hooks/guardrails-vs-permissions/" class="subnavigation__link">Guardrails vs. Permissions</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#commands" role="button" aria-expanded="false" aria-controls="commands">
+        <span class="subnavigation__headline">Commands</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="commands">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../commands/introduction/" class="subnavigation__link">Introduction</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../commands/reference/" class="subnavigation__link">Reference</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#skills" role="button" aria-expanded="false" aria-controls="skills">
+        <span class="subnavigation__headline">Skills</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="skills">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../introduction/" class="subnavigation__link">Introduction</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item subnavigation__list-item--active">
+    <a href="./" class="subnavigation__link">Reference</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../feature-docs/" class="subnavigation__link">Feature Documentation</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../status-line/" class="subnavigation__link">Status Line</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../windows-and-line-endings/" class="subnavigation__link">Windows & Line Endings</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../verifying-an-install/" class="subnavigation__link">Verifying an Install</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../maintaining/" class="subnavigation__link">Maintaining</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../glossary/" class="subnavigation__link">Glossary</a>
+</li>
+
+                    
+                
+            
+        </ul>
+    </div>
+
+                    
+                </div>
+                <div class="col-lg-9 col-xl-8 main_docs">
+                    
+                    <nav aria-label="breadcrumb" class="nav_breadcrumb">
+    <ol class="breadcrumb">
+        
+            <li class="breadcrumb-item"><a href="https://docs.dotkernel.org/">Overview</a></li>
+            
+
+            
+                <li class="breadcrumb-item"><a href="../../..">dotboost</a></li>
+
+                
+                    
+                        
+                        
+                    
+                
+                    
+                        
+                        
+                            <li class="breadcrumb-item">Skills</li>
+                        
+                    
+                
+
+                <li class="breadcrumb-item active" aria-current="page">Reference</li>
+            
+        
+    </ol>
+</nav>
+
+                    
+                    
+
+
+
+
+    
+    
+<!--        <h2 class="chapter__headline text-black-50">Skills</h2>-->
+    
+
+    
+    
+        
+        
+            
+        
+        
+        <div class="md-actions-bar">
+            <div class="md-actions">
+                <button type="button" class="md-actions-toggle" aria-haspopup="true" aria-expanded="false"
+                        onclick="toggleMdActionsMenu(this)">
+                    <span class="md-actions-toggle-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h9l7 7v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M13 4v6h6"/></svg>
+                        <span>Copy Page</span>
+                    </span>
+                    <span class="md-actions-toggle-chev">
+                        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                </button>
+                <div class="md-actions-menu" role="menu">
+                    <button type="button" class="md-actions-item" role="menuitem" data-copy-url="../reference.md"
+                            onclick="copyMarkdownPage(this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                        <span class="label">Copy Page (as Markdown)</span>
+                    </button>
+                    <a href="../reference.md" target="_blank" rel="alternate noopener noreferrer" type="text/markdown"
+                       class="md-actions-item" role="menuitem" title="View the Markdown source of this page">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h9l7 7v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M13 4v6h6"/><path d="M8 15h8M8 11h4"/></svg>
+                        <span class="label">View as Markdown</span>
+                    </a>
+                    <a href="https://claude.ai/new?q=Read%20from%20https%3A//docs.dotkernel.org/dotboost/v1/skills/reference.md%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="noopener noreferrer"
+                       class="md-actions-item" role="menuitem" title="Open this page in Claude">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 5.5L20 11l-5.5 2.5L12 19l-2.5-5.5L4 11l5.5-2.5z"/></svg>
+                        <span class="label">Open in Claude</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+
+    <h1 id="reference">Reference</h1>
+<h2 id="variant-detection">Variant detection</h2>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Fires on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dotkernel-application-variants</code></td>
+<td>Working out whether a repo is API, Admin, Frontend, Light, Queue, or a derived project, and what that implies elsewhere</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="structure-and-naming">Structure and naming</h2>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Fires on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dotkernel-module-structure</code></td>
+<td>Deciding where a new file belongs — application module vs. the shared Core layer — and registering it</td>
+</tr>
+<tr>
+<td><code>dotkernel-handler-naming</code></td>
+<td>PSR-15 handler class names, route URLs and names, authorization keys, PATCH vs. POST</td>
+</tr>
+<tr>
+<td><code>dotkernel-dot-maker</code></td>
+<td>Scaffolding a module, entity, service, handler, form, or command with <code>composer make …</code></td>
+</tr>
+<tr>
+<td><code>dotkernel-core-submodule</code></td>
+<td>Core-layer changes and git submodule mechanics for sharing code across applications</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="data-layer">Data layer</h2>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Fires on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dotkernel-doctrine-entities</code></td>
+<td>Entities, columns, relations, indexes, repositories, backed enums with DBAL types, fixtures, migrations</td>
+</tr>
+<tr>
+<td><code>dotkernel-input-validation</code></td>
+<td>InputFilters, Input classes, laminas-form Forms, CSRF, upload validation</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="request-lifecycle-and-responses">Request lifecycle and responses</h2>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Fires on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dotkernel-responses</code></td>
+<td>Shaping handler output — HAL resources/collections and the MetadataMap, or templates/redirects/flash messages; pagination and error bodies</td>
+</tr>
+<tr>
+<td><code>dotkernel-openapi</code></td>
+<td>Documenting an endpoint via swagger-php attributes, for applications that publish OpenAPI</td>
+</tr>
+<tr>
+<td><code>dotkernel-evolution-pattern</code></td>
+<td>Non-breaking API evolution — Sunset/Link headers and deprecation, instead of <code>/v2</code> or a version prefix</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="quality-security-and-process">Quality, security, and process</h2>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Fires on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dotkernel-psr-standards</code></td>
+<td>Which PSR applies to a given piece of code, and Laminas Coding Standard style</td>
+</tr>
+<tr>
+<td><code>dotkernel-qa-gate</code></td>
+<td>Running or interpreting phpcs, phpcbf, phpstan, phpunit; refusing forbidden shortcuts like <code>@phpstan-ignore</code></td>
+</tr>
+<tr>
+<td><code>dotkernel-testing</code></td>
+<td>Unit and functional tests, mocking repositories/services, authenticating test requests</td>
+</tr>
+<tr>
+<td><code>dotkernel-security</code></td>
+<td>Auth, authorization config, CORS, sessions/cookies, secrets, <code>*.local.php</code> vs. <code>*.global.php</code>, raw DQL/SQL</td>
+</tr>
+<tr>
+<td><code>dotkernel-troubleshooting</code></td>
+<td>Symptom-to-cause lookup for 403/404/406/415/500, container errors, config not taking effect</td>
+</tr>
+<tr>
+<td><code>dotkernel-feature-docs</code></td>
+<td>Writing and keeping feature docs current — see <a href="../../feature-docs/">Feature Documentation</a></td>
+</tr>
+<tr>
+<td><code>dotkernel-package-status</code></td>
+<td>Whether a Dotkernel package is still maintained and which PHP versions it supports</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="dependency-policy">Dependency policy</h2>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Fires on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dependency-policy</code></td>
+<td>Any package decision — the order: already installed → <code>dotkernel/*</code> → <code>laminas</code>/<code>mezzio</code> → vetted community package → hand-rolled code. See <a href="../dependency-policy/">Dependency Policy</a></td>
+</tr>
+</tbody>
+</table></div>
+
+
+
+
+    <nav>
+    <ul class="list-unstyled page-nav row w-100 mt-5 mb-3 pt-5 pb-3">
+        
+        <li class="col text-nowrap text-md-start">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../introduction/">
+                    <i class="bi bi-chevron-left"></i>
+                    Introduction
+                </a>
+            
+        </li>
+
+        
+        <li class="col text-nowrap text-md-end pe-0">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../dependency-policy/">
+                    Dependency Policy
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+                    
+                </div>
+
+                
+                
+                <div class="col-xl-2 d-none d-xl-block page_toc">
+                    
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">On this page</h6>
+            <ul class="toc__list">
+            
+                <li class="toc__entry">
+                    <a href="#variant-detection" class="toc__link nav-link">Variant detection</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#structure-and-naming" class="toc__link nav-link">Structure and naming</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#data-layer" class="toc__link nav-link">Data layer</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#request-lifecycle-and-responses" class="toc__link nav-link">Request lifecycle and responses</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#quality-security-and-process" class="toc__link nav-link">Quality, security, and process</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#dependency-policy" class="toc__link nav-link">Dependency policy</a>
+                </li>
+            
+            </ul>
+        </div>
+    
+
+                </div>
+                
+            </div>
+        </div>
+
+        
+        <footer class="dk-home-footer">
+    <div class="dk-home-footer__grid">
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Products</div>
+            <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+            <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+            <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+            <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Resources</div>
+            <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+            <a href="https://docs.dotkernel.org/headless-documentation/">Architecture</a>
+            <a href="https://www.dotkernel.com/dotkernel-packages-oss-lifecycle/">Packages Lifecycle</a>
+            <a href="https://docs.dotkernel.org/development/">WSL2 Dev Stack</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">More</div>
+            <a href="https://www.dotkernel.com/">Categories</a>
+            <a href="https://www.dotkernel.com/blog/">Blog</a>
+            <a href="https://github.com/orgs/dotkernel/discussions">Discussion</a>
+            <a href="https://www.dotkernel.com/about/">About</a>
+            <a href="https://www.dotkernel.com/contact/">Contact us</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Follow</div>
+            <a href="https://github.com/dotkernel" target="_blank">GitHub</a>
+            <a href="https://www.dotkernel.com/feed/" target="_blank">Dotkernel RSS Feed</a>
+            <div class="dk-home-footer__note">Open-source tooling supported by JetBrains.</div>
+        </div>
+    </div>
+
+    <div class="dk-home-footer__bottom">
+        <img src="https://docs.dotkernel.org/img/dk_logo_2024_white.svg" alt="Dotkernel" width="112" height="21" style="opacity:.75" />
+        <div class="dk-home-footer__tagline">Built with Mezzio, Laminas &amp; Doctrine &mdash; for PHP developers, by PHP developers. The Laminas logo is copyright of the Laminas Foundation.</div>
+        <div class="flex-grow-1"></div>
+        <div class="dk-home-footer__copyright">&#169; Copyright Dotkernel <span id="current-year"></span>. All rights reserved.</div>
+    </div>
+</footer>
+
+        <script>
+            let base_url = '../../..',
+                project  = "dotboost",
+                siteName = 'dotboost';
+
+                document.addEventListener("DOMContentLoaded", function() {
+                    document.querySelectorAll('.subnavigation__link').forEach(function(link) {
+                        if (link.getAttribute('href') === './') {
+                            link.parentNode.parentNode.classList.add('show');
+                        }
+                    });
+                });
+        </script>
+        
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search in dotboost" id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+</html>
