@@ -1,7 +1,7 @@
 docs_dir: docs/book
 site_dir: docs/html
 extra:
-  project: dotboost
+  project: Dotboost
   current_version: v1
   versions:
     - v1
@@ -32,7 +32,7 @@ nav:
       - "Verifying an Install": v1/verifying-an-install.md
       - Maintaining: v1/maintaining.md
       - Glossary: v1/glossary.md
-site_name: "dotboost"
+site_name: "Dotboost"
 site_description: "Claude Code configuration for Dotkernel projects"
 repo_url: "https://github.com/dotkernel/dotboost"
 plugins:

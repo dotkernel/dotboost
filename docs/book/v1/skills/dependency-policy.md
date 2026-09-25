@@ -1,6 +1,6 @@
 # Dependency Policy
 
-`dependency-policy` is the one skill in dotboost that isn't specific to a Dotkernel application — it governs any package decision, in any project — and it's the skill with the most moving parts, which is why it gets its own page rather than a row in [Reference](reference.md).
+`dependency-policy` is the one skill in Dotboost that isn't specific to a Dotkernel application — it governs any package decision, in any project — and it's the skill with the most moving parts, which is why it gets its own page rather than a row in [Reference](reference.md).
 
 ## The ladder
 
@@ -18,7 +18,7 @@ Verify against `composer.lock`, the generated `dotkernel/*` manifest (below), or
 ## It needs a `CLAUDE.md` block to be proactive
 
 A skill's `description:` frontmatter only makes it *loadable* — it doesn't make Claude stop and think before naming a package unprompted.
-That behavior has to be always-loaded, which means it lives in the *consuming project's* `CLAUDE.md`, not in dotboost itself:
+That behavior has to be always-loaded, which means it lives in the *consuming project's* `CLAUDE.md`, not in Dotboost itself:
 
 ```markdown
 ## Dependency policy

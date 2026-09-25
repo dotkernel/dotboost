@@ -1,7 +1,7 @@
 # Introduction
 
 A hook is a bash script registered in `settings.json` against a Claude Code lifecycle event.
-dotboost uses three events:
+Dotboost uses three events:
 
 - **`SessionStart`** — runs once when a session begins.
 - **`PreToolUse`** — runs before a tool call, matched against `Edit`/`Write`/`MultiEdit`/`NotebookEdit` or `Bash`; can block the call.

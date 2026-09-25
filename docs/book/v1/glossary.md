@@ -38,4 +38,4 @@ Skill
 
 Subagent
 : A separately-invoked agent defined under `.claude/agents/`, used to keep bulk review work out of the main conversation's context.
-  dotboost ships one: `dotkernel-reviewer`.
+  Dotboost ships one: `dotkernel-reviewer`.
