@@ -3,7 +3,7 @@
 A command is a `.md` file under `.claude/commands/` with YAML frontmatter — `description`, an optional `argument-hint`, and `allowed-tools` scoping what the command may use.
 Unlike a skill, a command never loads itself: you invoke it explicitly by typing its name, e.g. `/dk-review`.
 
-dotboost ships ten, covering the lifecycle of a change from a fresh clone through to a PR-ready diff.
+Dotboost ships ten, covering the lifecycle of a change from a fresh clone through to a PR-ready diff.
 See [Reference](reference.md) for the full list, grouped by workflow stage.
 
 ## Commands vs. skills

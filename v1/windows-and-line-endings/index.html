@@ -15,7 +15,7 @@
         
         <meta name="docsearch:version" content="1.0.0,latest">
         <meta name="docsearch:language" content="en">
-        <meta name="docsearch:component" content="dotboost">
+        <meta name="docsearch:component" content="Dotboost">
 
         <meta property="og:title"        content="Dotkernel Documentation"/>
         <meta property="og:description"  content="Official Dotkernel documentation covering APIs, Admin, Queue, developer tools, packages, and modern PHP application development"/>
@@ -35,7 +35,7 @@
         
         <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
-        <title>Windows & Line Endings - dotboost - Dotkernel Documentation</title>
+        <title>Windows & Line Endings - Dotboost - Dotkernel Documentation</title>
 
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
@@ -88,7 +88,7 @@
                 <a href="https://docs.dotkernel.org/headless-documentation/">Headless Platform</a>
             </li>
             
-            <li class="">
+            <li class="dk-docs-nav__projects-item--active">
                 <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
             </li>
             
@@ -141,14 +141,14 @@
                     <a href="https://docs.dotkernel.org/headless-documentation/">Headless Platform</a>
                 </li>
                 
-                <li class="">
+                <li class="dk-docs-nav__projects-item--active">
                     <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
                 </li>
                 
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-white" href="https://github.com/dotkernel/dotboost" title="Go to dotboost repository" target="_blank">
+                    <a class="nav-link fw-bold text-white" href="https://github.com/dotkernel/dotboost" title="Go to Dotboost repository" target="_blank">
                         <i class="bi bi-github"></i>
                         GitHub
                     </a>
@@ -171,7 +171,7 @@
                     
     <div class="subnavigation hidden-print">
 <!--        <h4 class="subnavigation__title">-->
-<!--            <a href="../..">dotboost</a>-->
+<!--            <a href="../..">Dotboost</a>-->
 <!--        </h4>-->
 
         <h5 class="subnavigation__title">Table of Contents</h5>
@@ -434,7 +434,7 @@
             
 
             
-                <li class="breadcrumb-item"><a href="../..">dotboost</a></li>
+                <li class="breadcrumb-item"><a href="../..">Dotboost</a></li>
 
                 
                     
@@ -510,7 +510,7 @@ git ls-files --eol | grep -v 'w/lf' | head  # nothing for text files</code></pre
 <p>Already committed CRLF? Renormalize once with <code>git add --renormalize .</code>.</p>
 <h2 id="phpstorm">PhpStorm</h2>
 <p><em>Editor → Code Style → Line separator = Unix (\n)</em>, and <em>File Encodings → UTF-8</em>, <em>Create UTF-8 files: with NO BOM</em>.</p>
-<h2 id="how-dotboost-enforces-this-while-working">How dotboost enforces this while working</h2>
+<h2 id="how-dotboost-enforces-this-while-working">How Dotboost enforces this while working</h2>
 <p><code>normalize-file.sh</code> fixes BOM, CRLF, trailing whitespace, and final newline on every file Claude writes — see <a href="../hooks/reference/">Hooks Reference</a>.
 <code>session-start.sh</code> also warns at the start of a session if it detects CRLF in the working tree.
 <code>/dk-hygiene</code> runs the same checks across a whole set of changed files on demand.</p>
@@ -568,7 +568,7 @@ git ls-files --eol | grep -v 'w/lf' | head  # nothing for text files</code></pre
                 </li>
             
                 <li class="toc__entry">
-                    <a href="#how-dotboost-enforces-this-while-working" class="toc__link nav-link">How dotboost enforces this while working</a>
+                    <a href="#how-dotboost-enforces-this-while-working" class="toc__link nav-link">How Dotboost enforces this while working</a>
                 </li>
             
             </ul>
@@ -624,7 +624,7 @@ git ls-files --eol | grep -v 'w/lf' | head  # nothing for text files</code></pre
         <script>
             let base_url = '../..',
                 project  = "dotboost",
-                siteName = 'dotboost';
+                siteName = 'Dotboost';
 
                 document.addEventListener("DOMContentLoaded", function() {
                     document.querySelectorAll('.subnavigation__link').forEach(function(link) {
@@ -645,7 +645,7 @@ git ls-files --eol | grep -v 'w/lf' | head  # nothing for text files</code></pre
             <div class="modal-body">
                 <form role="form">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search in dotboost" id="mkdocs-search-query">
+                        <input type="text" class="form-control" placeholder="Search in Dotboost" id="mkdocs-search-query">
                     </div>
                 </form>
                 <div id="mkdocs-search-results"></div>
