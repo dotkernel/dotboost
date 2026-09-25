@@ -22,7 +22,7 @@ Already committed CRLF? Renormalize once with `git add --renormalize .`.
 
 *Editor → Code Style → Line separator = Unix (\n)*, and *File Encodings → UTF-8*, *Create UTF-8 files: with NO BOM*.
 
-## How dotboost enforces this while working
+## How Dotboost enforces this while working
 
 `normalize-file.sh` fixes BOM, CRLF, trailing whitespace, and final newline on every file Claude writes — see [Hooks Reference](hooks/reference.md).
 `session-start.sh` also warns at the start of a session if it detects CRLF in the working tree.

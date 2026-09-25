@@ -14,7 +14,7 @@ The Packagist snapshot behind `dependency-policy` goes stale silently — re-run
 `dot-annotated-services` → `dot-dependency-injection` is exactly the kind of thing a stale manifest gets wrong.
 See [Dependency Policy](skills/dependency-policy.md).
 
-## Adapting dotboost to a new Dotkernel application
+## Adapting Dotboost to a new Dotkernel application
 
 Before adapting this configuration to a Dotkernel application it hasn't been used against yet, spend an hour reading that repo and correcting the skills against what's actually there.
 A skill written from framework documentation rather than the real codebase produces confident wrong answers — worse than no skill at all, because it doesn't look uncertain.

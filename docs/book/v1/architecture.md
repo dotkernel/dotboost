@@ -1,6 +1,6 @@
 # Architecture Overview
 
-Everything in dotboost hangs off one file: `.claude/settings.json`.
+Everything in Dotboost hangs off one file: `.claude/settings.json`.
 It registers the hooks, sets the permission tiers, configures the status line, and sets session defaults (`defaultMode: "plan"`, dark theme, fullscreen TUI).
 Nothing else in the payload is wired together outside of it — skills and commands are discovered by Claude Code from their directory location alone.
 
@@ -17,11 +17,11 @@ This matters because the four types fail differently.
 A hook that isn't registered in `settings.json` never runs, full stop.
 A skill that's technically present but has a vague `description:` may simply never be selected — it isn't an error, it's silence.
 A command only exists when you type its name.
-Debugging "why didn't dotboost do X" starts by identifying which of these four categories X falls into.
+Debugging "why didn't Dotboost do X" starts by identifying which of these four categories X falls into.
 
 ## Two layers of guardrail
 
-dotboost protects the target repository at two independent layers:
+Dotboost protects the target repository at two independent layers:
 
 1. **Permission tiers** (`permissions.deny` / `ask` / `allow` in `settings.json`) — path-glob and command-prefix rules Claude Code enforces natively.
 2. **Hooks** (`guard-protected-paths.sh`, `guard-bash.sh`) — bash scripts that inspect the actual tool call, including compound Bash commands (`cd src && composer require foo`) that a glob pattern can't see into.

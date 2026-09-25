@@ -1,6 +1,6 @@
 # Verifying an Install
 
-There is no CI in this repository — dotboost is configuration, not code with a build step — so this manual smoke test is the closest thing to a test suite.
+There is no CI in this repository - Dotboost is configuration, not code with a build step - so this manual smoke test is the closest thing to a test suite.
 Run it after installing into a project.
 
 ## Skill routing
