@@ -10,7 +10,8 @@ Use the `dotkernel-reviewer` agent if that keeps context cleaner. Load
 `dotkernel-application-variants` first, then `dotkernel-handler-naming`,
 `dotkernel-module-structure`, `dotkernel-input-validation`, `dotkernel-responses`,
 `dotkernel-security`, `dotkernel-evolution-pattern`, `dotkernel-psr-standards`,
-`dotkernel-core-submodule` and `dotkernel-feature-docs`.
+`dotkernel-core-submodule` and `dotkernel-feature-docs` — plus `dotkernel-api-endpoint` in an API
+application.
 
 Report findings grouped as **Blocking / Should fix / Nit**, each with file:line and a concrete
 replacement. Check at minimum:

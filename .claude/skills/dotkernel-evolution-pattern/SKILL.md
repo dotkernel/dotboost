@@ -32,7 +32,7 @@ link depends on — but the announcement channel is a redirect and a changelog e
 | Add a request parameter | Make it **optional** with a safe default. |
 | Richer behaviour for richer input | Branch on the payload: old shape → old behaviour, new shape → enhanced. |
 | Remove a field, change a type, tighten validation | Breaking. Deprecate with a sunset date, keep the old path until then. |
-| Remove an endpoint or route | Deprecate with a sunset date; afterwards it 404s (or permanently redirects). |
+| Remove an endpoint or route | Deprecate with a sunset date; afterwards it answers 410 Gone (API) or permanently redirects (templated), and 404s once removed. |
 | Rework one endpoint fundamentally | A `v2` for **that endpoint only**, never the whole application. |
 | A different response paradigm entirely | Genuine versioning. |
 
@@ -47,7 +47,7 @@ Class-level attribute on the handler:
 #[ResourceDeprecation(
     sunset: '2026-01-01',
     link: 'https://docs.dotkernel.org/…/api-evolution/',
-    deprecationReason: 'Replaced by GET /book/{uuid}/detail.',
+    deprecationReason: 'Replaced by GET /book/{id}/detail.',
     rel: 'sunset',
     type: 'text/html',
 )]
@@ -58,6 +58,8 @@ Mechanics:
 
 - The deprecation middleware reflects the handler after dispatch and adds `Sunset:` and `Link:`
   response headers.
+- Once the sunset date has passed, the middleware throws `ExpiredException` before the handler
+  runs, and the endpoint answers `410 Gone` as problem details.
 - `sunset` must be a valid date or the attribute constructor throws.
 - If `link` is omitted, the middleware falls back to the documentation URL in
   `application.versioning` config.
@@ -82,8 +84,9 @@ The attribute compiling is not "done". Also:
 6. Announce through the channels the project actually uses — headers, docs, release notes,
    newsletter — early enough for third-party developers to plan.
 
-At sunset, remove the handler, its route, its authorization entry, its presentation metadata and
-its documentation block in one change: a removed endpoint should 404, not 500.
+After sunset the endpoint already answers 410, so removal is a clean-up, not an emergency. Remove
+the handler, its route, its authorization entry, its presentation metadata and its documentation
+block in one later change: a removed endpoint should 404, not 500.
 
 ## Anti-patterns to flag
 

@@ -97,8 +97,8 @@ What lands in the project:
 ├── markdownlint.jsonc             the markdown rule set, passed to markdownlint-cli2 via --config
 ├── hooks/                         six bash hooks (guards, normaliser, php -l, markdownlint, briefing)
 ├── agents/                        the review subagent
-├── commands/                      the nine /dk-* commands
-└── skills/                        sixteen skills: fifteen dotkernel-* plus dependency-policy
+├── commands/                      the ten /dk-* commands
+└── skills/                        seventeen skills: sixteen dotkernel-* plus dependency-policy
 ```
 
 Optionally, for personal overrides that stay out of git:
@@ -199,8 +199,11 @@ not reach it.
 Code (≥ 2.1) passes to the status line on stdin — the same numbers `/usage` reports:
 
 ```
-~/project : Opus 5 ==> 5h:37% 2h14m left, resets @16:20 | 7d 61%
+~/project                     Opus 5.5  high
+5h ███████▍             37%   resets in 2h 14m (16:20)  7d 61%
 ```
+
+The 5h bar is a 20-cell heat gradient; colours are 24-bit, so the terminal needs truecolor support.
 
 Pure bash and `awk`. No `jq`, no python, no transcript scanning or guessed token budgets, so it
 works in Git Bash on Windows.
@@ -308,6 +311,7 @@ README.md                                       this file
 .claude/skills/dotkernel-application-variants/   detect API vs Admin vs Frontend vs Light vs Queue
 .claude/skills/dotkernel-module-structure/       where code goes, application module vs Core, wiring
 .claude/skills/dotkernel-handler-naming/         both naming dialects, routes, authorization keys
+.claude/skills/dotkernel-api-endpoint/           API-only endpoint rules and the end-to-end checklist
 .claude/skills/dotkernel-doctrine-entities/      entities, enums + DBAL types, repositories, migrations
 .claude/skills/dotkernel-input-validation/       InputFilters, Inputs, forms, CSRF, query whitelisting
 .claude/skills/dotkernel-responses/              HAL and collections, or templates and redirects; errors

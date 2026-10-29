@@ -102,6 +102,10 @@ forbidden 403, not found 404, not acceptable 406, conflict 409, unsupported medi
 app-specific ones. Messages come from the shared catalogue. **Never leak SQL, stack traces, file
 paths or internal class names** into a user-visible message.
 
+One known exception in the stock API: `AuthorizationMiddleware` answers a refusal with
+`{"error": {"messages": [...]}}` and status 403 instead of problem details. Do not copy that
+pattern — new code throws.
+
 Non-resource successes have helpers too — empty/no-content, an info-message envelope, plain
 JSON. Prefer the existing helper over an ad-hoc shape so clients see one consistent envelope.
 

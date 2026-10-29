@@ -1,6 +1,6 @@
 ---
 description: Add a fully wired route (API endpoint or admin/frontend page)
-argument-hint: <VERB> <path> (e.g. POST /book/{uuid}/review)
+argument-hint: <VERB> <path> (e.g. POST /book/{id}/review)
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash(php bin/cli.php:*), Bash(composer cs-fix), Bash(composer cs-check), Bash(composer static-analysis), Bash(composer test)
 ---
 
@@ -8,7 +8,7 @@ Add the route: **$ARGUMENTS**
 
 Load `dotkernel-application-variants` first, then `dotkernel-handler-naming`,
 `dotkernel-module-structure`, `dotkernel-input-validation`, `dotkernel-responses` and
-`dotkernel-psr-standards`.
+`dotkernel-psr-standards` — plus `dotkernel-api-endpoint` in an API application.
 
 Work in this order and show me the plan before step 3:
 

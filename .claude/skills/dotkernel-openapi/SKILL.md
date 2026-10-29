@@ -60,7 +60,9 @@ Not on the handler. Each module has one dedicated file containing no classes —
 - The security scheme on **every** authenticated endpoint. Omitting it tells clients the endpoint
   is public — a documentation bug with security consequences.
 - Status codes via `StatusCodeInterface::STATUS_*`, not literals.
-- Document failure responses too: at minimum 400, 401, 403 and 404 where they apply.
+- Document failure responses too: 400, 403, 404 and 409 where they apply. A missing or invalid
+  token runs as guest, so a protected operation answers 403, not 401. Only the token-issuing
+  operations can answer 401 — verify which errors do in the repo before documenting it.
 - Deprecated operations get `deprecated: true` plus a description naming the replacement, paired
   with the deprecation attribute on the handler (see `dotkernel-evolution-pattern`).
 - Reuse `OA\Schema` definitions rather than repeating inline shapes.
