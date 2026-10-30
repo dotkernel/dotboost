@@ -1,94 +1,124 @@
 #!/usr/bin/env bash
-# ~/.claude/statusline.sh  —  pure bash, no jq/python needed
+# .claude/statusline.sh  —  pure bash, no jq/python needed
 #
-# Shows your REAL account usage, straight from the rate-limit data that
-# Claude Code (>= 2.1) passes to the statusline on stdin — the same numbers
-# `/usage` reports:
+# Output (design "Statusline Final" / 1e, two lines, column 2 aligned at cell 30):
+#   ~/parent/folder               Model  <level>
+#   5h <20-cell bar> <pct>%       resets in <1h 48m> (<hh:mm>)  7d <pct>%
 #
-#   .rate_limits.five_hour.used_percentage   .resets_at   -> 5h session window
-#   .rate_limits.seven_day.used_percentage   .resets_at   -> 7d weekly window
-#
-# No transcript scanning, no guessed token budgets. Output:
-#   dir : Model ==> 5h:NN% Xh left, resets @HH:MM | 7d NN%
+# The 5h / 7d figures are the OFFICIAL rate-limit values Claude Code passes
+# in on stdin under `rate_limits` (used_percentage + resets_at epoch). These
+# match what /usage and your account show — no estimation involved.
 
 input=$(cat)
 NOW=$(date +%s)
 
-# --- extractors (regex over the payload; good enough for this JSON) ----------
-# top-level (or nested) string field:  "key":"value"
-jstr() {
-  printf '%s' "$input" \
-    | grep -oE "\"$1\"[[:space:]]*:[[:space:]]*\"[^\"]*\"" | head -1 \
-    | sed -E 's/.*:[[:space:]]*"//; s/"$//'
-}
-# the flat {...} object for a rate_limits sub-window (no nested braces inside)
-rl_section() {
-  printf '%s' "$input" \
-    | grep -oE "\"$1\"[[:space:]]*:[[:space:]]*\{[^}]*\}" | head -1
-}
-# a number-or-string field out of a section chunk
-rl_field() {
-  printf '%s' "$1" \
-    | grep -oE "\"$2\"[[:space:]]*:[[:space:]]*(\"[^\"]*\"|[0-9.]+)" | head -1 \
-    | sed -E 's/.*:[[:space:]]*//; s/^"//; s/"$//'
-}
-round() { awk -v v="$1" 'BEGIN{ if (v=="") exit; printf "%.0f", v }'; }
+# ---- tiny JSON extractors (good enough for Claude Code's payload) ----------
+# string value of a top-level-ish "key":"value"
+jstr() { printf '%s' "$input" | grep -o "\"$1\":\"[^\"]*\"" | head -1 | sed 's/^[^:]*:"//; s/"$//'; }
 
-MODEL=$(jstr display_name); [[ -z "$MODEL" ]] && MODEL=$(jstr model)
-[[ -z "$MODEL" ]] && MODEL=Claude
-CWD=$(jstr current_dir);    [[ -z "$CWD" ]] && CWD=$(jstr cwd)
+# Pull "key":<number> from a given JSON fragment. Handles ints and floats.
+jnum() { printf '%s' "$2" | grep -o "\"$1\":[0-9.]*" | head -1 | sed 's/^[^:]*://'; }
 
-# --- pull the official 5h / 7d figures --------------------------------------
-FIVE=$(rl_section five_hour)
-SEVEN=$(rl_section seven_day)
+MODEL=$(jstr display_name); [[ -z "$MODEL" ]] && MODEL=Claude
+MODEL=${MODEL% (*}          # drop suffixes like " (1M context)"
+MODEL=${MODEL#Claude }      # drop a leading "Claude "
+EFFORT=$(printf '%s' "$input" | grep -o '"effort":{[^}]*}' | grep -o '"level":"[^"]*"' | sed 's/^[^:]*:"//; s/"$//')
+CWD=$(jstr current_dir);    [[ -z "$CWD"   ]] && CWD=$(jstr cwd)
+[[ -z "$CWD" ]] && CWD=$PWD
 
-PCT=$(round "$(rl_field "$FIVE"  used_percentage)")
-WPCT=$(round "$(rl_field "$SEVEN" used_percentage)")
-RESET_5H=$(rl_field "$FIVE" resets_at)
+# ---- official rate limits ---------------------------------------------------
+# Isolate each window's { ... } object, then read its two fields.
+FIVE=$(printf '%s'  "$input" | grep -o '"five_hour":{[^}]*}')
+SEVEN=$(printf '%s' "$input" | grep -o '"seven_day":{[^}]*}')
 
-# --- derive time-left / reset clock for the 5h window -----------------------
-LEFT_STR='--' ; RESET_STR='--:--'
-if [[ -n "$RESET_5H" ]]; then
-  # resets_at is a Unix epoch (int) on this build; older docs show ISO 8601.
-  if [[ "$RESET_5H" =~ ^[0-9]+$ ]]; then
-    RESET_EPOCH=$RESET_5H
-  else
-    RESET_EPOCH=$(date -d "$RESET_5H" +%s 2>/dev/null)
+# used_percentage may be a float (e.g. 56.9999) -> round to nearest int, clamp 0–100.
+round() { awk -v n="${1:-}" 'BEGIN{ if (n=="") { print ""; exit } r=int(n+0.5); print (r<0?0:(r>100?100:r)) }'; }
+
+FIVE_PCT=$(round "$(jnum used_percentage "$FIVE")")
+SEVEN_PCT=$(round "$(jnum used_percentage "$SEVEN")")
+FIVE_RESET=$(jnum resets_at "$FIVE"); FIVE_RESET=${FIVE_RESET%.*}
+
+# ---- palette (truecolor) ----------------------------------------------------
+RST=$'\033[0m'
+BLD=$'\033[1m'
+fg() { printf '\033[38;2;%d;%d;%dm' "0x${1:0:2}" "0x${1:2:2}" "0x${1:4:2}"; }
+bg() { printf '\033[48;2;%d;%d;%dm' "0x${1:0:2}" "0x${1:2:2}" "0x${1:4:2}"; }
+
+C_BRIGHT=ecebe8 C_DIM=85827b C_MODEL=d97757 C_EFFORT=b4a0f5
+C_TRACK=26282d C_OK=9ece6a C_WARN=e0af68 C_CRIT=f7768e
+
+DIM=$(fg $C_DIM)
+
+pct_col() {  # ok < 50, warn < 80, crit otherwise
+  if   (( $1 < 50 )); then fg $C_OK
+  elif (( $1 < 80 )); then fg $C_WARN
+  else                     fg $C_CRIT
   fi
-  if [[ -n "$RESET_EPOCH" ]]; then
-    LEFT=$(( RESET_EPOCH - NOW )); (( LEFT < 0 )) && LEFT=0
-    LEFT_STR=$(printf '%dh%02dm' $(( LEFT / 3600 )) $(( LEFT % 3600 / 60 )))
-    RESET_STR=$(date -d "@$RESET_EPOCH" +%H:%M)
-  fi
+}
+
+# Linear RGB mix of hex $1 → $2 at num/den ($3/$4), rounded half up.
+mix() {
+  local out='' k a b
+  for k in 0 2 4; do
+    a=$(( 0x${1:k:2} )) b=$(( 0x${2:k:2} ))
+    out+=$(printf '%02x' $(( (2 * (a * $4 + (b - a) * $3) + $4) / (2 * $4) )))
+  done
+  printf '%s' "$out"
+}
+
+# 20-cell usage bar, 1/8-cell precision, heat gradient by cell position:
+# cell i sits at t = (2i+1)/40; green → amber up to t = 0.55, amber → red after.
+CELLS=20
+EIGHTHS=('' '▏' '▎' '▍' '▌' '▋' '▊' '▉')
+bar() {
+  local units=$(( ($1 * 16 + 5) / 10 )) out i f n color
+  out=$(bg $C_TRACK)
+  for (( i = 0; i < CELLS; i++ )); do
+    f=$(( units - i * 8 )); (( f < 0 )) && f=0; (( f > 8 )) && f=8
+    if (( f == 0 )); then out+=' '; continue; fi
+    n=$(( 2 * i + 1 ))
+    if (( n < 22 )); then color=$(mix $C_OK $C_WARN $n 22)
+    else                  color=$(mix $C_WARN $C_CRIT $(( n - 22 )) 18)
+    fi
+    out+=$(fg "$color")
+    (( f == 8 )) && out+='█' || out+=${EIGHTHS[f]}
+  done
+  printf '%s' "$out$RST"
+}
+
+# ---- layout ----------------------------------------------------------------
+DIR=${CWD/#$HOME/\~}
+if [[ $DIR == */* ]]; then PARENT=${DIR%/*}/ BASE=${DIR##*/}; else PARENT='' BASE=$DIR; fi
+[[ -z "$BASE" ]] && BASE=/
+
+W1=$(( ${#PARENT} + ${#BASE} ))
+W2=0; [[ -n "$FIVE_PCT" ]] && W2=$(( 2 + 1 + CELLS + 1 + ${#FIVE_PCT} + 1 ))
+COL=30
+(( W1 + 2 > COL )) && COL=$(( W1 + 2 ))
+(( W2 + 2 > COL )) && COL=$(( W2 + 2 ))
+
+LINE1="$DIM$PARENT$RST$BLD$(fg $C_BRIGHT)$BASE$RST$(printf '%*s' $(( COL - W1 )) '')"
+LINE1+="$BLD$(fg $C_MODEL)$MODEL$RST"
+[[ -n "$EFFORT" ]] && LINE1+="  $(fg $C_EFFORT)$EFFORT$RST"
+
+if [[ -z "$FIVE_PCT" && -z "$SEVEN_PCT" ]]; then
+  printf '%s\n' "$LINE1"
+  exit 0
 fi
 
-[[ -n "$PCT"  ]] && PCT_DISP="${PCT}%"   || PCT_DISP='--'
-[[ -n "$WPCT" ]] && WPCT_DISP="${WPCT}%" || WPCT_DISP='--'
-
-# --- colours ----------------------------------------------------------------
-pct_col() {  # green < 50, yellow < 80, red otherwise, gray if unknown
-  if   ! [[ "$1" =~ ^[0-9]+$ ]]; then printf '\033[90m'
-  elif (( $1 < 50 )); then printf '\033[32m'
-  elif (( $1 < 80 )); then printf '\033[33m'
-  else                     printf '\033[31m'
+LINE2=''
+if [[ -n "$FIVE_PCT" ]]; then
+  LINE2+="${DIM}5h$RST $(bar "$FIVE_PCT") $BLD$(pct_col "$FIVE_PCT")$FIVE_PCT%$RST$(printf '%*s' $(( COL - W2 )) '')"
+  if [[ -n "$FIVE_RESET" ]]; then
+    MINS=$(( (FIVE_RESET - NOW) / 60 )); (( MINS < 0 )) && MINS=0
+    if (( MINS >= 60 )); then LEFT_STR=$(printf '%dh %02dm' $(( MINS / 60 )) $(( MINS % 60 )))
+    else                      LEFT_STR="${MINS}m"
+    fi
+    LINE2+="${DIM}resets in$RST $LEFT_STR $DIM($(date -d "@$FIVE_RESET" +%H:%M))$RST"
   fi
-}
-COL=$(pct_col "$PCT")
-WCOL=$(pct_col "$WPCT")
-RST=$'\033[0m'
-YLW=$'\033[93m'   # bright yellow
-WHT=$'\033[97m'   # bright white
-BLU=$'\033[94m'   # bright blue
-GRY=$'\033[90m'   # gray
+else
+  LINE2+=$(printf '%*s' $COL '')
+fi
+[[ -n "$SEVEN_PCT" ]] && LINE2+="  ${DIM}7d$RST $(pct_col "$SEVEN_PCT")$SEVEN_PCT%$RST"
 
-DIR=${CWD/#$HOME/\~}
-
-printf '%s%s%s%s:%s %s%s%s %s==> 5h:%s %s%s%s %s%s left, resets @%s%s %s| 7d%s %s%s%s\n' \
-  "$YLW" "$DIR" "$RST" \
-  "$WHT" "$RST" \
-  "$BLU" "$MODEL" "$RST" \
-  "$WHT" "$RST" \
-  "$COL" "$PCT_DISP" "$RST" \
-  "$GRY" "$LEFT_STR" "$RESET_STR" "$RST" \
-  "$WHT" "$RST" \
-  "$WCOL" "$WPCT_DISP" "$RST"
+printf '%s\n%s\n' "$LINE1" "$LINE2"

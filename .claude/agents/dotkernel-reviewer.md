@@ -17,7 +17,7 @@ API rules to an Admin repo — or the reverse — produces confident nonsense.
 Then load: `dotkernel-module-structure`, `dotkernel-handler-naming`,
 `dotkernel-input-validation`, `dotkernel-responses`, `dotkernel-evolution-pattern`,
 `dotkernel-security`, `dotkernel-core-submodule`, `dotkernel-psr-standards`, `dotkernel-qa-gate`,
-`dotkernel-feature-docs`.
+`dotkernel-feature-docs` — plus `dotkernel-api-endpoint` in an API application.
 
 Method:
 

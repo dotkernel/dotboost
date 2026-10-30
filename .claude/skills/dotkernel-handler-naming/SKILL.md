@@ -21,8 +21,9 @@ It has **two dialects** — pick by variant (`dotkernel-application-variants`).
 ```
 
 Every dialect uses: the HTTP verb, the resource name, an optional sub-resource, an optional
-action, and the literal `Handler`. CRUD wording is fixed across Dotkernel: **Create**,
-**Get** (for read), **Edit** (for update), **Delete**.
+action, and the literal `Handler`. CRUD wording in route names is fixed across Dotkernel:
+**create**, **view**, **update**, **delete**, **list**. API handler names carry no CRUD word —
+the HTTP verb says it; templated handler names use `Create`, `Edit`, `Delete` and `List`.
 
 ## Dialect A — API (REST, no forms)
 
@@ -34,11 +35,11 @@ Non-CRUD actions that return a message rather than a resource end in `…{Action
 | --- | --- |
 | `GetUserCollectionHandler` | `GET /user` |
 | `PostUserResourceHandler` | `POST /user` |
-| `GetUserResourceHandler` | `GET /user/{uuid}` |
-| `PatchUserResourceHandler` | `PATCH /user/{uuid}` |
-| `DeleteUserResourceHandler` | `DELETE /user/{uuid}` |
-| `PatchUserActivateHandler` | `PATCH /user/{uuid}/activate` |
-| `PostUserAvatarResourceHandler` | `POST /user/{uuid}/avatar` |
+| `GetUserResourceHandler` | `GET /user/{id}` |
+| `PatchUserResourceHandler` | `PATCH /user/{id}` |
+| `DeleteUserResourceHandler` | `DELETE /user/{id}` |
+| `PatchUserActivateHandler` | `PATCH /user/{id}/activate` |
+| `PostUserAvatarResourceHandler` | `POST /user/{id}/avatar` |
 | `GetUserRoleCollectionHandler` | `GET /user/role` |
 
 ## Dialect B — Admin / Frontend / Light (templated, form-driven)
@@ -72,8 +73,11 @@ Templated apps use **POST for updates** (browser form submit), not PATCH.
 
 - Lowercase, `kebab-case` for multi-word segments: `/user/account/reset-password`.
 - Singular resource segments: `/user`, not `/users` — collection-ness comes from verb and path.
-- Identifiers use the repo's UUID regex constant, not a bare `{id}`, where the repo does so.
-- Sub-resources nest: `/user/{uuid}/avatar`.
+- Item identifiers are UUIDs, matched by the `REGEXP_UUID` constant in Core's `App`
+  `ConfigProvider`, whose placeholder is `{id}`. Never declare an unconstrained placeholder —
+  the UUID pattern is what keeps fixed segments like `/user/role` from colliding with
+  `/user/{id}`.
+- Sub-resources nest: `/user/{id}/avatar`.
 
 ## Route name = authorization key
 

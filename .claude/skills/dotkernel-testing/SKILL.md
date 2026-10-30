@@ -49,7 +49,7 @@ Do not boot the container in a unit test. If you need the container, it is a fun
 
 ## Functional tests
 
-`test/Functional/<Resource>Test.php`, extending the repo's abstract functional test case. That
+`test/Functional/<Module>Test.php`, extending the repo's abstract functional test case. That
 base class typically boots the real container, pipeline and routes, builds a fresh schema from the
 entity metadata and runs every fixture per test — isolated, but not free. Keep them purposeful.
 
@@ -80,7 +80,7 @@ class BookTest extends AbstractFunctionalTest
 
     public function testGuestCannotListBooks(): void
     {
-        $this->assertResponseUnauthorized($this->get('/book'));
+        $this->assertResponseForbidden($this->get('/book'));
     }
 }
 ```
@@ -91,7 +91,7 @@ class BookTest extends AbstractFunctionalTest
 | --- | --- |
 | Happy path | 200 / 201 / 204 / rendered page — assert the payload or output, not just the status |
 | Validation failure | 400 with the errors payload, or the form re-rendered with messages |
-| Not authenticated | 401, or a redirect to login in a session app |
+| Not authenticated | API: 403 — a request without a token runs as guest and is refused unless the route is granted to guest. Session app: a redirect to login |
 | Authenticated, wrong role | 403 — **the case people skip, and the one that catches a missing authorization entry** |
 | Unknown identifier | 404 |
 | Duplicate / conflicting write | 409 where applicable |

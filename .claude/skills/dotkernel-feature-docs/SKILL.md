@@ -49,7 +49,7 @@ variant: dotkernel/api
 status: shipped
 modules: [Book]
 routes:
-  - POST /book/{uuid}/review
+  - POST /book/{id}/review
 handlers:
   - Api\Book\Handler\Review\PostBookReviewResourceHandler
 ---
@@ -63,7 +63,7 @@ that cannot be recovered by reading the code.
 ## Surface
 | Route | Name | Handler | Roles |
 | --- | --- | --- | --- |
-| `POST /book/{uuid}/review` | `book::create-review` | `PostBookReviewResourceHandler` | `user` |
+| `POST /book/{id}/review` | `book::create-review` | `PostBookReviewResourceHandler` | `user` |
 
 ## Data
 Entities and columns added or changed, all in `Core`. Migration required: yes / no — and the
