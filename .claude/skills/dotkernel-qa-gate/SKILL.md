@@ -1,13 +1,19 @@
 ---
 name: dotkernel-qa-gate
 description: >
-  Use when finishing a change in a Dotkernel application and before claiming it is done, when
+  Use when finishing a change in a Dotkernel project and before claiming it is done, when
   phpcs, phpcbf, phpstan or phpunit fails, when interpreting CI results, or when asked to "run
   the checks" or "fix the build". Also use when tempted to add a phpcs exclusion, a
   @phpstan-ignore, or to skip a test.
 ---
 
 # QA gate
+
+```text
+Applies to
+  Projects:  - all
+  Packages:  - all
+```
 
 Nothing is done until the repo's own suite passes. Read `composer.json` `scripts` for the exact
 names; the Dotkernel convention is:
@@ -19,6 +25,7 @@ names; the Dotkernel convention is:
 | `composer cs-fix` | phpcbf | same |
 | `composer static-analysis` | phpstan | `phpstan.neon` |
 | `composer test` | phpunit | `phpunit.xml` |
+| `composer twig-cs-check` / `twig-cs-fix` | Twig CS Fixer — Admin, Frontend, Light only | `config/twig-cs-fixer.php` |
 
 All read-only; safe to run unasked. Installers, migrations and fixtures are **not** — ask first.
 
@@ -40,7 +47,7 @@ Rerun the full `composer check` at the end; formatting can shift the lines phpst
 | `Expected 1 space after "!"` | write `! $foo` |
 | `Missing declare(strict_types=1)` | add it after `<?php` and a blank line |
 | `Line exceeds 120 characters` | one argument per line, trailing comma |
-| phpstan `Cannot call method on X\|null` | `instanceof` guard, then throw the app's not-found exception |
+| phpstan `Cannot call method on X\|null` | `instanceof` guard, then throw the project's not-found exception |
 | phpstan `no value type specified in iterable type array` | add `@param array<non-empty-string, mixed>` / `@return X[]` |
 | phpstan `expects non-empty-string, string given` | narrow at the boundary, or type the validated shape with `@phpstan-type` |
 | Route denied in a functional test | authorization entry missing for that route name |

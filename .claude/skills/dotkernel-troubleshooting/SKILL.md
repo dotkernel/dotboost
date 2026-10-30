@@ -1,7 +1,7 @@
 ---
 name: dotkernel-troubleshooting
 description: >
-  Use when something in a Dotkernel application is not working and the cause is unclear — a route
+  Use when something in a Dotkernel project is not working and the cause is unclear — a route
   returns 403, 404, 406, 415 or 500 unexpectedly, a service is not found in the container, a
   handler throws while building a response, config changes have no effect, routes are missing,
   tests fail in setUp, autoloading fails, a form silently rejects a submit, or CORS preflight
@@ -10,23 +10,33 @@ description: >
 
 # Symptom → cause
 
+```text
+Applies to
+  Projects:  - all
+  Packages:  - none
+```
+
 Work top-down; the first match is usually it.
 
 ## 403 / access denied on a route you just added
 
-The route name is missing from this application's authorization config — RBAC permissions in
-`authorization.global.php` (API) or guards in `authorization-guards.global.php`
-(Admin / Frontend). Route names **are** authorization keys. Add it for every role that should
-reach it, and check the role hierarchy comment at the top of the file — inheritance direction is
-not always what people assume.
+API: the route name is missing from the RBAC permissions in `authorization.global.php`. Route
+names **are** authorization keys. Add it for every role that should reach it, and check the role
+hierarchy comment at the top of the file — inheritance direction is not always what people assume.
+
+Admin / Frontend: a *missing* guard entry does not cause a 403 — the guards use `POLICY_ALLOW`,
+so an unlisted route is open to everyone. A 403 there means a guard rule exists in
+`authorization-guards.global.php` and the caller's role lacks that permission in
+`authorization.global.php`. The reverse symptom — a new page reachable while logged out — is
+the missing entry.
 
 ## 404 on a route you just added
 
 1. The module's `ConfigProvider` is not listed in `config/config.php`.
-2. `RoutesDelegator` is not registered as a delegator on the application in that ConfigProvider.
+2. `RoutesDelegator` is not registered as a delegator on `Application::class` in that ConfigProvider.
 3. Config cache is stale → run the repo's cache-clear script.
 4. Confirm with the route-listing command. Absent → causes 1–3. Present → your URL or method
-   differs from what you are calling (API updates are PATCH; templated apps submit POST).
+   differs from what you are calling (API updates are PATCH; templated projects submit POST).
 
 ## 404 on an existing route with a valid identifier
 
@@ -66,7 +76,7 @@ Missing or wrong `Content-Type` on a write request.
 The malformed-body middleware rejected it, or you read the raw stream after the body-params
 middleware consumed it. Use `getParsedBody()`.
 
-## A form submit is silently rejected (templated apps)
+## A form submit is silently rejected (templated projects)
 
 Missing, stale or unvalidated CSRF token. Check the form has the CSRF element and the handler
 validates it. A rotated session invalidates in-flight forms.
@@ -105,8 +115,8 @@ A different PHP version in the matrix, or a stale local `.phpcs-cache` / `.phpun
 ## Diagnostic commands (all read-only)
 
 ```bash
-php bin/cli.php route:list          # or the repo's equivalent
-php bin/cli.php                     # available console commands
+php bin/cli.php route:list          # API / Admin; or the repo's equivalent
+php bin/cli.php                     # console commands — API, Admin, Queue (no bin/cli.php in Frontend or Light)
 composer clear-config-cache
 php -l <file>
 composer cs-check

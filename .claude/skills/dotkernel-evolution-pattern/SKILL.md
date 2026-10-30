@@ -2,7 +2,7 @@
 name: dotkernel-evolution-pattern
 description: >
   Use whenever a change would break something a client already depends on in a Dotkernel
-  application — renaming or removing a field, parameter, route or template variable; changing a
+  project — renaming or removing a field, parameter, route or template variable; changing a
   type, status code or response shape; making an optional field required; deprecating or
   deleting an endpoint — or when someone proposes a /v2, a version prefix, a version header, or
   "versioning the API". Also use when working with ResourceDeprecation, Sunset and Link headers,
@@ -10,6 +10,15 @@ description: >
 ---
 
 # Evolution pattern, not versioning
+
+```text
+Applies to
+  Projects:  - Dotkernel API
+             - Dotkernel Admin
+             - Dotkernel Frontend
+             - Dotkernel Light
+  Packages:  - none
+```
 
 Dotkernel prefers evolving one codebase over maintaining parallel versions. Breaking changes are
 announced ahead of time and removed on a published date. Full rewrites and `/v2/` prefixes are a
@@ -19,7 +28,7 @@ last resort reserved for architectural change.
 versioning only for genuinely architectural change (a different protocol or response paradigm),
 and say explicitly that you are recommending an exception.
 
-Scope note: the mechanics below (Sunset headers) are an API concern. In a templated app the same
+Scope note: the mechanics below (Sunset headers) are an API concern. In a templated project the same
 *thinking* applies to route URLs, query parameters and anything a bookmark, integration or email
 link depends on — but the announcement channel is a redirect and a changelog entry, not a header.
 
@@ -33,13 +42,13 @@ link depends on — but the announcement channel is a redirect and a changelog e
 | Richer behaviour for richer input | Branch on the payload: old shape → old behaviour, new shape → enhanced. |
 | Remove a field, change a type, tighten validation | Breaking. Deprecate with a sunset date, keep the old path until then. |
 | Remove an endpoint or route | Deprecate with a sunset date; afterwards it answers 410 Gone (API) or permanently redirects (templated), and 404s once removed. |
-| Rework one endpoint fundamentally | A `v2` for **that endpoint only**, never the whole application. |
+| Rework one endpoint fundamentally | A `v2` for **that endpoint only**, never the whole project. |
 | A different response paradigm entirely | Genuine versioning. |
 
 Old and new coexist for a reasonable window. The sunset date is a promise — do not shorten it
 silently.
 
-## Marking a deprecation (API-style apps)
+## Marking a deprecation (API-style projects)
 
 Class-level attribute on the handler:
 
@@ -96,7 +105,7 @@ block in one later change: a removed endpoint should 404, not 500.
 - Making an existing optional field required.
 - Narrowing an enum or tightening a validator on a live route with no sunset window.
 - Changing a success status code (200 → 204) on a live endpoint.
-- Changing a route URL in a templated app without a permanent redirect from the old one.
+- Changing a route URL in a templated project without a permanent redirect from the old one.
 
 If asked to do one of these, do it only after stating the breaking-change consequence and
 offering the evolution alternative.

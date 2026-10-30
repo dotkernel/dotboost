@@ -6,7 +6,8 @@ That makes the description the entire activation mechanism — a skill with a va
 
 Dotboost ships nineteen skills.
 Eighteen are `dotkernel-*`, each covering one slice of Dotkernel convention; the nineteenth, `dependency-policy`, is generic to any package decision and detailed enough to warrant [its own page](dependency-policy.md).
-Most `dotkernel-*` skills apply to every application variant; `dotkernel-api-endpoint` applies only in an API application, where it is the end-to-end checklist for a new or changed endpoint and points to the skill that owns each topic.
+Each skill states its scope in an `Applies to` block under its title — which Dotkernel projects (API, Admin, Frontend, Light, Queue) and which packages it covers.
+`dotkernel-api-endpoint`, for example, applies only in an API project, where it is the end-to-end checklist for a new or changed endpoint and points to the skill that owns each topic.
 
 ## Reading a trigger description
 

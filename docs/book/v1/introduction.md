@@ -1,7 +1,7 @@
 # Introduction
 
 Dotboost is a drop-in Claude Code configuration for Dotkernel projects.
-It is not a Dotkernel application, a library, or something you `composer require` — there is no `composer.json` and no PHP source in this repository at all.
+It is not a Dotkernel project, a library, or something you `composer require` — there is no `composer.json` and no PHP source in this repository at all.
 Its entire payload is a `.claude/` directory: settings, hooks, a status line, a review subagent, ten `/dk-*` slash commands and nineteen skills.
 You install it by copying that directory into the root of the Dotkernel project you're actually working on (API, Admin, Frontend, Light, Queue, or a project derived from one of them).
 
@@ -17,7 +17,7 @@ Dotboost closes that gap two ways:
 
 ## Who this is for
 
-Anyone using Claude Code inside a Dotkernel repository — application developers, and anyone maintaining a project derived from one of the Dotkernel starter kits.
+Anyone using Claude Code inside a Dotkernel repository — developers working on a Dotkernel project, and anyone maintaining a project derived from one of the Dotkernel starter kits.
 It's equally useful whether you're building a new feature, reviewing a PR, or bootstrapping a fresh clone.
 
 ## What's next

@@ -1,7 +1,7 @@
 ---
 name: dotkernel-dot-maker
 description: >
-  Use before hand-writing any new scaffolding in a Dotkernel application — a module, entity,
+  Use before hand-writing any new scaffolding in a Dotkernel project — a module, entity,
   repository, service, service interface, handler, collection, form, input, input filter,
   middleware or CLI command. dot-maker (dotkernel/dot-maker, "composer make …") generates these
   to the Dotkernel file structure and naming pattern. Also use when asked how to create a new
@@ -10,6 +10,13 @@ description: >
 
 # dot-maker: generate, then customise
 
+```text
+Applies to
+  Projects:  - Dotkernel API
+             - Dotkernel Admin
+  Packages:  - none
+```
+
 `dotkernel/dot-maker` generates files matching the Dotkernel/Mezzio layout and the handler
 naming pattern. It is comparable to the Symfony Maker Bundle, and more opinionated than Mezzio's
 own CLI tooling because it targets Dotkernel conventions specifically.
@@ -17,8 +24,9 @@ own CLI tooling because it targets Dotkernel conventions specifically.
 **Always propose the `composer make …` command before hand-writing boilerplate.** Manual file
 creation is where registrations get missed.
 
-Availability varies: check `require-dev` in `composer.json` and the `make` script alias. If the
-project does not have it, say so and fall back to copying the nearest existing module by hand.
+Availability varies: the stock API and Admin have it in `require-dev` with a `make` script alias;
+the stock Frontend, Light and Queue do not. Check `composer.json`. If the project does not have
+it, say so and fall back to copying the nearest existing module by hand.
 
 ## Running it
 
@@ -39,15 +47,15 @@ the generated files. Treat generation like an install — the user's call.
 | `service` | `Service/XService.php` + `Service/XServiceInterface.php` |
 | `service-interface` | the same pair, from the interface side |
 | `handler` | a handler in an existing module |
-| `collection` | a `…Collection` (API-style apps) |
-| `form` | a Form (Admin / Frontend / Light — not used in the API) |
+| `collection` | a `…Collection` (API-style projects) |
+| `form` | a Form (Admin — not used in the API) |
 | `input` | a single `Input/…Input.php` |
 | `input-filter` | an InputFilter — prompts for `create` / `edit` / `replace` |
 | `middleware` | a PSR-15 middleware |
 | `command` | a CLI command |
 
-**dot-maker detects which Dotkernel application it is running in** and generates accordingly —
-collections in an API, forms and templates in Admin or Frontend. That detection is also a useful
+**dot-maker detects which Dotkernel project it is running in** and generates accordingly —
+collections in an API, forms and templates in Admin. That detection is also a useful
 confirmation of the variant you think you are in.
 
 ## What it does *not* do — your job afterwards
@@ -55,9 +63,9 @@ confirmation of the variant you think you are in.
 1. **Register the module.** It creates the `ConfigProvider` and prints what to add, but you still
    add the entry to `config/config.php` and the PSR-4 entries to `composer.json` (which needs
    user approval).
-2. **Configure authorization.** Add every new route name to this application's authorization
-   config — `authorization.global.php` (API) or `authorization-guards.global.php`
-   (Admin / Frontend). Missed entries mean a blanket denial.
+2. **Configure authorization.** Add every new route name to this project's authorization
+   config. API: `authorization.global.php`, where a missed entry denies the route. Admin:
+   `authorization-guards.global.php`, where a missed entry leaves the route open to everyone.
 3. **Migrations.** It tells you the command; you run
    `php ./vendor/bin/doctrine-migrations diff` and then `migrate` — with approval, since it
    touches the database. Never hand-write a migration.
@@ -71,11 +79,12 @@ confirmation of the variant you think you are in.
 
 - [ ] `composer dump-autoload` after any new PSR-4 namespace.
 - [ ] Both `ConfigProvider`s (application module and `Core`) registered in `config/config.php`.
-- [ ] Handlers present under both `factories` and `delegators`.
+- [ ] Handlers present under `factories` — and under `delegators` too in the API.
 - [ ] Service interface aliased to the concrete service.
-- [ ] Routes named `<module>::<action>-<resource>`; authorization entries added.
+- [ ] Routes named per this project's dialect (`dotkernel-handler-naming`); authorization entries
+      added.
 - [ ] Presentation registered — HAL metadata or template path.
-- [ ] Documentation completed with real request/response detail, where the app publishes it.
+- [ ] Documentation completed with real request/response detail, where the project publishes it.
 - [ ] Migration generated, reviewed, applied.
 - [ ] QA suite green.
 - [ ] Generated files are UTF-8 without BOM and LF.

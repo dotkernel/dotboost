@@ -6,9 +6,9 @@ allowed-tools: Read, Grep, Glob, Edit, Write, Bash(git status:*), Bash(git diff:
 
 Document the feature: **$ARGUMENTS**
 
-Load `dotkernel-application-variants` first, then `dotkernel-feature-docs`, plus
+Load `dotkernel-project-variants` first, then `dotkernel-feature-docs`, plus
 `dotkernel-handler-naming` and `dotkernel-responses` so the surface is read correctly for this
-application's dialect.
+project's dialect.
 
 1. **Scope.** `git status --porcelain` and `git diff HEAD`, untracked files included, to establish
    what the feature actually touched. If it is already committed, find the range with `git log` and
@@ -18,12 +18,14 @@ application's dialect.
    and match them; the repo beats the template.
 3. **Derive.** Routes and route names from the module's `RoutesDelegator`, roles from this variant's
    authorization config, handler classes from the filesystem, registrations from the
-   `ConfigProvider`, data and migration impact from changed entities under `src/Core/`. Assert
-   nothing you did not read — write `unverified` and name the file to check.
+   `ConfigProvider`, data and migration impact from changed entities — under `src/Core/` in API and
+   Admin, in the module's own `Entity/` in Frontend. Light has no database and no authorization
+   config; Queue has no routes — write `none` for what the variant does not have. Assert nothing
+   you did not read — write `unverified` and name the file to check.
 4. **Write.** A new doc at `YYYY-MM-DD-<kebab-slug>.md` using `date +%F`, or edit the existing one
    in place when I passed `--update`. Update the `README.md` index row in the same pass.
-5. **Verify.** Every path and class name resolves; every route in the Surface table appears in both
-   `RoutesDelegator` and the authorization config; frontmatter `routes:` and `handlers:` are
+5. **Verify.** Every path and class name resolves; every route in the Surface table appears in
+   `RoutesDelegator` and, where the variant has one, the authorization config; frontmatter `routes:` and `handlers:` are
    complete, because `/dk-review` greps them; no credential, token, internal hostname or real
    customer data anywhere in it.
 

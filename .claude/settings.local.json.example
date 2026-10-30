@@ -1,5 +1,5 @@
 {
-  "$comment": "Copy to .claude/settings.local.json and add that path to .git/info/exclude. This file is yours alone and layers on top of the committed .claude/settings.json. Machine-specific paths, personal permission relaxations and your preferred model go here, never in the shared file.",
+  "$comment": "Copy to .claude/settings.local.json and add that path to .git/info/exclude. This file is yours alone and layers on top of the committed .claude/settings.json. Machine-specific paths, personal permission relaxations, your permission mode, theme, UI and preferred model go here, never in the shared file. Every key below is an optional sample; delete what you do not want.",
   "permissions": {
     "allow": [
       "Bash(php -S 0.0.0.0:8080 -t public)"

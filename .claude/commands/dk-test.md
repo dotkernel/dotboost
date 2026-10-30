@@ -6,13 +6,16 @@ allowed-tools: Read, Grep, Glob, Edit, Write, Bash(composer test), Bash(php ./ve
 
 Add test coverage for: **$ARGUMENTS**
 
-Load `dotkernel-testing`.
+Load `dotkernel-project-variants` and `dotkernel-testing`.
 
-1. Check the test-local config file exists (commonly `config/autoload/local.test.php`). If not,
-   stop and tell me to copy the `.dist` — I do not want tests repointed at a real database.
-2. Read the repo's abstract functional test case and the closest existing test, and match their
-   structure and helper usage. The helpers vary between Dotkernel applications, so do not assume
-   method names — read them.
+1. If the repo ships `config/autoload/local.test.php.dist` (API, Admin, Frontend), check the copy
+   `local.test.php` exists. If not, stop and tell me to copy the `.dist` — I do not want tests
+   repointed at a real database. Light and Queue have no test-local config; skip this step.
+2. Read the closest existing test, plus the functional base class if the repo has one — API's
+   `test/Functional/AbstractFunctionalTest.php`, or Admin's `test/Functional/FunctionalTest.php`,
+   which has only a `get()` helper and no assertions or fixtures. Frontend, Light and Queue ship
+   unit tests only. Match the structure and helper usage you find; the helpers vary between
+   Dotkernel projects, so do not assume method names — read them.
 3. Decide unit versus functional: business logic and exception paths → unit with mocked
    repositories; anything needing routing, auth or the container → functional.
 4. For a route, cover the full matrix: success, validation failure, unauthenticated, wrong role,

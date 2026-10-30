@@ -1,7 +1,7 @@
 ---
 name: dotkernel-feature-docs
 description: >
-  Use when writing down what a feature does and why in a Dotkernel application — after building or
+  Use when writing down what a feature does and why in a Dotkernel project — after building or
   changing a route, module, command or entity, when asked to document a feature, write release
   notes, record a decision, explain an endpoint to another developer, or bring an existing feature
   doc back in line with the code. Also use when a feature exists but nothing outside the code
@@ -11,7 +11,13 @@ description: >
 
 # Feature documentation
 
-Code records *what* an application does. A feature doc records *why*, plus the four things that are
+```text
+Applies to
+  Projects:  - all
+  Packages:  - none
+```
+
+Code records *what* a project does. A feature doc records *why*, plus the four things that are
 spread across four files — the routes, the roles allowed to reach them, the data added, and how to
 exercise it. That is the part a fresh session cannot reconstruct by reading `src/`, and the part
 lost when a session is cleared.
@@ -21,9 +27,9 @@ together belong in one doc.
 
 ## Where it goes
 
-Detect before writing. Many Dotkernel repositories already own a `documentation/` directory, holding
+Detect before writing. Some Dotkernel repositories — the stock API among them — already own a `documentation/` directory, holding
 some mix of `command/*.md`, a generated `openapi.json` and Postman collections. Which variants have
-one is **not** predictable — check, do not infer it from the application type:
+one is **not** predictable — check, do not infer it from the project type:
 
 ```bash
 ls -d documentation docs 2>/dev/null
@@ -91,7 +97,7 @@ Every claim in the doc is read from somewhere. Where it came from:
 | Section | Source of truth |
 | --- | --- |
 | Routes and route names | the module's `RoutesDelegator` |
-| Roles | `authorization.global.php` (API) or `authorization-guards.global.php` (templated) |
+| Roles | `authorization.global.php` (API); Admin / Frontend: the permission in `authorization-guards.global.php`, then the roles holding it in `authorization.global.php` |
 | Handler class and path | the filesystem under `src/<Module>/src/Handler/` |
 | Registrations | the module's `ConfigProvider` |
 | Data and migration need | changed entities under `src/Core/` |
@@ -104,7 +110,7 @@ confidence as a right one.
 
 ## What a feature doc is not
 
-- **Not an API reference.** On an application that publishes OpenAPI, `OpenAPI.php` is the contract
+- **Not an API reference.** In a project that publishes OpenAPI, `OpenAPI.php` is the contract
   (see `dotkernel-openapi`). Name the operation, do not restate its schemas — two descriptions of
   one payload diverge, and the generated one wins.
 - **Not a changelog.** No per-release history, no version bumps. The doc describes the feature as

@@ -1,6 +1,6 @@
 ---
 description: Verify and fix encoding, line endings and whitespace across changed files
-allowed-tools: Read, Bash(git status:*), Bash(git diff:*), Bash(git ls-files:*), Bash(file:*), Bash(grep:*), Bash(sed:*), Bash(git config --get:*)
+allowed-tools: Read, Edit, Bash(git status:*), Bash(git diff:*), Bash(git ls-files:*), Bash(file:*), Bash(grep:*), Bash(sed:*), Bash(git config --get:*)
 ---
 
 Check the files I have changed (`git status --porcelain`) for:

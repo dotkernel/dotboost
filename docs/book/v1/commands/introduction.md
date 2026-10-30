@@ -11,4 +11,4 @@ See [Reference](reference.md) for the full list, grouped by workflow stage.
 Use a command when you want a specific, repeatable procedure to run on demand — bootstrapping a clone, running the QA gate, writing a feature doc.
 Use a skill when you want Claude to *know* something automatically while it works on unrelated tasks — a naming convention, a validation pattern, a security rule.
 Several commands lean on skills internally; `/dk-module`, for instance, is built on top of `dotkernel-dot-maker` and `dotkernel-module-structure` rather than duplicating their guidance.
-`/dk-route` and `/dk-review` also load `dotkernel-api-endpoint` when the repo is an API application, so a new endpoint is built and reviewed against the same checklist.
+`/dk-route` and `/dk-review` also load `dotkernel-api-endpoint` when the repo is an API project, so a new endpoint is built and reviewed against the same checklist.

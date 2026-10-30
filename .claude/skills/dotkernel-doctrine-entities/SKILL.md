@@ -1,7 +1,7 @@
 ---
 name: dotkernel-doctrine-entities
 description: >
-  Use when adding or changing anything persisted in a Dotkernel application — a Doctrine
+  Use when adding or changing anything persisted in a Dotkernel project — a Doctrine
   entity, column, relation, index, repository, backed enum with its DBAL type, fixture, or
   migration. Also use for questions about UUID versus numeric identifiers, timestamps, the
   table prefix, why doctrine-migrations diff produces an unexpected diff, or why a
@@ -10,8 +10,18 @@ description: >
 
 # Entities, repositories and migrations
 
-Everything here lives in the `Core` layer — `src/Core/src/<Module>/src/` — in every Dotkernel
-application (see `dotkernel-core-submodule`).
+```text
+Applies to
+  Projects:  - Dotkernel API
+             - Dotkernel Admin
+  Packages:  - none
+```
+
+In the stock API and Admin, everything here lives in the `Core` layer —
+`src/Core/src/<Module>/src/` — and migrations in `src/Core/src/App/src/Migration/` (see
+`dotkernel-core-submodule`). The stock Frontend also uses Doctrine but keeps entities in its own
+modules and migrations in `data/doctrine/migrations/`; there, match its layout rather than this
+skill's paths.
 
 ## Entity anatomy
 
@@ -92,7 +102,7 @@ php ./vendor/bin/doctrine-migrations status
 - One logical schema change per migration.
 - Where a table prefix is supported, it is applied by an event listener — never hardcode
   prefixes into table names.
-- **The same migration must be applied by every application sharing that database.**
+- **The same migration must be applied by every project sharing that database.**
 - A schema-validation CI job will fail when entities and migrations drift. If it is red, a
   migration is missing — do not edit the entity to match an old migration.
 
@@ -118,5 +128,5 @@ fixture immediately affects all of them. Keep fixtures small and deterministic.
 - [ ] Column lengths mirrored in the validators.
 - [ ] Migration generated (not written), reviewed, applied.
 - [ ] Fixture added if the table needs seed data.
-- [ ] Every other application on this database accounted for.
+- [ ] Every other project on this database accounted for.
 - [ ] Static analysis clean — the Doctrine phpstan extension is strict.

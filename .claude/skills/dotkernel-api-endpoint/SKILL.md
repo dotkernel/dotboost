@@ -1,17 +1,23 @@
 ---
 name: dotkernel-api-endpoint
 description: >
-  Use when adding or changing an endpoint in a Dotkernel API application (or a project derived
+  Use when adding or changing an endpoint in a Dotkernel API project (or a project derived
   from it) — a new route, handler, request or response contract, resource loading by id, a
   caller-scoped /account route, an action segment like /activate, an upload, a guest grant, or
   an operationId — and as the end-to-end checklist before calling an API endpoint done. Not for
-  Admin, Frontend, Light or Queue applications.
+  Admin, Frontend, Light or Queue projects.
 ---
 
 # API endpoint conventions
 
-**API only.** Confirm the variant with `dotkernel-application-variants` first. In a templated
-application this skill does not apply — use `dotkernel-handler-naming` dialect B instead.
+```text
+Applies to
+  Projects:  - Dotkernel API
+  Packages:  - none
+```
+
+**API only.** Confirm the variant with `dotkernel-project-variants` first. In a templated
+project this skill does not apply — use `dotkernel-handler-naming` dialect B instead.
 
 This skill is the checklist and the API-specific rules no other skill states. For everything
 else it points to the skill that owns the topic. When the repo differs from the stock skeleton,

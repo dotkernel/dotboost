@@ -8,12 +8,12 @@ I have just cloned a Dotkernel project. Walk me from here to a working local ins
 Do not run installers, migrations, fixtures or key generation yourself — inspect state, then give
 me the exact commands in order and say what each one changes.
 
-1. **Identify the application.** Load `dotkernel-application-variants` and tell me which variant
+1. **Identify the project.** Load `dotkernel-project-variants` and tell me which variant
    this is and what that implies for the steps below.
 2. **Environment check.** PHP version against `composer.json`, required extensions (including any
    needed only by tests), composer availability.
 3. **Dependencies.** `composer install`. Check `scripts.post-update-cmd` and tell me what it will
-   run — some Dotkernel apps generate OAuth keys and other artefacts there, which must never be
+   run — some Dotkernel projects generate OAuth keys and other artefacts there, which must never be
    committed.
 4. **Config files.** List every `config/**/*.dist` and `config/*.dist`, report which corresponding
    real file is missing, and tell me which keys I need to fill in — database connection, mail,

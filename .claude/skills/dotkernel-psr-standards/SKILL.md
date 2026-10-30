@@ -1,7 +1,7 @@
 ---
 name: dotkernel-psr-standards
 description: >
-  Use when writing or reviewing any PHP in a Dotkernel application — which PSR applies, how to
+  Use when writing or reviewing any PHP in a Dotkernel project — which PSR applies, how to
   type handlers and middleware (PSR-7/PSR-15), how to obtain services (PSR-11, no service
   locator), logging (PSR-3), caching (PSR-6/PSR-16), building responses (PSR-17), autoloading
   (PSR-4), and coding style (PSR-1/PSR-12 via the Laminas Coding Standard). Also use when phpcs
@@ -11,8 +11,14 @@ description: >
 
 # PSR compliance
 
+```text
+Applies to
+  Projects:  - all
+  Packages:  - all
+```
+
 Program against PSR interfaces. Type-hint the interface, inject the implementation. This applies
-identically in every Dotkernel application.
+identically in every Dotkernel project.
 
 ## PSR-4 — autoloading
 
@@ -56,7 +62,7 @@ final class XMiddleware implements MiddlewareInterface
 }
 ```
 
-- Handlers implement `RequestHandlerInterface`; extend the application's abstract handler for its
+- Handlers implement `RequestHandlerInterface`; extend the project's abstract handler for its
   response helpers.
 - One responsibility per middleware. Order is declared in `config/pipeline.php`, and changing it
   affects every request — justify any edit.
@@ -76,7 +82,8 @@ public function __construct(
 ```
 
 `dot-dependency-injection` reads `#[Inject]`; register the class with
-`AttributedServiceFactory::class` in the module `ConfigProvider`. `#[Inject]` can also pull
+`AttributedServiceFactory::class` in the module `ConfigProvider`. The stock Light does not install
+`dot-dependency-injection` and uses hand-written factories instead; match that there. `#[Inject]` can also pull
 config values by dotted key.
 
 **Do not inject `ContainerInterface` and call `get()` inside a class** — that is the
@@ -100,7 +107,7 @@ and provide an invalidation path when the underlying entity changes.
 ## PSR-17 — HTTP factories
 
 Type-hint `ResponseFactoryInterface` / `StreamFactoryInterface` rather than instantiating a
-concrete response — except inside the abstract handler, which already wraps the application's
+concrete response — except inside the abstract handler, which already wraps the project's
 response factory. Prefer its helpers over building responses yourself.
 
 ## PSR-1 / PSR-12 — style, enforced by the Laminas Coding Standard
@@ -135,7 +142,7 @@ Dotkernel projects run a high level (commonly 8) with the Doctrine and PHPUnit e
 ## Framework-specific but non-negotiable
 
 - Status codes via `Fig\Http\Message\StatusCodeInterface::STATUS_*`, not integer literals.
-- Throw the application's typed exceptions with their static `::create(...)` constructors;
+- Throw the project's typed exceptions with their static `::create(...)` constructors;
   messages from the shared message catalogue.
-- Where the app provides a resource-resolution attribute on `handle()`, use it instead of
+- Where the project provides a resource-resolution attribute on `handle()`, use it instead of
   fetching the entity manually.

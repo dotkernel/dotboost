@@ -5,6 +5,12 @@ description: 'Choose, justify and verify PHP/Composer dependencies in Dotkernel 
 
 # Dependency Policy (Dotkernel)
 
+```text
+Applies to
+  Projects:  - all
+  Packages:  - all
+```
+
 Dotkernel is a Mezzio/Laminas ecosystem with its own first-party `dot-*` layer. Most
 "I need a library for this" moments are already solved inside the stack. Reaching outside
 it is a governance decision, not a convenience.
@@ -29,7 +35,8 @@ expectations outweighs raw feature count.
 on them, they are already in the tree, and `dot-*` packages are thin wrappers over them.
 
 **3. A vetted community package.** Only when 0–2 genuinely cannot cover the need. Requires all of:
-actively maintained (release in the last ~12 months), `php: ^8.4` compatible, not abandoned,
+actively maintained (release in the last ~12 months), installable on every PHP version this
+project's own `composer.json` `require.php` allows, not abandoned,
 a real license, and no duplication of something already in the tree.
 Prefer `symfony/*`, `doctrine/*`, `psr/*` and `league/*` — the stack already depends on them, so
 you are widening an existing surface rather than opening a new one.
@@ -59,7 +66,7 @@ If the manifest is missing or stale, regenerate it. If you cannot (no network), 
 ## Contributing to dotkernel/api specifically
 
 This is someone else's repository. Adding a dependency changes the dependency surface of every
-downstream Dotkernel application.
+downstream Dotkernel project.
 
 - **Do not run `composer require` on a contribution branch.** Solve the problem with what is
   installed. If that is impossible, produce a proposal (below) and let the maintainers decide —
@@ -104,7 +111,7 @@ of truth.
 | Doctrine fixtures | `dot-data-fixtures` |
 | GeoIP | `dot-geoip` |
 | Response headers | `dot-response-header` |
-| Queues / async | `dotkernel/queue` + `symfony/messenger` |
+| Queues / async | `symfony/messenger`, wired the way stock Queue does it: `netglue/laminas-messenger` plus a transport such as `symfony/redis-messenger`. `dotkernel/queue` is a project skeleton to start a worker from — never `composer require` it |
 | Scaffolding new code | `dot-maker` (generate, do not hand-write boilerplate) |
 | HTTP client | whatever is in the lock file already — do not add guzzle if `symfony/http-client` is present |
 
@@ -113,6 +120,7 @@ of truth.
 - You are about to write a package name you did not read out of the manifest or the lock file.
 - The package solves a problem you have not confirmed exists in this codebase.
 - It duplicates something already in `composer.lock` under a different vendor.
-- Its PHP constraint excludes 8.4, or its newest release predates PHP 8.2.
+- Its PHP constraint excludes a version this project's `require.php` allows, or its newest release
+  predates PHP 8.2.
 - It is `abandoned: true` in the manifest.
 - You are adding it to make a test pass.

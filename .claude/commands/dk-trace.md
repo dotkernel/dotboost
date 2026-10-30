@@ -8,9 +8,9 @@ Trace: **$ARGUMENTS**
 
 Read-only. Modify nothing. Produce a walkthrough I can use to understand or debug this route:
 
-1. **Variant** — which Dotkernel application this is, briefly.
+1. **Variant** — which Dotkernel project this is, briefly.
 2. **Route** — find it in the module's `RoutesDelegator`: pattern, method, route name, handler.
-3. **Authorization** — which roles hold that route name in this app's authorization config. Say so
+3. **Authorization** — which roles hold that route name in this project's authorization config. Say so
    explicitly if it is missing.
 4. **Pipeline** — the middleware from `config/pipeline.php` this request passes through, in order,
    noting the ones that actually act here: CORS, content negotiation, authentication,

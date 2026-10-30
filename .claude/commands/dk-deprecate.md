@@ -18,7 +18,7 @@ Load `dotkernel-evolution-pattern`.
      window rather than picking one silently.
    - Keep the old behaviour intact until that date; new behaviour goes alongside it.
    - Mark the operation deprecated in the module's OpenAPI file, pointing at the replacement (API
-     apps). For a templated app, add a permanent redirect from the old URL instead.
+     projects). For a templated project, add a permanent redirect from the old URL instead.
    - Add or extend a test asserting the deprecation signal.
    - List the announcement channels I still owe clients: docs page, changelog, release notes.
 4. Tell me exactly what must be deleted at sunset: handler, route, authorization entry,
