@@ -12,12 +12,13 @@
 
 ## Never written
 
-`Edit`/`Write` denies:
+`Edit` denies — Claude Code applies `Edit` rules to every file-editing tool, `Write` included, and `guard-protected-paths.sh` blocks these paths for every file-writing tool at the hook layer too (for `data/`, only `cache/`, `lock/` and `oauth/`):
 
 - dependency manifests: `composer.json`, `composer.lock`, `package.json`, `package-lock.json`
 - `vendor/`, `node_modules/`
 - `data/`, `log/`, `public/uploads/`
 - anything under `Migration/` or `Migrations/`
+- every `*.local.php`, `config/autoload/local.php`, `config/autoload/local.test.php`
 
 ## Never run
 

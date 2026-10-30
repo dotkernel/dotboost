@@ -5,7 +5,7 @@ API, Admin, Frontend, Light, Queue, or a project derived from one of them. Every
 variant first and applies the matching dialect.
 
 This repository is not itself a Dotkernel application. Its entire payload is the `.claude/`
-directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and seventeen
+directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and nineteen
 skills. You install it by copying that directory into the Dotkernel project you are working on.
 
 Maintained by Borsan Sergiu.
@@ -98,7 +98,7 @@ What lands in the project:
 ├── hooks/                         six bash hooks (guards, normaliser, php -l, markdownlint, briefing)
 ├── agents/                        the review subagent
 ├── commands/                      the ten /dk-* commands
-└── skills/                        seventeen skills: sixteen dotkernel-* plus dependency-policy
+└── skills/                        nineteen skills: eighteen dotkernel-* plus dependency-policy
 ```
 
 Optionally, for personal overrides that stay out of git:
@@ -133,7 +133,7 @@ drop-in for projects with no Node toolchain at all.
 It is a committed file carrying opinions, not just guardrails. Know what you are adopting:
 
 ```
-permissions.defaultMode: "plan"    sessions start in plan mode — Claude proposes before it edits
+permissions.defaultMode: "auto"    sessions start in auto mode, not plan mode — no proposal before edits
 tui: "fullscreen"                  full-screen terminal UI
 theme: "dark"
 env.COMPOSER_MEMORY_LIMIT: "-1"    Composer runs without a memory ceiling
@@ -150,11 +150,12 @@ context window at all:
 That is the guarantee worth adopting the file for: your database credentials, your OAuth signing
 keys and your environment secrets stay out of the transcript.
 
-**Never written.** `Edit` and `Write` denies:
+**Never written.** `Edit` denies, which Claude Code applies to `Write` as well:
 
 - dependency manifests (`composer.json`, `composer.lock`, `package.json`, `package-lock.json`),
-  `vendor/`, `node_modules/`, `data/`, `log/`, `public/uploads/`, and anything under
-  `Migration/` or `Migrations/`.
+  `vendor/`, `node_modules/`, `data/`, `log/`, `public/uploads/`, anything under
+  `Migration/` or `Migrations/`, and every `*.local.php`, `config/autoload/local.php` and
+  `config/autoload/local.test.php`.
 
 **Never run.** Bash denies:
 
@@ -325,6 +326,7 @@ README.md                                       this file
 .claude/skills/dotkernel-psr-standards/          PSR-1/3/4/6/7/11/12/15/16/17 as applied here
 .claude/skills/dotkernel-qa-gate/                cs-check, static analysis, tests, forbidden "fixes"
 .claude/skills/dotkernel-troubleshooting/        symptom → cause table
+.claude/skills/dotkernel-package-status/         whether a dotkernel/* package is maintained, PHP support
 .claude/skills/dependency-policy/                the ladder: installed → dotkernel/* → laminas →
                                                  vetted community → hand-rolled; proposal format
 .claude/skills/dependency-policy/scripts/        sync-dotkernel-packages.sh — regenerates the

@@ -3,8 +3,12 @@
 `.claude/statusline.sh` renders real account usage in the status bar, taken from the rate-limit payload Claude Code (≥ 2.1) passes to the status line on stdin — the same numbers `/usage` reports:
 
 ```text
-~/project : Opus 5 ==> 5h:37% 2h14m left, resets @16:20 | 7d 61%
+~/project                     Opus 5.5  high
+5h ███████▍             37%   resets in 2h 14m (16:20)  7d 61%
 ```
+
+The first line is the working directory, the model and its effort level.
+The 5h bar is a 20-cell heat gradient; colours are 24-bit, so the terminal needs truecolor support.
 
 Pure bash and `awk` — no `jq`, no Python, no transcript scanning or guessed token budgets, so it works in Git Bash on Windows too.
 
