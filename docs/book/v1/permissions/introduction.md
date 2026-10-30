@@ -4,7 +4,7 @@
 The rules fall into four tiers:
 
 - **Never read** — `Read` denies. The contents never enter the context window at all.
-- **Never written** — `Edit`/`Write` denies.
+- **Never written** — `Edit` denies, which also cover `Write`.
 - **Never run** — `Bash` denies.
 - **Ask first** / **allowed outright** — everything else, split by risk.
 
