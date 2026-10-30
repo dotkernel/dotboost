@@ -589,14 +589,15 @@
 <p>A skill is a directory under <code>.claude/skills/</code> holding a <code>SKILL.md</code> — frontmatter (<code>name</code>, <code>description</code>) plus an instructional body.
 There is no central routing table: Claude Code auto-loads a skill when its <code>description:</code> matches what the current conversation is doing.
 That makes the description the entire activation mechanism — a skill with a vague or narrow description simply never fires, silently, with no error to debug.</p>
-<p>Dotboost ships eighteen skills.
-Seventeen are <code>dotkernel-*</code>, each covering one slice of Dotkernel convention; the eighteenth, <code>dependency-policy</code>, is generic to any package decision and detailed enough to warrant <a href="../dependency-policy/">its own page</a>.</p>
+<p>Dotboost ships nineteen skills.
+Eighteen are <code>dotkernel-*</code>, each covering one slice of Dotkernel convention; the nineteenth, <code>dependency-policy</code>, is generic to any package decision and detailed enough to warrant <a href="../dependency-policy/">its own page</a>.
+Most <code>dotkernel-*</code> skills apply to every application variant; <code>dotkernel-api-endpoint</code> applies only in an API application, where it is the end-to-end checklist for a new or changed endpoint and points to the skill that owns each topic.</p>
 <h2 id="reading-a-trigger-description">Reading a trigger description</h2>
 <p>Each skill's description is written to include the words a developer would actually type — "where does this go", "403", "InputFilter" — not just the framework term for the concept.
 If a skill isn't triggering when you expect it to, the fix is almost always to add the phrase you used to its description, not to rewrite its instructions.
 See <a href="../../maintaining/">Maintaining This</a>.</p>
 <h2 id="full-list">Full list</h2>
-<p><a href="../reference/">Reference</a> groups all eighteen by theme with a one-line trigger description each.</p>
+<p><a href="../reference/">Reference</a> groups all nineteen by theme with a one-line trigger description each.</p>
 
 
 

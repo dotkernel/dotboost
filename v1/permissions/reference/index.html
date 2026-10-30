@@ -596,12 +596,13 @@
 <li><code>data/oauth/</code></li>
 </ul>
 <h2 id="never-written">Never written</h2>
-<p><code>Edit</code>/<code>Write</code> denies:</p>
+<p><code>Edit</code> denies — Claude Code applies <code>Edit</code> rules to every file-editing tool, <code>Write</code> included, and <code>guard-protected-paths.sh</code> blocks these paths for every file-writing tool at the hook layer too (for <code>data/</code>, only <code>cache/</code>, <code>lock/</code> and <code>oauth/</code>):</p>
 <ul>
 <li>dependency manifests: <code>composer.json</code>, <code>composer.lock</code>, <code>package.json</code>, <code>package-lock.json</code></li>
 <li><code>vendor/</code>, <code>node_modules/</code></li>
 <li><code>data/</code>, <code>log/</code>, <code>public/uploads/</code></li>
 <li>anything under <code>Migration/</code> or <code>Migrations/</code></li>
+<li>every <code>*.local.php</code>, <code>config/autoload/local.php</code>, <code>config/autoload/local.test.php</code></li>
 </ul>
 <h2 id="never-run">Never run</h2>
 <p><code>Bash</code> denies:</p>

@@ -593,7 +593,8 @@ See <a href="../reference/">Reference</a> for the full list, grouped by workflow
 <h2 id="commands-vs-skills">Commands vs. skills</h2>
 <p>Use a command when you want a specific, repeatable procedure to run on demand — bootstrapping a clone, running the QA gate, writing a feature doc.
 Use a skill when you want Claude to <em>know</em> something automatically while it works on unrelated tasks — a naming convention, a validation pattern, a security rule.
-Several commands lean on skills internally; <code>/dk-module</code>, for instance, is built on top of <code>dotkernel-dot-maker</code> and <code>dotkernel-module-structure</code> rather than duplicating their guidance.</p>
+Several commands lean on skills internally; <code>/dk-module</code>, for instance, is built on top of <code>dotkernel-dot-maker</code> and <code>dotkernel-module-structure</code> rather than duplicating their guidance.
+<code>/dk-route</code> and <code>/dk-review</code> also load <code>dotkernel-api-endpoint</code> when the repo is an API application, so a new endpoint is built and reviewed against the same checklist.</p>
 
 
 

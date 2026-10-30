@@ -11,7 +11,7 @@
 | Command | Purpose |
 | --- | --- |
 | `/dk-module` | Plan a new module end to end (`dot-maker` first) |
-| `/dk-route` | Add a fully wired route — an API endpoint or an admin/frontend page |
+| `/dk-route` | Add a fully wired route — an API endpoint (checked against `dotkernel-api-endpoint`) or an admin/frontend page, e.g. `/dk-route POST /book/{id}/review` |
 | `/dk-deprecate` | Apply the evolution pattern to a breaking change (sunset, not `/v2`) |
 
 ## Verify

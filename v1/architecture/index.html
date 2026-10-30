@@ -587,7 +587,7 @@
 
     <h1 id="architecture-overview">Architecture Overview</h1>
 <p>Everything in Dotboost hangs off one file: <code>.claude/settings.json</code>.
-It registers the hooks, sets the permission tiers, configures the status line, and sets session defaults (<code>defaultMode: "plan"</code>, dark theme, fullscreen TUI).
+It registers the hooks, sets the permission tiers, configures the status line, and sets session defaults (<code>defaultMode: "auto"</code>, dark theme, fullscreen TUI).
 Nothing else in the payload is wired together outside of it — skills and commands are discovered by Claude Code from their directory location alone.</p>
 <h2 id="the-four-artifact-types">The four artifact types</h2>
 <div class="table-responsive"><table>
@@ -642,7 +642,7 @@ This is why installing <code>.claude/</code> alone under-delivers on those two b
 <ul>
 <li><a href="../permissions/introduction/">Permissions</a> for the guardrail tiers.</li>
 <li><a href="../hooks/introduction/">Hooks</a> for the six lifecycle scripts.</li>
-<li><a href="../skills/introduction/">Skills</a> for how the eighteen skills are organized.</li>
+<li><a href="../skills/introduction/">Skills</a> for how the nineteen skills are organized.</li>
 </ul>
 
 
