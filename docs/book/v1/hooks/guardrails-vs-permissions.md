@@ -8,7 +8,7 @@ You get a flat refusal instead.
 | --- | --- | --- |
 | `git rebase` | ask | blocks |
 | `doctrine-migrations migrate` / `execute` | ask | blocks |
-| `fixtures:execute`, `schema:drop`, `schema:update` (via `bin/cli.php`) | ask | blocks |
+| `fixtures:execute`, `schema:drop`, `schema:update` (via `bin/doctrine`) | ask | blocks |
 | `composer development-enable` / `-disable` | — | blocks |
 | `pip install`, `git checkout --`, `git filter-branch` | — | blocks |
 

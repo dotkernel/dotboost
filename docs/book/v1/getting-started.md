@@ -9,7 +9,8 @@ Pick one — both land the same files.
 ```bash
 cd <project>
 git clone --depth 1 https://github.com/dotkernel/dotboost.git .dotboost
-cp -r .dotboost/.claude .claude
+mkdir -p .claude
+cp -r .dotboost/.claude/. .claude/
 rm -rf .dotboost
 ```
 
@@ -21,7 +22,8 @@ No git needed:
 cd <project>
 curl -L -o dotboost.zip https://github.com/dotkernel/dotboost/archive/refs/heads/main.zip
 unzip -q dotboost.zip
-cp -r dotboost-main/.claude .claude
+mkdir -p .claude
+cp -r dotboost-main/.claude/. .claude/
 rm -rf dotboost-main dotboost.zip
 ```
 
@@ -36,7 +38,8 @@ echo '.claude/settings.local.json' >> .git/info/exclude
 Nothing in the payload is committed with an executable bit, and a zip extracted on Windows carries no permission bits at all — the `chmod` step is not optional.
 The `settings.local.json` line keeps personal, git-ignored overrides out of `git add .`.
 
-If the target project already has its own `.claude/settings.json` or `.claude/commands/`, merge by hand instead of running the copy blind — same-named files are overwritten.
+The trailing `/.` copies the *contents* of the payload's `.claude/`, so it merges into an existing `.claude/` instead of nesting a second one at `.claude/.claude/`.
+Merging still overwrites same-named files: if the target project already has its own `.claude/settings.json` or `.claude/commands/`, merge by hand instead of running the copy blind.
 
 ## Add the `CLAUDE.md` block
 
@@ -57,6 +60,6 @@ Until the binary is resolvable the hook exits silently, so `.claude/` stays drop
 ## Verify
 
 Start Claude Code in the project and run `/help` — you should see `dk-bootstrap`, `dk-module`, `dk-route`, `dk-trace`, `dk-test`, `dk-document`, `dk-check`, `dk-deprecate`, `dk-review`, `dk-hygiene`.
-The session-start hook should open with a short briefing: detected application variant, root namespace, authorization style, branch, and which config files are still missing.
+The session-start hook should open with a short briefing: detected project variant, root namespace, authorization style, branch, and which config files are still missing.
 
 Full end-to-end verification steps, including how to test the guardrails themselves, are in [Verifying an Install](verifying-an-install.md).

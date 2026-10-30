@@ -1,6 +1,6 @@
 # Dependency Policy
 
-`dependency-policy` is the one skill in Dotboost that isn't specific to a Dotkernel application — it governs any package decision, in any project — and it's the skill with the most moving parts, which is why it gets its own page rather than a row in [Reference](reference.md).
+`dependency-policy` is the one skill in Dotboost that isn't specific to a Dotkernel project — it governs any package decision, in any project — and it's the skill with the most moving parts, which is why it gets its own page rather than a row in [Reference](reference.md).
 
 ## The ladder
 

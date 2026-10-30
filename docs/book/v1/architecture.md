@@ -1,7 +1,7 @@
 # Architecture Overview
 
 Everything in Dotboost hangs off one file: `.claude/settings.json`.
-It registers the hooks, sets the permission tiers, configures the status line, and sets session defaults (`defaultMode: "auto"`, dark theme, fullscreen TUI).
+It registers the hooks, sets the permission tiers, and configures the status line. Personal preferences (permission mode, theme, TUI, spinner verbs) are left to each developer's `settings.local.json`; `settings.local.json.example` carries a sample.
 Nothing else in the payload is wired together outside of it — skills and commands are discovered by Claude Code from their directory location alone.
 
 ## The four artifact types

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SessionStart: print a short briefing that becomes part of Claude's context.
-# Detects which Dotkernel application this is and what is not set up yet.
+# Detects which Dotkernel project this is and what is not set up yet.
 # Everything here is read-only. Keep the output compact.
 
 set -u
@@ -8,7 +8,7 @@ cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null || exit 0
 
 echo "## Project state"
 
-# --- which Dotkernel application? ---
+# --- which Dotkernel project? ---
 if [ -f composer.json ]; then
   pkg=$(sed -n 's/.*"name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' composer.json | head -1)
   ns=$(grep '": "src/' composer.json 2>/dev/null | grep -v '"Core' | head -1 \

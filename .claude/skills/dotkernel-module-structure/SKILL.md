@@ -1,7 +1,7 @@
 ---
 name: dotkernel-module-structure
 description: >
-  Use when creating, moving, renaming or locating any file in a Dotkernel application —
+  Use when creating, moving, renaming or locating any file in a Dotkernel project —
   deciding whether code belongs in an application module or the shared Core layer, adding a
   Handler, Service, Collection, Form, InputFilter, Input, Entity, Repository, Enum, DBAL type,
   Command, Middleware, ConfigProvider or RoutesDelegator, registering a module in
@@ -11,8 +11,17 @@ description: >
 
 # Module and file structure
 
-Identify the variant first (`dotkernel-application-variants`); the two-layer split below is
-identical everywhere, but which artefacts a module contains is not.
+```text
+Applies to
+  Projects:  - Dotkernel API
+             - Dotkernel Admin
+  Packages:  - none
+```
+
+Identify the variant first (`dotkernel-project-variants`). The two-layer split below is how the
+stock API and Admin are built; which artefacts a module contains differs between them. Frontend
+keeps entities inside its own modules, Light has no persistence, and Queue is a single flat
+`Queue\` namespace — none of them has a `Core` layer.
 
 ## The two layers
 
@@ -21,9 +30,9 @@ identical everywhere, but which artefacts a module contains is not.
 | Application module | `<App>\<Module>\` | `src/<Module>/src/` | HTTP / CLI facing code |
 | Shared core module | `Core\<Module>\` | `src/Core/src/<Module>/src/` | persistence + shared domain |
 
-`<App>` is the application's root namespace — `Api`, `Admin`, `Frontend`, `Light`, `Queue`.
-`Core` is designed to be a git submodule shared between the applications on one database
-(see `dotkernel-core-submodule`). **Nothing in `Core` may depend on an application namespace.**
+`<App>` is the project's root namespace — `Api` or `Admin`.
+`Core` is designed to be a git submodule shared between the projects on one database
+(see `dotkernel-core-submodule`). **Nothing in `Core` may depend on a project namespace.**
 
 **Golden rule: Core is the only place that manages database entities.**
 
@@ -33,7 +42,7 @@ identical everywhere, but which artefacts a module contains is not.
 | --- | --- |
 | Handler, RoutesDelegator, Collection, Form, InputFilter, Input, Service, ServiceInterface, OpenAPI | application module |
 | Entity, Repository, Enum, DBAL type, EventListener, Fixture, Migration, shared Message catalogue | `Core` |
-| Middleware, Attribute, Exception, Guard, Template helper | the application's `App` module (cross-cutting) |
+| Middleware, Attribute, Exception, Guard, Template helper | the project's `App` module (cross-cutting) |
 | CLI Command | application module if feature-specific, `Core\App\Command` if infrastructural |
 | ConfigProvider | **both** — one per module, per layer |
 
@@ -66,8 +75,7 @@ src/Core/src/<Module>/src/
 Variant-specific additions to the application module:
 
 - **API**: `Collection/<X>Collection.php`, `OpenAPI.php`
-- **Admin / Frontend**: `Form/<X>Form.php`, and templates under `src/<Module>/templates/<module>/`
-- **Queue**: `Command/<X>Command.php`
+- **Admin**: `Form/<X>Form.php`, and templates under `src/<Module>/templates/<module>/`
 
 Handler folders mirror the URL: a route at `/user/{id}/avatar` lives in
 `Handler/User/Avatar/`.
@@ -80,11 +88,12 @@ Handler folders mirror the URL: a route at `/user/{id}/avatar` lives in
 2. `config/config.php` → add both `ConfigProvider::class` entries to the Dotkernel modules
    block, alphabetically.
 3. The module `ConfigProvider` → `dependencies` (factories / delegators / aliases), plus
-   whatever else the variant needs (HAL `MetadataMap` for API, `templates` for templated apps,
+   whatever else the variant needs (HAL `MetadataMap` for API, `templates` for templated projects,
    `doctrine.types` for enum columns).
 4. The authorization config → an entry for every new route name.
-   API: `config/autoload/authorization.global.php`.
-   Admin / Frontend: `config/autoload/authorization-guards.global.php`.
+   API: `config/autoload/authorization.global.php` — a missing entry denies the route.
+   Admin: `config/autoload/authorization-guards.global.php` — a missing entry leaves the route
+   **open to everyone**, because the guards use `POLICY_ALLOW`.
 
 Config is cached in production; run the repo's cache-clear script (commonly
 `composer clear-config-cache`) after config changes.
@@ -96,13 +105,15 @@ public function __invoke(): array
 {
     return [
         'dependencies' => $this->getDependencies(),
-        // API:            MetadataMap::class => $this->getHalConfig(),
-        // templated app:  'templates'        => $this->getTemplates(),
+        // API:    MetadataMap::class => $this->getHalConfig(),
+        // Admin:  'templates'        => $this->getTemplates(),
     ];
 }
 ```
 
-- `delegators` → each handler maps to the repo's handler delegator factory.
+- `delegators` → API: each handler maps to the repo's handler delegator factory. Admin handlers
+  have no delegator entry; there `delegators` holds only `Application::class => [RoutesDelegator::class]`
+  and form delegators.
 - `factories`  → each handler and concrete service maps to `AttributedServiceFactory::class`.
 - `aliases`    → `BookServiceInterface::class => BookService::class`.
 
@@ -118,15 +129,16 @@ Keep these arrays alphabetically sorted with aligned `=>` — phpcs enforces the
 | `config/routes.php` | thin — real routes live in each module's `RoutesDelegator` |
 | `bin/` | CLI entry points |
 | `test/Unit/`, `test/Functional/` | namespaces per `autoload-dev` |
-| `documentation/` | API collections, CLI command docs |
+| `documentation/` | API only: CLI command docs |
 | any Doctrine migrations directory | **generated** — never hand-edit |
 
 ## Checklist for a new artefact
 
 - [ ] Namespace matches the directory exactly (PSR-4, case-sensitive).
 - [ ] Entity/Repository in `Core`, everything request-facing in the application module.
-- [ ] Registered in the module `ConfigProvider` (factory **and** delegator for handlers).
+- [ ] Registered in the module `ConfigProvider` (API handlers: factory **and** delegator; Admin
+      handlers: factory).
 - [ ] Route declared in `RoutesDelegator`; authorization entry added.
-- [ ] Presentation registered: HAL metadata (API) or template path (templated app).
-- [ ] `OpenAPI.php` operation added, if this application publishes OpenAPI.
+- [ ] Presentation registered: HAL metadata (API) or template path (templated project).
+- [ ] `OpenAPI.php` operation added, if this project publishes OpenAPI.
 - [ ] Test added.

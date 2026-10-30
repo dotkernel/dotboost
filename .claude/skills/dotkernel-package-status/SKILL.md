@@ -6,6 +6,12 @@ description: Use when asked whether a Dotkernel package is still maintained, wha
 
 # Dotkernel package status
 
+```text
+Applies to
+  Projects:  - all
+  Packages:  - all
+```
+
 Dotkernel publishes the support status of its open-source packages as a machine-readable listing, rebuilt daily from the GitHub organization.
 Prefer it over recollection: lifecycle states change, and a package that was active at training time may be security-only now.
 
@@ -58,7 +64,7 @@ A repository can be archived on GitHub while still declaring an older lifecycle,
 - Cite `generated_at`.
 The listing is a daily snapshot, so say what it was current as of.
 - Absence is not non-existence.
-A repository is only listed when it carries an `OSSMETADATA` file declaring its lifecycle, and the site excludes non-package repositories (documentation, skeleton apps, the site itself).
+A repository is only listed when it carries an `OSSMETADATA` file declaring its lifecycle, and the site excludes non-package repositories (documentation, skeleton projects, the site itself).
 If a name is missing, say it is not in the published package listing and check <https://github.com/orgs/dotkernel/repositories> - do not say it does not exist.
 - For "is X maintained?", lead with the lifecycle sentence above, then the PHP constraint if the question is about upgrading.
 - For "what should I use instead?", the listing gives no successor field.

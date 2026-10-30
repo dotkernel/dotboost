@@ -4,7 +4,7 @@
 
 | Skill | Fires on |
 | --- | --- |
-| `dotkernel-application-variants` | Working out whether a repo is API, Admin, Frontend, Light, Queue, or a derived project, and what that implies elsewhere |
+| `dotkernel-project-variants` | Working out whether a repo is API, Admin, Frontend, Light, Queue, or a derived project, and what that implies elsewhere |
 
 ## Structure and naming
 
@@ -14,7 +14,7 @@
 | `dotkernel-handler-naming` | PSR-15 handler class names, route URLs and names, authorization keys, PATCH vs. POST |
 | `dotkernel-api-endpoint` | API only — adding or changing an endpoint: `/account` and action-segment URLs, `#[Resource]` loading, response helpers, `operationId`, guest grants, and the end-to-end checklist before calling it done |
 | `dotkernel-dot-maker` | Scaffolding a module, entity, service, handler, form, or command with `composer make …` |
-| `dotkernel-core-submodule` | Core-layer changes and git submodule mechanics for sharing code across applications |
+| `dotkernel-core-submodule` | Core-layer changes and git submodule mechanics for sharing code across projects |
 
 ## Data layer
 
@@ -28,7 +28,7 @@
 | Skill | Fires on |
 | --- | --- |
 | `dotkernel-responses` | Shaping handler output — HAL resources/collections and the MetadataMap, or templates/redirects/flash messages; pagination and error bodies |
-| `dotkernel-openapi` | Documenting an endpoint via swagger-php attributes, for applications that publish OpenAPI |
+| `dotkernel-openapi` | Documenting an endpoint via swagger-php attributes, for projects that publish OpenAPI |
 | `dotkernel-evolution-pattern` | Non-breaking API evolution — Sunset/Link headers and deprecation, `410 Gone` after the sunset date, instead of `/v2` or a version prefix |
 
 ## Quality, security, and process

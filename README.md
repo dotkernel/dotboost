@@ -1,10 +1,10 @@
 # dotboost — Claude Code configuration for Dotkernel projects
 
-Drop-in configuration that teaches Claude Code the conventions of any Dotkernel application —
+Drop-in configuration that teaches Claude Code the conventions of any Dotkernel project —
 API, Admin, Frontend, Light, Queue, or a project derived from one of them. Every skill detects the
 variant first and applies the matching dialect.
 
-This repository is not itself a Dotkernel application. Its entire payload is the `.claude/`
+This repository is not itself a Dotkernel project. Its entire payload is the `.claude/`
 directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and nineteen
 skills. You install it by copying that directory into the Dotkernel project you are working on.
 
@@ -51,7 +51,8 @@ get it there — same files either way, pick whichever suits the machine you are
 ```bash
 cd <project>
 git clone --depth 1 https://github.com/dotkernel/dotboost.git .dotboost
-cp -r .dotboost/.claude .claude
+mkdir -p .claude
+cp -r .dotboost/.claude/. .claude/
 rm -rf .dotboost
 ```
 
@@ -66,7 +67,8 @@ No git needed, which is the point:
 cd <project>
 curl -L -o dotboost.zip https://github.com/dotkernel/dotboost/archive/refs/heads/main.zip
 unzip -q dotboost.zip
-cp -r dotboost-main/.claude .claude
+mkdir -p .claude
+cp -r dotboost-main/.claude/. .claude/
 rm -rf dotboost-main dotboost.zip
 ```
 
@@ -107,8 +109,10 @@ Optionally, for personal overrides that stay out of git:
 cp .claude/settings.local.json.example .claude/settings.local.json
 ```
 
-If the project already has its own `.claude/settings.json` or its own `.claude/commands/`, merge
-by hand rather than running the `cp -r` blind — same-named files are overwritten.
+The trailing `/.` copies the *contents* of the payload's `.claude/`, so it merges into a `.claude/`
+the project already has instead of nesting a second one at `.claude/.claude/`. Merging still
+overwrites same-named files: if the project already has its own `.claude/settings.json` or its own
+`.claude/commands/`, merge by hand rather than running the `cp -r` blind.
 
 To update later, run the whole install again over the top. Anything you changed in the project's
 copy is lost, which is the reason personal changes belong in `settings.local.json`.
@@ -130,14 +134,16 @@ drop-in for projects with no Node toolchain at all.
 
 ## What `settings.json` decides for you
 
-It is a committed file carrying opinions, not just guardrails. Know what you are adopting:
+It is a committed file, so it carries only what the whole team should share. One setting beyond the
+guardrails:
 
 ```
-permissions.defaultMode: "auto"    sessions start in auto mode, not plan mode — no proposal before edits
-tui: "fullscreen"                  full-screen terminal UI
-theme: "dark"
 env.COMPOSER_MEMORY_LIMIT: "-1"    Composer runs without a memory ceiling
 ```
+
+Personal preferences — permission mode (`permissions.defaultMode`), `theme`, `tui` and
+`spinnerVerbs` — are not set here. `settings.local.json.example` carries a sample of each; copy the
+ones you want into your own `settings.local.json`.
 
 The permission rules fall into four groups.
 
@@ -186,7 +192,7 @@ you would expect from the `ask` tier never appears. You get a refusal instead:
 | --- | --- | --- |
 | `git rebase` | ask | blocks |
 | `doctrine-migrations migrate` / `execute` | ask | blocks |
-| `fixtures:execute`, `schema:drop`, `schema:update` | ask, via `bin/cli.php` | blocks |
+| `fixtures:execute`, `schema:drop`, `schema:update` | ask, via `bin/doctrine` | blocks |
 | `composer development-enable` / `-disable` | — | blocks |
 | `pip install`, `git checkout -- `, `git filter-branch` | — | blocks |
 
@@ -309,14 +315,14 @@ README.md                                       this file
 .claude/commands/dk-review.md                   pre-PR convention review
 .claude/commands/dk-hygiene.md                  encoding / line-ending audit
 
-.claude/skills/dotkernel-application-variants/   detect API vs Admin vs Frontend vs Light vs Queue
+.claude/skills/dotkernel-project-variants/       detect API vs Admin vs Frontend vs Light vs Queue
 .claude/skills/dotkernel-module-structure/       where code goes, application module vs Core, wiring
 .claude/skills/dotkernel-handler-naming/         both naming dialects, routes, authorization keys
 .claude/skills/dotkernel-api-endpoint/           API-only endpoint rules and the end-to-end checklist
 .claude/skills/dotkernel-doctrine-entities/      entities, enums + DBAL types, repositories, migrations
 .claude/skills/dotkernel-input-validation/       InputFilters, Inputs, forms, CSRF, query whitelisting
 .claude/skills/dotkernel-responses/              HAL and collections, or templates and redirects; errors
-.claude/skills/dotkernel-openapi/                swagger-php attributes, for apps that publish OpenAPI
+.claude/skills/dotkernel-openapi/                swagger-php attributes, for projects that publish OpenAPI
 .claude/skills/dotkernel-feature-docs/           feature docs: template, where they live, staleness
 .claude/skills/dotkernel-testing/                unit + functional patterns, test config, coverage matrix
 .claude/skills/dotkernel-evolution-pattern/      sunset headers instead of versioning
@@ -408,6 +414,6 @@ The Packagist snapshot behind `dependency-policy` goes stale silently, so re-run
 abandoned or superseded — `dot-annotated-services` → `dot-dependency-injection`, the case the skill
 names, is exactly what a stale manifest gets wrong.
 
-Before adapting this to a new Dotkernel application, spend an hour reading that repo and correcting
+Before adapting this to a new Dotkernel project, spend an hour reading that repo and correcting
 the skills against what is actually there. A skill written from framework docs rather than the
 codebase produces confident wrong answers, which is worse than no skill.

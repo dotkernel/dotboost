@@ -1,13 +1,19 @@
 ---
 name: dotkernel-testing
 description: >
-  Use when writing, running or fixing tests in a Dotkernel application — unit tests, functional
+  Use when writing, running or fixing tests in a Dotkernel project — unit tests, functional
   route tests, mocking repositories and services, authenticating a test request, seeding data, or
   diagnosing failures inside setUp such as "test mode is NOT enabled" or "non in-memory
   database". Also use when deciding what coverage a new route needs.
 ---
 
 # Testing
+
+```text
+Applies to
+  Projects:  - all
+  Packages:  - none
+```
 
 ```bash
 composer test
@@ -49,6 +55,10 @@ Do not boot the container in a unit test. If you need the container, it is a fun
 
 ## Functional tests
 
+Only the stock API and Admin ship a functional suite. Frontend and Light have unit tests only, and
+Queue keeps its tests in `test/App/` and `test/Swoole/`. Do not add a functional suite to those
+without asking — it means new base classes and test config.
+
 `test/Functional/<Module>Test.php`, extending the repo's abstract functional test case. That
 base class typically boots the real container, pipeline and routes, builds a fresh schema from the
 entity metadata and runs every fixture per test — isolated, but not free. Keep them purposeful.
@@ -59,8 +69,8 @@ entity metadata and runs every fixture per test — isolated, but not free. Keep
   in.
 - Named status assertions (ok, created, no-content, bad-request, unauthorized, forbidden,
   not-found, conflict, gone) — use these rather than raw status comparisons.
-- Entity factories and valid/invalid data builders for the app's core entities.
-- Credential builders for the app's auth mechanism, plus deliberately invalid twins.
+- Entity factories and valid/invalid data builders for the project's core entities.
+- Credential builders for the project's auth mechanism, plus deliberately invalid twins.
 - A service-replacement helper for swapping container services — **use it so tests never send
   real email or make real outbound calls.**
 - Direct entity-manager access for persistence setup.
@@ -91,7 +101,7 @@ class BookTest extends AbstractFunctionalTest
 | --- | --- |
 | Happy path | 200 / 201 / 204 / rendered page — assert the payload or output, not just the status |
 | Validation failure | 400 with the errors payload, or the form re-rendered with messages |
-| Not authenticated | API: 403 — a request without a token runs as guest and is refused unless the route is granted to guest. Session app: a redirect to login |
+| Not authenticated | API: 403 — a request without a token runs as guest and is refused unless the route is granted to guest. Session-based project: a redirect to login |
 | Authenticated, wrong role | 403 — **the case people skip, and the one that catches a missing authorization entry** |
 | Unknown identifier | 404 |
 | Duplicate / conflicting write | 409 where applicable |

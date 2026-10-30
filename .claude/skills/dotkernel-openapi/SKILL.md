@@ -1,18 +1,25 @@
 ---
 name: dotkernel-openapi
 description: >
-  Use when documenting an endpoint in a Dotkernel application that publishes OpenAPI (typically
+  Use when documenting an endpoint in a Dotkernel project that publishes OpenAPI (typically
   the API) — adding or editing a module's OpenAPI.php, describing request bodies, responses,
   parameters, security schemes or schemas, marking an operation deprecated, or regenerating the
   interactive documentation. Also use when an endpoint exists but is missing from the docs, or
-  when checking whether this application publishes OpenAPI at all.
+  when checking whether this project publishes OpenAPI at all.
 ---
 
 # OpenAPI documentation
 
-**Applies only to applications that publish OpenAPI.** Confirm first: `zircote/swagger-php` in
-`composer.json` and per-module `src/<Module>/src/OpenAPI.php` files. A templated Admin or Frontend
-documents CLI commands under `documentation/` instead, and has no OpenAPI surface.
+```text
+Applies to
+  Projects:  - Dotkernel API
+  Packages:  - none
+```
+
+**Applies only to projects that publish OpenAPI.** Confirm first: `zircote/swagger-php` in
+`composer.json` and per-module `src/<Module>/src/OpenAPI.php` files. Of the stock projects only the
+API publishes OpenAPI; Admin, Frontend, Light and Queue have no OpenAPI surface and no
+`documentation/` directory.
 
 Why it matters: it lets front-end and back-end developers work in parallel against mock servers,
 it makes documentation auto-generated rather than hand-maintained, and tooling like Postman and

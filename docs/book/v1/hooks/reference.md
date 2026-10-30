@@ -7,7 +7,7 @@
 | `normalize-file.sh` | `PostToolUse` | Fixes BOM, CRLF, trailing whitespace, and final newline on the file just written. Skips whitespace-stripping on `.md`, where two trailing spaces are a deliberate hard line break |
 | `php-lint.sh` | `PostToolUse` | Runs `php -l` on every edited PHP file. Report-only; skips itself if `php` isn't on `PATH` |
 | `markdown-lint.sh` | `PostToolUse` | Runs `markdownlint-cli2` against `.claude/markdownlint.jsonc` on every edited `.md` file. Report-only; silent no-op if the binary isn't resolvable or the config is absent |
-| `session-start.sh` | `SessionStart` | Prints a briefing: detected application variant, root namespace, authorization style, current branch, and which config files are still missing. Also warns about CRLF line endings |
+| `session-start.sh` | `SessionStart` | Prints a briefing: detected project variant, root namespace, authorization style, current branch, and which config files are still missing. Also warns about CRLF line endings |
 
 See [Guardrails vs. Permissions](guardrails-vs-permissions.md) for commands where `guard-bash.sh` is stricter than the `ask` tier implies.
 See [Introduction](introduction.md#failure-mode-consecutive-edits-to-one-file) for the one known `normalize-file.sh` failure mode.

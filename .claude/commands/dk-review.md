@@ -7,20 +7,20 @@ Review my uncommitted changes (`git diff HEAD` plus untracked files) before I op
 $ARGUMENTS
 
 Use the `dotkernel-reviewer` agent if that keeps context cleaner. Load
-`dotkernel-application-variants` first, then `dotkernel-handler-naming`,
+`dotkernel-project-variants` first, then `dotkernel-handler-naming`,
 `dotkernel-module-structure`, `dotkernel-input-validation`, `dotkernel-responses`,
 `dotkernel-security`, `dotkernel-evolution-pattern`, `dotkernel-psr-standards`,
 `dotkernel-core-submodule` and `dotkernel-feature-docs` — plus `dotkernel-api-endpoint` in an API
-application.
+project.
 
 Report findings grouped as **Blocking / Should fix / Nit**, each with file:line and a concrete
 replacement. Check at minimum:
 
-- Handler, route and authorization naming for **this** application's dialect; correct verb for the
+- Handler, route and authorization naming for **this** project's dialect; correct verb for the
   variant; folder mirrors the resource path.
 - Registration completeness: factories, delegators, aliases, route, authorization entry,
   presentation, documentation.
-- Entities and repositories only in `Core`; no application-namespace import inside `Core`.
+- Entities and repositories only in `Core`; no project-namespace import inside `Core`.
 - Contract changes to existing routes — breaking without a sunset window is blocking.
 - Validation on every write path; CSRF on every form; whitelisted sort/filter; no raw SQL
   interpolation; ownership checks on user-owned resources.
