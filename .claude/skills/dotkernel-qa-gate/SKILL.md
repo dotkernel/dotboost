@@ -27,7 +27,14 @@ names; the Dotkernel convention is:
 | `composer test` | phpunit | `phpunit.xml` |
 | `composer twig-cs-check` / `twig-cs-fix` | Twig CS Fixer — Admin, Frontend, Light only | `config/twig-cs-fixer.php` |
 
-All read-only; safe to run unasked. Installers, migrations and fixtures are **not** — ask first.
+The checks — `check`, `cs-check`, `static-analysis`, `test`, `twig-cs-check` — are read-only.
+The fixers — `cs-fix` and `twig-cs-fix` — rewrite files in place, so run them only on a tree whose
+changes you are ready to have reformatted. All of them are safe to run without asking; the
+`twig-cs-*` scripts are not in the `allow` tier, so Claude Code prompts for them.
+
+Installers (`composer install`/`update`/`require`/`remove`), migrations (`migrate`, `execute`) and
+`fixtures:execute` are refused outright by the `guard-bash.sh` hook, approval or not. Never try to
+run them; give the user the exact command to run and say what it will change.
 
 ## Order of operations after editing PHP
 

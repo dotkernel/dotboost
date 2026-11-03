@@ -4,6 +4,8 @@ argument-hint: <METHOD /path> or <HandlerClassName>
 allowed-tools: Read, Grep, Glob, Bash(php bin/cli.php:*)
 ---
 
+<!-- markdownlint-disable-file MD041 --><!-- command format is frontmatter then prose; no heading -->
+
 Trace: **$ARGUMENTS**
 
 Read-only. Modify nothing. Produce a walkthrough I can use to understand or debug this route:

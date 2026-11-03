@@ -1,6 +1,7 @@
 {
   "$comment": "Copy to .claude/settings.local.json and add that path to .git/info/exclude. This file is yours alone and layers on top of the committed .claude/settings.json. Machine-specific paths, personal permission relaxations, your permission mode, theme, UI and preferred model go here, never in the shared file. Every key below is an optional sample; delete what you do not want.",
   "permissions": {
+    "defaultMode": "auto",
     "allow": [
       "Bash(php -S 0.0.0.0:8080 -t public)"
     ]
@@ -8,5 +9,39 @@
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline.sh"
-  }
+  },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Bribing the garbage collector",
+      "Blaming the cache",
+      "Escaping vim",
+      "Refactoring your regrets",
+      "Deleting node_modules",
+      "Warming Doctrine's lazy ghosts",
+      "Dumping autoload, dumping hope",
+      "Mocking every interface",
+      "Reading docs, allegedly",
+      "Consulting the rubber duck",
+      "Nullifying the null coalescer",
+      "Silently swallowing exceptions",
+      "Deadlocking politely",
+      "Padding the estimate",
+      "Piping through middleware",
+      "Flushing the EntityManager",
+      "Summoning Diactoros",
+      "Bribing the ServiceManager",
+      "Mezzio-ing about",
+      "Waiting on composer update",
+      "Queueing async regrets",
+      "Consulting the debugbar",
+      "Being opinionated, framework-lessly",
+      "Injecting unsolicited dependencies",
+      "Sniffing your user agent",
+      "Fixturing fake users",
+      "Twigging the templates"
+    ]
+  },
+  "tui": "fullscreen",
+  "theme": "dark"
 }

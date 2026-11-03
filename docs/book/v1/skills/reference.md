@@ -41,10 +41,9 @@
 | `dotkernel-security` | Auth, authorization config, CORS, sessions/cookies, secrets, `*.local.php` vs. `*.global.php`, raw DQL/SQL |
 | `dotkernel-troubleshooting` | Symptom-to-cause lookup for 403/404/406/415/500, container errors, config not taking effect |
 | `dotkernel-feature-docs` | Writing and keeping feature docs current — see [Feature Documentation](../feature-docs.md) |
-| `dotkernel-package-status` | Whether a Dotkernel package is still maintained and which PHP versions it supports |
 
 ## Dependency policy
 
 | Skill | Fires on |
 | --- | --- |
-| `dependency-policy` | Any package decision — the order: already installed → `dotkernel/*` → `laminas`/`mezzio` → vetted community package → hand-rolled code. See [Dependency Policy](dependency-policy.md) |
+| `dotkernel-package-status` | Any package decision — the order: already installed → `dotkernel/*` → `laminas`/`mezzio` → vetted community package → hand-rolled code — and whether a Dotkernel package is still maintained and which PHP versions it supports, from the dotkernel.com listing. See [Package Status](dotkernel-package-status.md) |

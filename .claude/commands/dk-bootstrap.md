@@ -3,6 +3,8 @@ description: Take a fresh Dotkernel clone to a running local install
 allowed-tools: Read, Grep, Glob, Bash(ls:*), Bash(test:*), Bash(php -v), Bash(php -m), Bash(composer --version), Bash(git status:*), Bash(git config --get:*)
 ---
 
+<!-- markdownlint-disable-file MD041 --><!-- command format is frontmatter then prose; no heading -->
+
 I have just cloned a Dotkernel project. Walk me from here to a working local install.
 
 Do not run installers, migrations, fixtures or key generation yourself — inspect state, then give

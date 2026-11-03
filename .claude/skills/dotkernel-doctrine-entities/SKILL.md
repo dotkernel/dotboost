@@ -14,6 +14,7 @@ description: >
 Applies to
   Projects:  - Dotkernel API
              - Dotkernel Admin
+             - Dotkernel Frontend
   Packages:  - none
 ```
 
@@ -92,9 +93,13 @@ Pagination parameters are normalised by the shared paginator helper, and the sor
 
 ```bash
 php ./vendor/bin/doctrine-migrations diff      # generate — ASK FIRST, it reads the live DB
-php ./vendor/bin/doctrine-migrations migrate   # apply    — ASK FIRST, it mutates the DB
+php ./vendor/bin/doctrine-migrations migrate   # apply    — the user runs it; see below
 php ./vendor/bin/doctrine-migrations status
 ```
+
+`diff` and `status` prompt for approval. `migrate` and `execute` are refused outright by the
+`guard-bash.sh` hook, approval or not — never try to run them. Give the user the exact command to
+run and say what it will change.
 
 - Generated into the configured migrations path — **never hand-edit**. A wrong diff means the
   entity is wrong; fix that and regenerate.
@@ -113,9 +118,12 @@ them.
 
 ```bash
 php ./bin/doctrine fixtures:list
-php ./bin/doctrine fixtures:execute
-php ./bin/doctrine fixtures:execute --class=BookLoader
+php ./bin/doctrine fixtures:execute                      # the user runs it
+php ./bin/doctrine fixtures:execute --class=BookLoader   # the user runs it
 ```
+
+`fixtures:list` prompts for approval. `fixtures:execute` writes to the database and is refused
+outright by the `guard-bash.sh` hook — give the user the command to run instead.
 
 Functional tests typically build a fresh schema and load every fixture per test, so a new
 fixture immediately affects all of them. Keep fixtures small and deterministic.

@@ -24,7 +24,7 @@ identically in every Dotkernel project.
 
 Namespace mirrors directory, case-sensitive, one class per file, file named after the class.
 
-```
+```text
 <App>\User\Handler\User\GetUserResourceHandler → src/User/src/Handler/User/GetUserResourceHandler.php
 Core\User\Entity\User                          → src/Core/src/User/src/Entity/User.php
 ```

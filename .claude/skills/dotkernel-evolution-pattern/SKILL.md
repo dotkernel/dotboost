@@ -42,6 +42,7 @@ link depends on — but the announcement channel is a redirect and a changelog e
 | Richer behaviour for richer input | Branch on the payload: old shape → old behaviour, new shape → enhanced. |
 | Remove a field, change a type, tighten validation | Breaking. Deprecate with a sunset date, keep the old path until then. |
 | Remove an endpoint or route | Deprecate with a sunset date; afterwards it answers 410 Gone (API) or permanently redirects (templated), and 404s once removed. |
+| Move a page to a new URL (templated) | Serve it at the new URL and permanently redirect the old one straight away — the redirect is what keeps bookmarks and email links working. |
 | Rework one endpoint fundamentally | A `v2` for **that endpoint only**, never the whole project. |
 | A different response paradigm entirely | Genuine versioning. |
 
@@ -54,7 +55,7 @@ Class-level attribute on the handler:
 
 ```php
 #[ResourceDeprecation(
-    sunset: '2026-01-01',
+    sunset: '2099-01-01', // placeholder — use the real, future date agreed for this window
     link: 'https://docs.dotkernel.org/…/api-evolution/',
     deprecationReason: 'Replaced by GET /book/{id}/detail.',
     rel: 'sunset',
@@ -69,15 +70,16 @@ Mechanics:
   response headers.
 - Once the sunset date has passed, the middleware throws `ExpiredException` before the handler
   runs, and the endpoint answers `410 Gone` as problem details.
-- `sunset` must be a valid date or the attribute constructor throws.
+- `sunset` must be a valid date or the attribute constructor throws. It must also be in the
+  future: a past date deprecates and kills the endpoint in the same change.
 - If `link` is omitted, the middleware falls back to the documentation URL in
   `application.versioning` config.
 
 Resulting response:
 
-```
+```http
 HTTP/1.1 200 OK
-Sunset: 2026-01-01
+Sunset: 2099-01-01
 Link: https://docs.dotkernel.org/…;rel="sunset";type="text/html"
 ```
 

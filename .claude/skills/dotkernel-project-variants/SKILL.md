@@ -72,6 +72,9 @@ PSR-4 roots and installed packages.
 | Scaffolding | `dot-maker` | `dot-maker` | none | none | none |
 | Tests | `test/Unit/`, `test/Functional/` | `test/Unit/`, `test/Functional/` | `test/Unit/` | `test/Unit/` | `test/App/`, `test/Swoole/` |
 
+The `documentation/` directory is the least reliable row: derived projects add or drop it freely,
+so check for it before writing docs there (`dotkernel-feature-docs`) rather than inferring it.
+
 ## What is the same everywhere
 
 - Mezzio underneath, with per-module `ConfigProvider`s registered in `config/config.php`.

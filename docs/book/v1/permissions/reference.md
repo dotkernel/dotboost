@@ -2,7 +2,8 @@
 
 ## Never read
 
-`Read` denies — these never enter the context window:
+`Read` denies — Claude's file tools and the Bash file commands Claude Code recognises (`cat`, `head`, `tail`, `sed`, `tee`) cannot open these.
+A command that reads files without naming them, such as `grep -r`, is not covered:
 
 - `.env`
 - every `*.local.php`
@@ -42,6 +43,9 @@
 
 - the Composer QA scripts: `check`, `cs-check`, `cs-fix`, `static-analysis`, `test`
 - `clear-config-cache`, `development-status`, `dump-autoload`
-- `vendor/bin` tools
+- `php ./vendor/bin/phpcs`, `phpcbf`, `phpstan`, `phpunit` — only with the `php ./` prefix; a bare `vendor/bin/phpunit` prompts
+- `markdownlint-cli2`, `./node_modules/.bin/markdownlint-cli2`
 - `php -l`, `php -v`, `php -m`
+- `date +%F`
 - read-only git: `status`, `diff`, `log`, `show`, `branch`, `ls-files`, `config --get`
+- edits under `docs/features/` and `documentation/features/`

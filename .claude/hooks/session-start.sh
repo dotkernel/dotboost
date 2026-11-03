@@ -22,29 +22,50 @@ if [ -f composer.json ]; then
     */queue)    variant="Queue (CLI/worker)" ;;
   esac
   if [ "$variant" = "unknown" ]; then
-    grep -q 'mezzio/mezzio-hal' composer.json && variant="API-style (has mezzio-hal)"
-    grep -q 'laminas/laminas-form' composer.json && variant="templated-style (has laminas-form)"
+    hal=0 form=0
+    grep -q 'mezzio/mezzio-hal' composer.json && hal=1
+    grep -q 'laminas/laminas-form' composer.json && form=1
+    case "$hal$form" in
+      10) variant="API-style (has mezzio-hal)" ;;
+      01) variant="templated-style (has laminas-form)" ;;
+      11) variant="unclear (has mezzio-hal and laminas-form; infer the parent from the PSR-4 roots)" ;;
+    esac
   fi
   echo "- package: ${pkg:-unknown}  |  variant: ${variant}"
   [ -n "$ns" ] && echo "- root namespace: ${ns}"
-  grep -q 'authorization-guards' -r config/autoload 2>/dev/null \
-    && echo "- authorization: guards (authorization-guards.global.php)" \
-    || { [ -f config/autoload/authorization.global.php ] && echo "- authorization: RBAC (authorization.global.php)"; }
+  guards=config/autoload/authorization-guards.global.php
+  if [ -f "$guards" ]; then
+    policy=$(sed -n "s/.*protection_policy.*\(POLICY_[A-Z]*\).*/\1/p" "$guards" | head -1)
+    echo "- authorization: guards + RBAC (${guards##*/}${policy:+, $policy})"
+    [ "$policy" = POLICY_ALLOW ] && echo "  unlisted routes are PUBLIC — every new route needs a guard rule"
+  elif [ -f config/autoload/authorization.global.php ]; then
+    echo "- authorization: RBAC (authorization.global.php) — unlisted routes are denied"
+  fi
 fi
 
 # --- git ---
-if command -v git >/dev/null 2>&1 && [ -d .git ]; then
-  branch=$(git branch --show-current 2>/dev/null)
-  [ -z "$branch" ] && branch="(detached or no commits yet)"
-  dirty=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-  echo "- branch: ${branch} (${dirty} uncommitted path(s))"
+# Ask git rather than test for a .git directory: in a worktree or a submodule checkout
+# .git is a file.
+if command -v git >/dev/null 2>&1 \
+  && [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = true ]; then
   eol_bad=$(git ls-files --eol 2>/dev/null | grep -c 'w/crlf' || true)
   [ "${eol_bad:-0}" -gt 0 ] && echo "- WARNING: ${eol_bad} tracked file(s) have CRLF in the worktree; run /dk-hygiene"
-  [ -f .gitmodules ] && echo "- .gitmodules present: Core is a submodule; commit inside src/Core, then bump the pointer here"
+  top=$(git rev-parse --show-toplevel 2>/dev/null)
+  if [ -f "$top/.gitmodules" ]; then
+    subs=$(git config -f "$top/.gitmodules" --get-regexp '^submodule\..*\.path$' 2>/dev/null \
+      | cut -d' ' -f2- | tr '\n' ' ')
+    subs=${subs% }
+    case " $subs " in
+      *" src/Core "*) echo "- git submodules: ${subs}. Core is one: commit inside src/Core, then bump the pointer here" ;;
+      "  ") ;;
+      *) echo "- git submodules: ${subs}" ;;
+    esac
+  fi
 fi
 
 # --- setup completeness ---
-[ -d vendor ] || echo "- vendor/ missing — dependencies are not installed (run /dk-bootstrap)"
+[ -f composer.json ] && [ ! -d vendor ] \
+  && echo "- vendor/ missing — dependencies are not installed (run /dk-bootstrap)"
 
 for d in config/autoload/*.dist config/*.dist; do
   [ -e "$d" ] || continue
@@ -65,5 +86,4 @@ done
 [ -f config/development.config.php ] && echo "- development mode is ENABLED"
 [ -f data/cache/config-cache.php ] && echo "- config cache present; clear it after config edits"
 
-echo "- Reminder: no dependency-manifest edits, no installs, no DB commands without asking."
 exit 0

@@ -30,12 +30,12 @@ rm -rf dotboost-main dotboost.zip
 ## After copying, either way
 
 ```bash
-chmod +x .claude/hooks/*.sh .claude/statusline.sh \
-         .claude/skills/dependency-policy/scripts/*.sh
+chmod +x .claude/hooks/*.sh .claude/statusline.sh
 echo '.claude/settings.local.json' >> .git/info/exclude
 ```
 
-Nothing in the payload is committed with an executable bit, and a zip extracted on Windows carries no permission bits at all — the `chmod` step is not optional.
+Nothing in the payload is committed with an executable bit, and a zip extracted on Windows carries no permission bits at all.
+`settings.json` invokes the hooks and the status line as `bash <path>`, so they run regardless; the `chmod` only matters when you run one of them by hand.
 The `settings.local.json` line keeps personal, git-ignored overrides out of `git add .`.
 
 The trailing `/.` copies the *contents* of the payload's `.claude/`, so it merges into an existing `.claude/` instead of nesting a second one at `.claude/.claude/`.
@@ -43,7 +43,7 @@ Merging still overwrites same-named files: if the target project already has its
 
 ## Add the `CLAUDE.md` block
 
-`dependency-policy` and the feature-docs check need a short block pasted into the *project's own* `CLAUDE.md` to become proactive rather than merely loadable — see [Architecture Overview](architecture.md#the-claudemd-contract) and [Dependency Policy](skills/dependency-policy.md).
+The dependency policy in `dotkernel-package-status` and the feature-docs check need a short block pasted into the *project's own* `CLAUDE.md` to become proactive rather than merely loadable — see [Architecture Overview](architecture.md#the-claudemd-contract) and [Package Status](skills/dotkernel-package-status.md).
 
 ## Optional: markdown linting
 
@@ -60,6 +60,6 @@ Until the binary is resolvable the hook exits silently, so `.claude/` stays drop
 ## Verify
 
 Start Claude Code in the project and run `/help` — you should see `dk-bootstrap`, `dk-module`, `dk-route`, `dk-trace`, `dk-test`, `dk-document`, `dk-check`, `dk-deprecate`, `dk-review`, `dk-hygiene`.
-The session-start hook should open with a short briefing: detected project variant, root namespace, authorization style, branch, and which config files are still missing.
+The session-start hook should open with a short briefing: detected project variant, root namespace, authorization style (flagging a guard policy that leaves unlisted routes public), and which config files are still missing.
 
 Full end-to-end verification steps, including how to test the guardrails themselves, are in [Verifying an Install](verifying-an-install.md).

@@ -28,7 +28,7 @@ nav:
           - "Commands Reference": v1/commands/reference.md
           - "Skills": v1/skills/introduction.md
           - "Skills Reference": v1/skills/reference.md
-          - "Dependency Policy": v1/skills/dependency-policy.md
+          - "Package Status": v1/skills/dotkernel-package-status.md
           - "Feature Documentation": v1/feature-docs.md
       - "Reference & Maintenance":
           - Maintaining: v1/maintaining.md

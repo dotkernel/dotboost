@@ -31,7 +31,7 @@ See [Guardrails vs. Permissions](hooks/guardrails-vs-permissions.md) for the spe
 
 ## The `CLAUDE.md` contract
 
-Two skills — `dependency-policy` and the feature-docs check — only become *proactive* rather than merely loadable once the consuming project pastes a short block into its own `CLAUDE.md`.
+Two behaviors — the dependency policy in `dotkernel-package-status` and the feature-docs check — only become *proactive* rather than merely loadable once the consuming project pastes a short block into its own `CLAUDE.md`.
 A skill's `description:` frontmatter decides whether it *can* load; it doesn't decide whether Claude reaches for it unprompted.
 This is why installing `.claude/` alone under-delivers on those two behaviors — see [Getting Started](getting-started.md) and [Feature Documentation](feature-docs.md).
 
@@ -39,4 +39,4 @@ This is why installing `.claude/` alone under-delivers on those two behaviors �
 
 - [Permissions](permissions/introduction.md) for the guardrail tiers.
 - [Hooks](hooks/introduction.md) for the six lifecycle scripts.
-- [Skills](skills/introduction.md) for how the nineteen skills are organized.
+- [Skills](skills/introduction.md) for how the eighteen skills are organized.

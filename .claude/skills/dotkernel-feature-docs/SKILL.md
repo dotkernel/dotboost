@@ -27,9 +27,10 @@ together belong in one doc.
 
 ## Where it goes
 
-Detect before writing. Some Dotkernel repositories — the stock API among them — already own a `documentation/` directory, holding
-some mix of `command/*.md`, a generated `openapi.json` and Postman collections. Which variants have
-one is **not** predictable — check, do not infer it from the project type:
+Detect before writing. Some Dotkernel repositories already own a `documentation/` directory,
+holding some mix of `command/*.md`, a generated `openapi.json` and Postman collections. Among the
+stock projects only the API ships one, but derived projects add or drop it freely — check, do not
+infer it from the project type:
 
 ```bash
 ls -d documentation docs 2>/dev/null
@@ -57,32 +58,38 @@ modules: [Book]
 routes:
   - POST /book/{id}/review
 handlers:
-  - Api\Book\Handler\Review\PostBookReviewResourceHandler
+  - Api\Book\Handler\Book\Review\PostBookReviewResourceHandler
 ---
 
 # Book reviews
 
 ## Why
+
 Two or three sentences: the need, and the constraint that shaped the approach. The one section
 that cannot be recovered by reading the code.
 
 ## Surface
+
 | Route | Name | Handler | Roles |
 | --- | --- | --- | --- |
 | `POST /book/{id}/review` | `book::create-review` | `PostBookReviewResourceHandler` | `user` |
 
 ## Data
-Entities and columns added or changed, all in `Core`. Migration required: yes / no — and the
-command, not run.
+
+Entities and columns added or changed — in `Core` for API and Admin, in the module's own `Entity/`
+for Frontend. Migration required: yes / no — and the command, not run.
 
 ## Config
+
 Authorization entries, ConfigProvider registrations, new config keys, and where their secrets
 live (`*.local.php`, never committed).
 
 ## Testing
+
 What is covered, and how to run just this feature's tests.
 
 ## Follow-ups
+
 Known gaps, deferred decisions, anything a reviewer waved through.
 ```
 
@@ -100,7 +107,7 @@ Every claim in the doc is read from somewhere. Where it came from:
 | Roles | `authorization.global.php` (API); Admin / Frontend: the permission in `authorization-guards.global.php`, then the roles holding it in `authorization.global.php` |
 | Handler class and path | the filesystem under `src/<Module>/src/Handler/` |
 | Registrations | the module's `ConfigProvider` |
-| Data and migration need | changed entities under `src/Core/` |
+| Data and migration need | changed entities under `src/Core/` (API, Admin); Frontend: the module's own `Entity/`; Light and Queue: none |
 | Testing | the test files that actually exist |
 
 An undocumented gap is better than an invented fact. If something could not be verified — the role

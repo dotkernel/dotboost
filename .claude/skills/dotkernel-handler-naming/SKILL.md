@@ -26,7 +26,7 @@ It has **two dialects**, and the word order differs between them — pick by var
 
 ## Dialect A — API (REST, no forms)
 
-```
+```text
 {HttpVerb}{Resource}[{SubResource}][{Action}]{Resource|Collection}Handler
 ```
 
@@ -48,7 +48,7 @@ resource end in `…{Action}Handler`. No CRUD word in the class name — the HTT
 
 ## Dialect B — Admin (templated, form-driven)
 
-```
+```text
 {HttpVerb}{Action}{Resource}[{SubResource}][Form]Handler
 ```
 
@@ -100,7 +100,7 @@ Admin: `/<module>/<action>-<resource>[/{id}]`, grouped by module prefix — `/ad
 
 ## Route names
 
-```
+```text
 <module>::<action>-<resource>
 ```
 

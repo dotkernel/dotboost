@@ -3,6 +3,8 @@ description: Run the full QA gate and fix what it reports
 allowed-tools: Read, Grep, Glob, Edit, Bash(composer cs-fix), Bash(composer cs-check), Bash(composer static-analysis), Bash(composer test), Bash(composer check), Bash(git status:*), Bash(git diff:*)
 ---
 
+<!-- markdownlint-disable-file MD041 --><!-- command format is frontmatter then prose; no heading -->
+
 Load `dotkernel-qa-gate`. Confirm the script names in `composer.json` before running them.
 
 1. `composer cs-fix`
