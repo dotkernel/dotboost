@@ -9,12 +9,13 @@ You get a flat refusal instead.
 | `git rebase` | ask | blocks |
 | `doctrine-migrations migrate` / `execute` | ask | blocks |
 | `fixtures:execute`, `schema:drop`, `schema:update` (via `bin/doctrine`) | ask | blocks |
+| `git checkout --` | ask, via `git checkout` | blocks |
 | `composer development-enable` / `-disable` | — | blocks |
-| `pip install`, `git checkout --`, `git filter-branch` | — | blocks |
+| `pip install`, `git filter-branch` | — | blocks |
 
 Everything else under `ask` — commits, `mysql`, the config and QA files — prompts as documented in [Permissions Reference](../permissions/reference.md).
 
 ## If you want one of these back
 
 Editing `settings.local.json` will not reach a hook-level block — that override layer only affects the permission tiers.
-To allow one of these commands, edit `guard-bash.sh` itself, and do so deliberately: every command in this table is either a schema-mutating or history-rewriting operation, which is why it's blocked at the hook layer instead of left to a prompt someone could approve on autopilot.
+To allow one of these commands, edit `guard-bash.sh` itself, and do so deliberately: every command in this table mutates the database, rewrites history, discards uncommitted work (`git checkout --`), installs packages (`pip install`) or changes committed config state (`development-enable`/`-disable`), which is why it's blocked at the hook layer instead of left to a prompt someone could approve on autopilot.

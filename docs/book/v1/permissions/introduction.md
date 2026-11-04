@@ -3,12 +3,14 @@
 `settings.json` decides what Claude Code may read, write, and run in a Dotkernel repo before a single word of conversation happens.
 The rules fall into four tiers:
 
-- **Never read** — `Read` denies. The contents never enter the context window at all.
+- **Never read** — `Read` denies. Claude's file tools and the Bash file commands Claude Code recognises (`cat`, `head`, `tail`, `sed`, `tee`) cannot open these files.
 - **Never written** — `Edit` denies, which also cover `Write`.
 - **Never run** — `Bash` denies.
 - **Ask first** / **allowed outright** — everything else, split by risk.
 
-The first three tiers exist to make a class of mistake structurally impossible rather than relying on Claude to remember not to do it: secrets never get read into context in the first place, dependency manifests never get silently edited, and destructive git or install commands never get silently run.
+The first three tiers exist to stop a class of mistake by rule rather than relying on Claude to remember not to do it: secrets are not read into context through the normal tools, dependency manifests are not silently edited, and destructive git or install commands are not silently run.
+They are rules, not a sandbox: a command that reads files without naming them (`grep -r password config/`) or a script that opens a file itself is not covered.
+For an OS-level guarantee, use the sandbox described in the [Claude Code permissions docs](https://code.claude.com/docs/en/permissions).
 The full lists are in [Reference](reference.md).
 
 This is deliberately blunter than a skill.

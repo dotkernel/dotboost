@@ -4,6 +4,8 @@ argument-hint: <VERB> <path> (e.g. POST /book/{id}/review)
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash(php bin/cli.php:*), Bash(composer cs-fix), Bash(composer cs-check), Bash(composer static-analysis), Bash(composer test)
 ---
 
+<!-- markdownlint-disable-file MD041 --><!-- command format is frontmatter then prose; no heading -->
+
 Add the route: **$ARGUMENTS**
 
 Load `dotkernel-project-variants` first, then `dotkernel-handler-naming`,
@@ -22,8 +24,8 @@ Work in this order and show me the plan before step 3:
      handler, deps via `#[Inject]`.
    - Validation: an InputFilter, or a Form with CSRF for a templated project.
    - Service method — business logic lives there, not in the handler.
-   - Entity/repository changes only in `Core`, and tell me if a migration is needed rather than
-     running one.
+   - Entity/repository changes only in `Core` (API and Admin; Frontend: inside the module that
+     owns them), and tell me if a migration is needed rather than running one.
 4. **Wire.** `ConfigProvider` factories, delegators and aliases; route in `RoutesDelegator`;
    authorization entry per role; presentation (HAL metadata or template path); OpenAPI operation if
    this project publishes it.

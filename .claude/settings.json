@@ -1,11 +1,10 @@
 {
-  "$comment": "Dotkernel project settings for Claude Code. Commit this file. Personal overrides go in .claude/settings.local.json (git-ignored). Verify the permission-rule glob syntax and the 'ask' array against your Claude Code version; the hooks are the layer that always holds.",
+  "$comment": "Dotkernel project settings for Claude Code. Commit this file. Personal overrides go in .claude/settings.local.json (git-ignored). Verify the permission-rule glob syntax and the 'ask' array against your Claude Code version. The hooks add a second check that also sees inside compound commands, but they match command text rather than parsing the shell, so treat both layers as guardrails, not a sandbox.",
   "env": {
     "COMPOSER_MEMORY_LIMIT": "-1"
   },
   "permissions": {
-	"additionalDirectories": [],
-    "defaultMode": "auto",
+    "additionalDirectories": [],
     "deny": [
       "Bash(composer require:*)",
       "Bash(composer remove:*)",
@@ -104,7 +103,7 @@
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup|resume|clear",
+        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
@@ -156,40 +155,7 @@
   "statusLine": {
     "type": "command",
     "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/statusline.sh\"",
-    "padding": 0
-  },
-  "spinnerVerbs": {
-    "mode": "replace",
-    "verbs": [
-      "Bribing the garbage collector",
-      "Blaming the cache",
-      "Escaping vim",
-      "Refactoring your regrets",
-      "Deleting node_modules",
-      "Warming Doctrine's lazy ghosts",
-      "Dumping autoload, dumping hope",
-      "Mocking every interface",
-      "Reading docs, allegedly",
-      "Consulting the rubber duck",
-      "Nullifying the null coalescer",
-      "Silently swallowing exceptions",
-      "Deadlocking politely",
-      "Padding the estimate",
-      "Piping through middleware",
-      "Flushing the EntityManager",
-      "Summoning Diactoros",
-      "Bribing the ServiceManager",
-      "Mezzio-ing about",
-      "Waiting on composer update",
-      "Queueing async regrets",
-      "Consulting the debugbar",
-      "Being opinionated, framework-lessly",
-      "Injecting unsolicited dependencies",
-      "Sniffing your user agent",
-      "Fixturing fake users",
-      "Twigging the templates"
-    ]
-  },
-  "tui": "fullscreen",
-  "theme": "dark"
+    "padding": 0,
+    "refreshInterval": 30
+  }
 }

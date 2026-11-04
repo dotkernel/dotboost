@@ -6,9 +6,9 @@ It's the part of a change a cleared session can't reconstruct from `src/` alone,
 ## Where it lands
 
 Detected, not assumed.
-Many Dotkernel repositories already carry a `documentation/` directory — command docs, a generated `openapi.json`, Postman collections — and which ones do isn't predictable from the project variant, so the skill checks rather than infers:
+Many Dotkernel repositories already carry a `documentation/` directory — command docs, a generated `openapi.json`, Postman collections — the stock API ships one while derived projects vary, so the skill checks rather than infers:
 
-- `documentation/features/` when that directory already exists
+- `documentation/features/` when the repo already has a `documentation/` directory
 - `docs/features/` otherwise
 
 It never creates a second documentation root next to an existing one.

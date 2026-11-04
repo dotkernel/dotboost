@@ -4,6 +4,8 @@ argument-hint: <feature name or route> [--update]
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(date +%F)
 ---
 
+<!-- markdownlint-disable-file MD041 --><!-- command format is frontmatter then prose; no heading -->
+
 Document the feature: **$ARGUMENTS**
 
 Load `dotkernel-project-variants` first, then `dotkernel-feature-docs`, plus

@@ -14,7 +14,8 @@ The `deny` tier (never read / never written / never run) is not meant to be rela
 The shared `settings.json` sets no permission mode, theme, UI or spinner verbs.
 `settings.local.json.example` carries a sample of each — `permissions.defaultMode: "auto"`, `theme: "dark"`, `tui: "fullscreen"` and a Dotkernel-flavoured `spinnerVerbs` list.
 Keep the ones you want and delete the rest.
-Note that `defaultMode: "auto"` lets the session edit files without proposing a plan first; it is an opt-in, not a team default.
+The `defaultMode: "auto"` entry is only an example of the key, not a setting that works from that file: Claude Code does not apply `auto` from project or local settings, and the session starts without it, with no error.
+To use auto mode, set `permissions.defaultMode` in `~/.claude/settings.json` instead — see [Permission modes](https://code.claude.com/docs/en/permission-modes).
 
 ## Status line placement
 

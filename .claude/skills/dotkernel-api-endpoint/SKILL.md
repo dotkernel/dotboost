@@ -47,7 +47,8 @@ follow the repo and tell the user this skill needs updating.
 - A one-time token from an e-mail link is a path placeholder:
   `/user/account/reset-password/{hash}`.
 - A related list with no parent item is a fixed segment: `/user/role`.
-- No `PUT`, no version prefix.
+- No `PUT`. No version prefix by default — the rare exceptions, and how to propose one, are in
+  `dotkernel-evolution-pattern`.
 
 ## The caller and the item in the path
 

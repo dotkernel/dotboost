@@ -33,7 +33,7 @@ either to one of them, use an InputFilter.
 
 ## InputFilters (every variant)
 
-```
+```text
 src/<Module>/src/InputFilter/
 ├── Input/TitleInput.php                extends Laminas\InputFilter\Input
 ├── CreateBookInputFilter.php           extends the repo's AbstractInputFilter
@@ -93,7 +93,7 @@ $data = (array) $this->inputFilter->getValues();   // never getRawValues()
 `getValues()` returns filtered values; `getRawValues()` bypasses the filter chain and defeats
 the point.
 
-## Forms (Admin / Frontend / Light)
+## Forms (Admin / Frontend)
 
 `laminas-form` gives a thin object layer over elements, an InputFilter per input, and binding
 data to and from the form. It integrates with the Laminas security ecosystem —

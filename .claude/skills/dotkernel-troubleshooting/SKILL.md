@@ -86,10 +86,17 @@ validates it. A rotated session invalidates in-flight forms.
 The CORS middleware must be piped **before** the routing middleware, and the origin must be listed
 in the CORS local config — which does not exist until you copy it from the `.dist`.
 
-## 401 with a token that "should" work
+## 403 with a token that "should" work
 
-Expired token, wrong client id or scope, or the OAuth keys were regenerated after the token was
-issued.
+In stock Dotkernel API a token that fails validation does not produce 401: the authentication
+middleware turns any request it cannot authenticate into a guest, so a route not granted to guest
+answers 403. Causes: expired token, wrong client id or scope, or the OAuth keys were regenerated
+after the token was issued. A 403 that persists with a freshly issued token is an authorization
+problem instead — see "403 / access denied on a route you just added" above.
+
+401 comes only from the token-issuing operations, or from a project that pipes Mezzio's own
+`AuthenticationMiddleware` instead of the stock one — that middleware answers 401 when
+authentication fails. Check which one `config/pipeline.php` or the route's middleware list uses.
 
 ## Class not found after adding a namespace
 
@@ -112,7 +119,10 @@ migration, and do not hand-edit the migration.
 
 A different PHP version in the matrix, or a stale local `.phpcs-cache` / `.phpunit.result.cache`.
 
-## Diagnostic commands (all read-only)
+## Diagnostic commands
+
+All read-only except `composer clear-config-cache`, which deletes the cached merged config — safe,
+and it touches no committed file, but it is a write.
 
 ```bash
 php bin/cli.php route:list          # API / Admin; or the repo's equivalent

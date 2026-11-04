@@ -1,42 +1,67 @@
 #!/usr/bin/env bash
-# .claude/statusline.sh  —  pure bash, no jq/python needed
+# .claude/statusline.sh  —  pure bash + awk, no jq/python needed
 #
-# Output (design "Statusline Final" / 1e, two lines, column 2 aligned at cell 30):
-#   ~/parent/folder               Model  <level>
-#   5h <20-cell bar> <pct>%       resets in <1h 48m> (<hh:mm>)  7d <pct>%
+# Output (design "Pills", two lines):
+#    ~/parent/folder   Model · <level>   $ <cost>   ctx <6 segs> <pct>%
+#   5h <20-cell bar> <pct>%  ↻ <1h 48m> (<hh:mm>)   7d <10 segs> <pct>%
 #
-# The 5h / 7d figures are the OFFICIAL rate-limit values Claude Code passes
-# in on stdin under `rate_limits` (used_percentage + resets_at epoch). These
-# match what /usage and your account show — no estimation involved.
+# Every figure comes from the JSON Claude Code passes on stdin:
+#   5h / 7d   rate_limits.{five_hour,seven_day}  — the official values /usage shows
+#   $         cost.total_cost_usd                — estimated billed cost: growth while on Fable or past 100% of 5h/7d
+#   ctx       context_window.used_percentage     — how full the context window is
 
 input=$(cat)
 NOW=$(date +%s)
 
 # ---- tiny JSON extractors (good enough for Claude Code's payload) ----------
-# string value of a top-level-ish "key":"value"
-jstr() { printf '%s' "$input" | grep -o "\"$1\":\"[^\"]*\"" | head -1 | sed 's/^[^:]*:"//; s/"$//'; }
-
-# Pull "key":<number> from a given JSON fragment. Handles ints and floats.
-jnum() { printf '%s' "$2" | grep -o "\"$1\":[0-9.]*" | head -1 | sed 's/^[^:]*://'; }
+jstr()  { printf '%s' "$input" | grep -o "\"$1\":\"[^\"]*\"" | head -1 | sed 's/^[^:]*:"//; s/"$//'; }
+jnum()  { printf '%s' "${2:-$input}" | grep -o "\"$1\":[0-9.]*" | head -1 | sed 's/^[^:]*://'; }
+# float -> nearest int, clamped 0–100 (empty in, empty out)
+round() { awk -v n="${1:-}" 'BEGIN{ if (n=="") { print ""; exit } r=int(n+0.5); print (r<0?0:(r>100?100:r)) }'; }
 
 MODEL=$(jstr display_name); [[ -z "$MODEL" ]] && MODEL=Claude
 MODEL=${MODEL% (*}          # drop suffixes like " (1M context)"
 MODEL=${MODEL#Claude }      # drop a leading "Claude "
 EFFORT=$(printf '%s' "$input" | grep -o '"effort":{[^}]*}' | grep -o '"level":"[^"]*"' | sed 's/^[^:]*:"//; s/"$//')
-CWD=$(jstr current_dir);    [[ -z "$CWD"   ]] && CWD=$(jstr cwd)
-[[ -z "$CWD" ]] && CWD=$PWD
+CWD=$(jstr current_dir); [[ -z "$CWD" ]] && CWD=$(jstr cwd); [[ -z "$CWD" ]] && CWD=$PWD
+DIR=${CWD/#$HOME/\~}
+if [[ $DIR == */* ]]; then PARENT=${DIR%/*}/ BASE=${DIR##*/}; else PARENT='' BASE=$DIR; fi
+[[ -z "$BASE" ]] && BASE=/
 
 # ---- official rate limits ---------------------------------------------------
-# Isolate each window's { ... } object, then read its two fields.
 FIVE=$(printf '%s'  "$input" | grep -o '"five_hour":{[^}]*}')
 SEVEN=$(printf '%s' "$input" | grep -o '"seven_day":{[^}]*}')
-
-# used_percentage may be a float (e.g. 56.9999) -> round to nearest int, clamp 0–100.
-round() { awk -v n="${1:-}" 'BEGIN{ if (n=="") { print ""; exit } r=int(n+0.5); print (r<0?0:(r>100?100:r)) }'; }
-
 FIVE_PCT=$(round "$(jnum used_percentage "$FIVE")")
 SEVEN_PCT=$(round "$(jnum used_percentage "$SEVEN")")
 FIVE_RESET=$(jnum resets_at "$FIVE"); FIVE_RESET=${FIVE_RESET%.*}
+LEFT_STR='' CLOCK=''
+if [[ -n "$FIVE_RESET" ]]; then
+  MINS=$(( (FIVE_RESET - NOW) / 60 )); (( MINS < 0 )) && MINS=0
+  if (( MINS >= 60 )); then LEFT_STR=$(printf '%dh %02dm' $(( MINS / 60 )) $(( MINS % 60 ))); else LEFT_STR="${MINS}m"; fi
+  # Reset clock: GNU date takes -d @epoch, BSD/macOS date takes -r epoch.
+  CLOCK=$(date -d "@$FIVE_RESET" +%H:%M 2>/dev/null || date -r "$FIVE_RESET" +%H:%M 2>/dev/null)
+fi
+
+# ---- session cost, duration, context ---------------------------------------
+# Billed cost. The payload has no billed-credit field, only total_cost_usd (an estimate at
+# API prices), so each render adds the growth since the previous render to a per-session
+# total — but only while the model is Fable (always billed as extra usage) or either rate
+# limit is at 100% or more. Below that the chip stays at 0.
+TOTAL=$(jnum total_cost_usd); TOTAL=${TOTAL:-0}
+MODEL_ID=$(printf '%s' "$input" | grep -o '"model":{[^}]*}' | grep -o '"id":"[^"]*"' | sed 's/^[^:]*:"//; s/"$//')
+BILLING=$(awk -v f="$(jnum used_percentage "$FIVE")" -v s="$(jnum used_percentage "$SEVEN")" \
+  'BEGIN{ print (f+0 >= 100 || s+0 >= 100) ? 1 : 0 }')
+printf '%s' "$MODEL_ID" | grep -qi fable && BILLING=1
+SID=$(jstr session_id)
+STATE="${TMPDIR:-/tmp}/claude-statusline-${SID:-default}.cost"   # "<last total> <billed>"
+LAST=0 BILLED=0
+[[ -r "$STATE" ]] && read -r LAST BILLED < "$STATE"
+BILLED=$(awk -v t="$TOTAL" -v l="${LAST:-0}" -v b="${BILLED:-0}" -v on="$BILLING" \
+  'BEGIN{ d = (t+0 >= l+0) ? t-l : t+0; if (on == 1) b += d; printf "%.6f", b }')
+printf '%s %s\n' "$TOTAL" "$BILLED" > "$STATE.$$" 2>/dev/null && mv -f "$STATE.$$" "$STATE" 2>/dev/null
+COST=$(awk -v c="$BILLED" 'BEGIN{ printf (c+0<10 ? "%.2f" : "%.1f"), c+0 }')
+# context_window.used_percentage is the one immediately followed by remaining_percentage
+CTX_PCT=$(round "$(printf '%s' "$input" | grep -o '"used_percentage":[0-9.]*,"remaining_percentage"' | grep -o '[0-9.]*' | head -1)")
 
 # ---- palette (truecolor) ----------------------------------------------------
 RST=$'\033[0m'
@@ -45,16 +70,11 @@ fg() { printf '\033[38;2;%d;%d;%dm' "0x${1:0:2}" "0x${1:2:2}" "0x${1:4:2}"; }
 bg() { printf '\033[48;2;%d;%d;%dm' "0x${1:0:2}" "0x${1:2:2}" "0x${1:4:2}"; }
 
 C_BRIGHT=ecebe8 C_DIM=85827b C_MODEL=d97757 C_EFFORT=b4a0f5
-C_TRACK=26282d C_OK=9ece6a C_WARN=e0af68 C_CRIT=f7768e
+C_TRACK=26282d C_OK=9ece6a C_WARN=e0af68 C_CRIT=f7768e C_COST=e6c384
 
 DIM=$(fg $C_DIM)
 
-pct_col() {  # ok < 50, warn < 80, crit otherwise
-  if   (( $1 < 50 )); then fg $C_OK
-  elif (( $1 < 80 )); then fg $C_WARN
-  else                     fg $C_CRIT
-  fi
-}
+pct_col() { if (( $1 < 50 )); then fg $C_OK; elif (( $1 < 80 )); then fg $C_WARN; else fg $C_CRIT; fi; }  # usage: high is bad
 
 # Linear RGB mix of hex $1 → $2 at num/den ($3/$4), rounded half up.
 mix() {
@@ -86,39 +106,37 @@ bar() {
   printf '%s' "$out$RST"
 }
 
-# ---- layout ----------------------------------------------------------------
-DIR=${CWD/#$HOME/\~}
-if [[ $DIR == */* ]]; then PARENT=${DIR%/*}/ BASE=${DIR##*/}; else PARENT='' BASE=$DIR; fi
-[[ -z "$BASE" ]] && BASE=/
+# seg_bar <pct> <segments> <hex> — ▰▱ gauge; any non-zero value lights one segment
+seg_bar() {
+  local on=$(( ($1 * $2 + 50) / 100 )) out i
+  (( $1 > 0 && on == 0 )) && on=1
+  out=$(fg "$3"); for (( i = 0; i < on; i++ )); do out+='▰'; done
+  out+=$(fg 3b3e45); for (( ; i < $2; i++ )); do out+='▱'; done
+  printf '%s' "$out$RST"
+}
 
-W1=$(( ${#PARENT} + ${#BASE} ))
-W2=0; [[ -n "$FIVE_PCT" ]] && W2=$(( 2 + 1 + CELLS + 1 + ${#FIVE_PCT} + 1 ))
-COL=30
-(( W1 + 2 > COL )) && COL=$(( W1 + 2 ))
-(( W2 + 2 > COL )) && COL=$(( W2 + 2 ))
+# pill <bg> <fg> <text> — a coloured chip
+pill() { printf '%s%s %s %s' "$(bg "$1")" "$(fg "$2")" "$3" "$RST"; }
 
-LINE1="$DIM$PARENT$RST$BLD$(fg $C_BRIGHT)$BASE$RST$(printf '%*s' $(( COL - W1 )) '')"
-LINE1+="$BLD$(fg $C_MODEL)$MODEL$RST"
-[[ -n "$EFFORT" ]] && LINE1+="  $(fg $C_EFFORT)$EFFORT$RST"
+# ---- line 1: chips ----------------------------------------------------------
+LINE1=$(pill 2f3340 $C_BRIGHT "$DIM$PARENT$(fg $C_BRIGHT)$BLD$BASE")
+M="$BLD$MODEL"; [[ -n "$EFFORT" ]] && M+=" $RST$(bg d97757)$(fg 3a1d12)· $EFFORT"
+LINE1+=" $(pill d97757 1a1b26 "$M")"
+LINE1+=" $(pill 3a3326 $C_COST "\$ $COST")"
+[[ -n "$CTX_PCT" ]] && LINE1+="  ${DIM}ctx$RST $(seg_bar "$CTX_PCT" 6 "$C_EFFORT") $(fg $C_EFFORT)$CTX_PCT%$RST"
 
-if [[ -z "$FIVE_PCT" && -z "$SEVEN_PCT" ]]; then
-  printf '%s\n' "$LINE1"
-  exit 0
-fi
-
+# ---- line 2: gauges ---------------------------------------------------------
 LINE2=''
 if [[ -n "$FIVE_PCT" ]]; then
-  LINE2+="${DIM}5h$RST $(bar "$FIVE_PCT") $BLD$(pct_col "$FIVE_PCT")$FIVE_PCT%$RST$(printf '%*s' $(( COL - W2 )) '')"
-  if [[ -n "$FIVE_RESET" ]]; then
-    MINS=$(( (FIVE_RESET - NOW) / 60 )); (( MINS < 0 )) && MINS=0
-    if (( MINS >= 60 )); then LEFT_STR=$(printf '%dh %02dm' $(( MINS / 60 )) $(( MINS % 60 )))
-    else                      LEFT_STR="${MINS}m"
-    fi
-    LINE2+="${DIM}resets in$RST $LEFT_STR $DIM($(date -d "@$FIVE_RESET" +%H:%M))$RST"
+  LINE2+="${DIM}5h$RST $(bar "$FIVE_PCT") $BLD$(pct_col "$FIVE_PCT")$FIVE_PCT%$RST"
+  if [[ -n "$LEFT_STR" ]]; then
+    LINE2+="  $DIM↻$RST $LEFT_STR"
+    [[ -n "$CLOCK" ]] && LINE2+=" $DIM($CLOCK)$RST"
   fi
-else
-  LINE2+=$(printf '%*s' $COL '')
 fi
-[[ -n "$SEVEN_PCT" ]] && LINE2+="  ${DIM}7d$RST $(pct_col "$SEVEN_PCT")$SEVEN_PCT%$RST"
+[[ -n "$SEVEN_PCT" ]] && LINE2+="   ${DIM}7d$RST $(seg_bar "$SEVEN_PCT" 10 "$C_OK") $(pct_col "$SEVEN_PCT")$SEVEN_PCT%$RST"
+LINE2=${LINE2#   }
 
-printf '%s\n%s\n' "$LINE1" "$LINE2"
+printf '%s\n' "$LINE1"
+[[ -n "$LINE2" ]] && printf '%s\n' "$LINE2"
+exit 0

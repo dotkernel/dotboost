@@ -52,7 +52,7 @@ A service imports `Core\<Module>\Entity\X`. Never the reverse.
 
 Shared skeleton:
 
-```
+```text
 src/<Module>/src/
 ├── Handler/<Resource>/…            one folder per resource, nested for sub-resources
 ├── InputFilter/
@@ -129,13 +129,14 @@ Keep these arrays alphabetically sorted with aligned `=>` — phpcs enforces the
 | `config/routes.php` | thin — real routes live in each module's `RoutesDelegator` |
 | `bin/` | CLI entry points |
 | `test/Unit/`, `test/Functional/` | namespaces per `autoload-dev` |
-| `documentation/` | API only: CLI command docs |
+| `documentation/` | project docs (CLI command docs, a generated `openapi.json`, Postman collections) where present — the stock API ships one, derived projects vary, so check |
 | any Doctrine migrations directory | **generated** — never hand-edit |
 
 ## Checklist for a new artefact
 
 - [ ] Namespace matches the directory exactly (PSR-4, case-sensitive).
-- [ ] Entity/Repository in `Core`, everything request-facing in the application module.
+- [ ] Entity/Repository in `Core` (API and Admin; Frontend: inside the owning module), everything
+      request-facing in the application module.
 - [ ] Registered in the module `ConfigProvider` (API handlers: factory **and** delegator; Admin
       handlers: factory).
 - [ ] Route declared in `RoutesDelegator`; authorization entry added.

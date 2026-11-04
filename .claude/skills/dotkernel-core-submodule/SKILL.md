@@ -50,7 +50,7 @@ extraction into a git submodule. **Treat it as if it already were one.**
 
 A typical feature spans both layers:
 
-```
+```text
 src/Core/src/Book/src/Entity/Book.php               ← schema, invariants, accessors
 src/Core/src/Book/src/Repository/BookRepository.php ← query builders
 src/Book/src/Service/BookService.php                ← use-case orchestration
@@ -105,7 +105,10 @@ Skipping that second step is the classic failure: teammates pull and still get t
 ## Working rules for an agent
 
 - Before editing Core, state that the change is cross-project and name the likely consumers.
-- Never run `git submodule`, `git commit` or `git push` without explicit approval.
+- `git submodule` and `git push` are in the deny tier and refused by the `guard-bash.sh` hook,
+  approval or not — never try to run them. Give the user the exact commands to run instead.
+- `git add` and `git commit` prompt for approval; run them only when the user has asked for the
+  commit.
 - If `.gitmodules` exists, do not stage Core content changes from the parent repo — they belong
   to the submodule's own history.
 - Schema changes need a migration, generated not written, and **applied by every project on

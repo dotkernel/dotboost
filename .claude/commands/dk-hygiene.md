@@ -1,7 +1,9 @@
 ---
 description: Verify and fix encoding, line endings and whitespace across changed files
-allowed-tools: Read, Edit, Bash(git status:*), Bash(git diff:*), Bash(git ls-files:*), Bash(file:*), Bash(grep:*), Bash(sed:*), Bash(git config --get:*)
+allowed-tools: Read, Edit, Bash(git status:*), Bash(git diff:*), Bash(git ls-files:*), Bash(file:*), Bash(grep -rlIU:*), Bash(sed:*), Bash(git config --get:*)
 ---
+
+<!-- markdownlint-disable-file MD041 --><!-- command format is frontmatter then prose; no heading -->
 
 Check the files I have changed (`git status --porcelain`) for:
 
@@ -9,7 +11,8 @@ Check the files I have changed (`git status --porcelain`) for:
 2. A UTF-8 BOM (`EF BB BF`) at the start of the file — must not be present.
 3. Non-UTF-8 bytes.
 4. Missing trailing newline at end of file.
-5. Trailing whitespace on any line.
+5. Trailing whitespace on any line — except in `.md` files, where two trailing spaces are a
+   deliberate hard line break and must stay.
 6. Hard tabs in PHP files (must be 4 spaces).
 
 Detection without extra tooling:

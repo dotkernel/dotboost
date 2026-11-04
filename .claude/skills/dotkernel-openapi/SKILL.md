@@ -18,8 +18,8 @@ Applies to
 
 **Applies only to projects that publish OpenAPI.** Confirm first: `zircote/swagger-php` in
 `composer.json` and per-module `src/<Module>/src/OpenAPI.php` files. Of the stock projects only the
-API publishes OpenAPI; Admin, Frontend, Light and Queue have no OpenAPI surface and no
-`documentation/` directory.
+API publishes OpenAPI; Admin, Frontend, Light and Queue have no OpenAPI surface. Whether a
+project has a `documentation/` directory varies in derived projects — check, do not infer it.
 
 Why it matters: it lets front-end and back-end developers work in parallel against mock servers,
 it makes documentation auto-generated rather than hand-maintained, and tooling like Postman and

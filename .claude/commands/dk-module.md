@@ -4,6 +4,8 @@ argument-hint: <ModuleName> [short description]
 allowed-tools: Read, Grep, Glob, Edit, Write
 ---
 
+<!-- markdownlint-disable-file MD041 --><!-- command format is frontmatter then prose; no heading -->
+
 Plan a new module: **$ARGUMENTS**
 
 Load `dotkernel-project-variants` first, then `dotkernel-dot-maker`,

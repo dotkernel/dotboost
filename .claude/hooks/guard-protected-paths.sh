@@ -8,10 +8,15 @@ set -u
 
 payload=$(cat)
 
-# Pull "file_path":"..." out of tool_input without a JSON parser.
-raw_path=$(printf '%s' "$payload" \
-  | tr -d '\n' \
-  | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
+# Pull the target path out of tool_input without a JSON parser: "file_path" for
+# Edit, Write and MultiEdit, "notebook_path" for NotebookEdit.
+path_field() {
+  printf '%s' "$payload" \
+    | tr -d '\n' \
+    | sed -n 's/.*"'"$1"'"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p'
+}
+raw_path=$(path_field file_path)
+[ -z "$raw_path" ] && raw_path=$(path_field notebook_path)
 
 [ -z "$raw_path" ] && exit 0
 

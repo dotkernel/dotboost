@@ -67,8 +67,9 @@ confirmation of the variant you think you are in.
    config. API: `authorization.global.php`, where a missed entry denies the route. Admin:
    `authorization-guards.global.php`, where a missed entry leaves the route open to everyone.
 3. **Migrations.** It tells you the command; you run
-   `php ./vendor/bin/doctrine-migrations diff` and then `migrate` — with approval, since it
-   touches the database. Never hand-write a migration.
+   `php ./vendor/bin/doctrine-migrations diff` (it prompts for approval), then give the user the
+   `migrate` command to run — the `guard-bash.sh` hook refuses `migrate` for Claude, approval or
+   not. Never hand-write a migration.
 4. **Real logic.** Generated services and handlers are skeletons. Fill in validation, ownership
    checks, presentation metadata, documentation detail.
 5. **Tests.** Nothing is generated under `test/`.

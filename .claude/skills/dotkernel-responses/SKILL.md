@@ -31,13 +31,13 @@ Identify the variant first (`dotkernel-project-variants`). Both dialects share o
    Never expose password hashes, internal numeric ids, tokens, or relations you did not intend.
 2. Register it in the module `ConfigProvider`'s HAL config:
 
-```php
-AppConfigProvider::getResource(Book::class, 'book::view-book')
-```
+   ```php
+   AppConfigProvider::getResource(Book::class, 'book::view-book')
+   ```
 
-That maps to route-based resource metadata with an array-serialisable hydrator and generates the
-`self` link from the named route. Optional arguments override the identifier property and the
-route placeholder.
+   That maps to route-based resource metadata with an array-serialisable hydrator and generates
+   the `self` link from the named route. Optional arguments override the identifier property and
+   the route placeholder.
 
 3. The handler returns the repo's `createResponse(...)`, or its created-response helper for 201.
 
@@ -47,18 +47,18 @@ route placeholder.
    class (itself a Doctrine `Paginator`) — usually an empty class body.
 2. Register it, naming the embedded relation (plural, lowercase):
 
-```php
-AppConfigProvider::getCollection(BookCollection::class, 'book::list-book', 'books')
-```
+   ```php
+   AppConfigProvider::getCollection(BookCollection::class, 'book::list-book', 'books')
+   ```
 
 3. The service returns a `QueryBuilder`; the handler wraps it:
 
-```php
-return $this->createResponse(
-    $request,
-    new BookCollection($this->bookService->getBooks($request->getQueryParams()))
-);
-```
+   ```php
+   return $this->createResponse(
+       $request,
+       new BookCollection($this->bookService->getBooks($request->getQueryParams()))
+   );
+   ```
 
 Pagination links (`first`, `prev`, `self`, `next`, `last`) are generated from the route. Do not
 build them.

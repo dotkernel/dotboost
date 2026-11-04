@@ -3,7 +3,6 @@
 Applies to
 : The block under each skill's title that names the projects and packages the skill covers — `all`, `none`, or a list such as `Dotkernel API`.
 
-
 Command
 : A `.md` file under `.claude/commands/` with frontmatter (`description`, optional `argument-hint`, `allowed-tools`) that defines a `/dk-*` slash command.
   Invoked explicitly by name, unlike a skill.

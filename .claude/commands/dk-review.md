@@ -3,6 +3,8 @@ description: Pre-PR review of the working tree against Dotkernel conventions
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(composer cs-check), Bash(composer static-analysis)
 ---
 
+<!-- markdownlint-disable-file MD041 --><!-- command format is frontmatter then prose; no heading -->
+
 Review my uncommitted changes (`git diff HEAD` plus untracked files) before I open a PR.
 $ARGUMENTS
 
@@ -10,8 +12,8 @@ Use the `dotkernel-reviewer` agent if that keeps context cleaner. Load
 `dotkernel-project-variants` first, then `dotkernel-handler-naming`,
 `dotkernel-module-structure`, `dotkernel-input-validation`, `dotkernel-responses`,
 `dotkernel-security`, `dotkernel-evolution-pattern`, `dotkernel-psr-standards`,
-`dotkernel-core-submodule` and `dotkernel-feature-docs` — plus `dotkernel-api-endpoint` in an API
-project.
+`dotkernel-core-submodule`, `dotkernel-qa-gate` and `dotkernel-feature-docs` — plus
+`dotkernel-api-endpoint` in an API project.
 
 Report findings grouped as **Blocking / Should fix / Nit**, each with file:line and a concrete
 replacement. Check at minimum:
@@ -20,7 +22,8 @@ replacement. Check at minimum:
   variant; folder mirrors the resource path.
 - Registration completeness: factories, delegators, aliases, route, authorization entry,
   presentation, documentation.
-- Entities and repositories only in `Core`; no project-namespace import inside `Core`.
+- Entities and repositories only in `Core` (API and Admin; Frontend: inside the owning module); no
+  project-namespace import inside `Core`.
 - Contract changes to existing routes — breaking without a sunset window is blocking.
 - Validation on every write path; CSRF on every form; whitelisted sort/filter; no raw SQL
   interpolation; ownership checks on user-owned resources.
@@ -28,7 +31,8 @@ replacement. Check at minimum:
 - PSR-7 immutability, no injected `ContainerInterface`, interface type-hints.
 - `declare(strict_types=1)`, imported functions, phpstan-clean types.
 - No dependency-manifest changes; no edits under vendored, generated or migration paths.
-- Every file UTF-8 without BOM, LF endings, trailing newline, no trailing whitespace.
+- Every file UTF-8 without BOM, LF endings, trailing newline, no trailing whitespace (in `.md`,
+  two trailing spaces are a hard line break and stay).
 - Tests present for new behaviour.
 - A feature doc exists and is current for user-visible behaviour — new routes and handlers in the
   diff appear in some doc's `routes:` / `handlers:` frontmatter, and a changed contract is reflected

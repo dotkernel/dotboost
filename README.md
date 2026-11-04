@@ -5,17 +5,17 @@ API, Admin, Frontend, Light, Queue, or a project derived from one of them. Every
 variant first and applies the matching dialect.
 
 This repository is not itself a Dotkernel project. Its entire payload is the `.claude/`
-directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and nineteen
+directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and eighteen
 skills. You install it by copying that directory into the Dotkernel project you are working on.
 
 Maintained by Borsan Sergiu.
 
 ## Add this to your project's CLAUDE.md
 
-dotboost ships the `dependency-policy` skill, but a skill `description:` is only a hint — it decides
-whether the skill *can* load, not whether Claude stops to think before naming a package. The rule
-that makes it reach for the skill has to be always loaded, which means it lives in your project's
-own `CLAUDE.md`. Paste this block there:
+dotboost ships the `dotkernel-package-status` skill, which holds the dependency policy, but a skill
+`description:` is only a hint — it decides whether the skill *can* load, not whether Claude stops to
+think before naming a package. The rule that makes it reach for the skill has to be always loaded,
+which means it lives in your project's own `CLAUDE.md`. Paste this block there:
 
 ```markdown
 ## Dependency policy
@@ -23,23 +23,25 @@ own `CLAUDE.md`. Paste this block there:
 Order of preference, stop at the first hit: **already in composer.lock** -> **`dotkernel/*`** ->
 **`laminas/*` / `mezzio/*`** -> vetted `symfony|doctrine|psr|league` package -> hand-rolled code.
 
-- Never name a package from memory. Verify against `composer.lock`, or
-  `skills/dependency-policy/references/dotkernel-packages.json`, or `composer show <pkg> --available`.
+- Never name a package from memory. Verify against `composer.lock`, or the `dotkernel/*` listing
+  published at <https://www.dotkernel.com/dotkernel-packages.json>. Any other name is unverified — say so.
 - Never run `composer require` in an upstream Dotkernel repo. Present a proposal; the user decides.
-- Consult the `dependency-policy` skill before any package suggestion, including implicit ones
-  ("how do I send mail from here?" is a package question).
+- Consult the `dotkernel-package-status` skill before any package suggestion, including implicit
+  ones ("how do I send mail from here?" is a package question).
 ```
 
 Three things worth knowing about how that behaves:
 
-- The `dotkernel/*` manifest is **generated on first use, not shipped**. The skill tells Claude to
-  regenerate it when missing, so the first package question runs
-  `.claude/skills/dependency-policy/scripts/sync-dotkernel-packages.sh` itself. It needs `curl`, `jq`
-  and network; without them Claude is instructed to call a package name **unverified** rather than
-  assert it.
-- Neither that script nor `composer show <pkg> --available` appears in the allow or the deny list in
-  `settings.json`, so both prompt. That is deliberate — expect a prompt the first time.
-- The paths in the block are relative to `.claude/`, which is how the skill resolves them.
+- The only source for `dotkernel/*` packages is the listing **dotkernel.com publishes**, rebuilt
+  daily from the GitHub organization. Claude fetches it fresh for each question; nothing is
+  generated, shipped or stored in the project. It needs network access; without it Claude is
+  instructed to call a package name **unverified** rather than assert it.
+- Nothing queries Packagist. A `laminas/*`, `mezzio/*` or community package that is not already in
+  `composer.lock` is reported as **unverified**, and confirming its maintenance status, PHP support
+  and license is left to you. The rule of thumb for "actively maintained" is a release in the last
+  12 months.
+- Fetching the listing is in neither the allow nor the deny list in `settings.json`, so it prompts.
+  That is deliberate — expect a prompt the first time.
 
 ## Install
 
@@ -79,28 +81,26 @@ repo page, extract it anywhere, and copy the `.claude` folder into your project 
 ### Then, either way
 
 ```bash
-chmod +x .claude/hooks/*.sh .claude/statusline.sh \
-         .claude/skills/dependency-policy/scripts/*.sh
+chmod +x .claude/hooks/*.sh .claude/statusline.sh
 echo '.claude/settings.local.json' >> .git/info/exclude
 ```
 
 Nothing here is committed with an executable bit, and a zip extracted on Windows carries no
 permission bits at all. `settings.json` invokes the hooks and the status line as `bash <path>`, so
-those run regardless; the `dependency-policy` sync script is the one called by its own name, so
-`chmod` it and be done.
+they run regardless; the `chmod` only matters when you run one of them by hand.
 
 What lands in the project:
 
-```
+```text
 <project>/.claude/
 ├── settings.json                  permission guardrails, hook registration, status line
 ├── settings.local.json.example    template for personal, git-ignored overrides
-├── statusline.sh                  5h / 7d account usage in the status bar
+├── statusline.sh                  usage, cost and context fill in the status bar
 ├── markdownlint.jsonc             the markdown rule set, passed to markdownlint-cli2 via --config
 ├── hooks/                         six bash hooks (guards, normaliser, php -l, markdownlint, briefing)
 ├── agents/                        the review subagent
 ├── commands/                      the ten /dk-* commands
-└── skills/                        nineteen skills: eighteen dotkernel-* plus dependency-policy
+└── skills/                        eighteen dotkernel-* skills
 ```
 
 Optionally, for personal overrides that stay out of git:
@@ -137,24 +137,29 @@ drop-in for projects with no Node toolchain at all.
 It is a committed file, so it carries only what the whole team should share. One setting beyond the
 guardrails:
 
-```
+```text
 env.COMPOSER_MEMORY_LIMIT: "-1"    Composer runs without a memory ceiling
 ```
 
 Personal preferences — permission mode (`permissions.defaultMode`), `theme`, `tui` and
 `spinnerVerbs` — are not set here. `settings.local.json.example` carries a sample of each; copy the
-ones you want into your own `settings.local.json`.
+ones you want into your own `settings.local.json`. Its `defaultMode: "auto"` is only an example of the
+key: Claude Code does not apply `auto` from project or local settings, so if you want auto mode, set
+it in `~/.claude/settings.json` instead.
 
 The permission rules fall into four groups.
 
-**Never read.** These are `Read` denies, not just write protection — the contents never enter the
-context window at all:
+**Never read.** These are `Read` denies, not just write protection — Claude's file tools, and the
+Bash file commands Claude Code recognises (`cat`, `head`, `tail`, `sed`, `tee`), cannot open them:
 
 - `.env`, every `*.local.php`, `config/autoload/local.php`, `config/autoload/local.test.php`,
   and `data/oauth/`.
 
-That is the guarantee worth adopting the file for: your database credentials, your OAuth signing
-keys and your environment secrets stay out of the transcript.
+That keeps your database credentials, your OAuth signing keys and your environment secrets out of
+the transcript in normal work, but it is a rule, not a sandbox: a command that reads files without
+naming them (`grep -r password config/`) or a script that opens a file itself gets past it. For an
+OS-level guarantee, use the sandbox described in the
+[Claude Code permissions docs](https://code.claude.com/docs/en/permissions).
 
 **Never written.** `Edit` denies, which Claude Code applies to `Write` as well:
 
@@ -173,11 +178,14 @@ keys and your environment secrets stay out of the transcript.
 - **ask** — `doctrine-migrations`, `bin/doctrine`, `bin/cli.php`, `mysql`/`mariadb`,
   `git commit`/`add`/`checkout`/`rebase`/`merge`, `config/pipeline.php`, `config/config.php`, the
   authorization config, `phpcs.xml`/`phpstan.neon`/`phpunit.xml`, `.github/`, `CHANGELOG.md`,
-  `SECURITY.md`, and this README.
+  `SECURITY.md`, and the project's own `README.md`.
 - **allow** — the `composer` QA scripts (`check`, `cs-check`, `cs-fix`, `static-analysis`, `test`)
-  plus `clear-config-cache`, `development-status` and `dump-autoload`; the `vendor/bin` tools;
-  `php -l`, `php -v`, `php -m`; and read-only git (`status`, `diff`, `log`, `show`, `branch`,
-  `ls-files`, `config --get`).
+  plus `clear-config-cache`, `development-status` and `dump-autoload`;
+  `php ./vendor/bin/{phpcs,phpcbf,phpstan,phpunit}` (only with the `php ./` prefix — a bare
+  `vendor/bin/phpunit` prompts); `markdownlint-cli2` and `./node_modules/.bin/markdownlint-cli2`;
+  `php -l`, `php -v`, `php -m`; `date +%F`; read-only git (`status`, `diff`, `log`, `show`,
+  `branch`, `ls-files`, `config --get`); and edits under `docs/features/` and
+  `documentation/features/`.
 
 The `ask` and `allow` tiers are personal preference. Override any of them per machine in
 `.claude/settings.local.json`, which layers on top and is git-ignored — never in the shared file.
@@ -193,8 +201,9 @@ you would expect from the `ask` tier never appears. You get a refusal instead:
 | `git rebase` | ask | blocks |
 | `doctrine-migrations migrate` / `execute` | ask | blocks |
 | `fixtures:execute`, `schema:drop`, `schema:update` | ask, via `bin/doctrine` | blocks |
+| `git checkout --` | ask, via `git checkout` | blocks |
 | `composer development-enable` / `-disable` | — | blocks |
-| `pip install`, `git checkout -- `, `git filter-branch` | — | blocks |
+| `pip install`, `git filter-branch` | — | blocks |
 
 Everything else under `ask` — commits, `mysql`, the config and QA files — prompts as documented.
 If you want one of the blocked commands back, edit the hook; relaxing `settings.local.json` will
@@ -202,15 +211,17 @@ not reach it.
 
 ## Status line
 
-`.claude/statusline.sh` renders your real account usage, taken from the rate-limit payload Claude
-Code (≥ 2.1) passes to the status line on stdin — the same numbers `/usage` reports:
+`.claude/statusline.sh` renders your real account and session usage, taken from the payload Claude
+Code (≥ 2.1) passes to the status line on stdin — the rate limits are the same numbers `/usage` reports:
 
-```
-~/project                     Opus 5.5  high
-5h ███████▍             37%   resets in 2h 14m (16:20)  7d 61%
+```text
+ ~/project   Opus 5.5 · high   $ 0.45   ctx ▰▱▱▱▱▱ 6%
+5h ███████▍             37%  ↻ 2h 14m (16:20)   7d ▰▰▰▰▰▰▱▱▱▱ 61%
 ```
 
-The 5h bar is a 20-cell heat gradient; colours are 24-bit, so the terminal needs truecolor support.
+Line 1: directory, model and effort, session cost (Claude Code's USD estimate), and context-window
+fill. Line 2: the 5h window as a 20-cell heat gradient with its reset time, and the 7d window.
+Colours are 24-bit, so the terminal needs truecolor support.
 
 Pure bash and `awk`. No `jq`, no python, no transcript scanning or guessed token budgets, so it
 works in Git Bash on Windows.
@@ -250,21 +261,22 @@ In PhpStorm: *Editor → Code Style → Line separator = Unix (\n)*, and *File E
 
 Start Claude Code in the project:
 
-```
+```text
 /help        # commands: dk-bootstrap, dk-module, dk-route, dk-trace, dk-test, dk-document,
              #           dk-check, dk-deprecate, dk-review, dk-hygiene
 ```
 
 The session-start hook should open with a short briefing: which variant it detected, the root
-namespace, the authorization style, the branch, and which config files are still missing.
+namespace, the authorization style (flagging a guard policy that leaves unlisted routes public), and
+which config files are still missing.
 
 Skills load from their own `description:` frontmatter — there is no routing table telling Claude
 which to pick. Ask *"where does a new Doctrine entity go?"*; it should reach for
 `dotkernel-module-structure` rather than answering from general framework knowledge.
 
 With the `CLAUDE.md` block in place, ask *"how do I send mail from here?"* — a question with no
-package in it. It should load `dependency-policy` and walk the ladder, grepping `composer.lock`
-first and then the `dotkernel/*` manifest (generating it if absent), rather than replying `dot-mail`
+package in it. It should load `dotkernel-package-status` and walk the ladder, grepping
+`composer.lock` first and then fetching the dotkernel.com listing, rather than replying `dot-mail`
 from memory.
 
 Test the guardrails: ask it to edit `vendor/autoload.php` (blocked by
@@ -275,13 +287,13 @@ cannot see.
 
 ## What's here
 
-```
+```text
 README.md                                       this file
 .gitignore                                      IDE directories and settings.local.json
 
 .claude/settings.json                           permission guardrails + hook registration
 .claude/settings.local.json.example             template for personal, git-ignored overrides
-.claude/statusline.sh                           5h / 7d account usage in the status bar
+.claude/statusline.sh                           usage, cost and context fill in the status bar
 .claude/markdownlint.jsonc                      markdown rule set for markdown-lint.sh (--config)
 
 .claude/hooks/guard-protected-paths.sh          PreToolUse (Edit/Write): blocks vendor/, node_modules/,
@@ -289,10 +301,12 @@ README.md                                       this file
                                                 public/uploads/, dependency manifests, tool caches,
                                                 .git/ internals, and binary or key material
                                                 (*.png, *.zip, *.phar, *.key, *.pem). A blocked
-                                                *.local.php edit is redirected to its .dist template
+                                                *.local.php edit is refused with a pointer to its
+                                                .dist template
 .claude/hooks/guard-bash.sh                     PreToolUse (Bash): blocks installs, destructive git,
                                                 DB-mutating commands and development-mode toggles,
-                                                including inside compound commands
+                                                including inside compound commands. Quoted
+                                                arguments, comments and heredoc bodies count as data
 .claude/hooks/normalize-file.sh                 PostToolUse: BOM, CRLF, trailing whitespace, final
                                                 newline. Skips whitespace stripping on .md, where two
                                                 trailing spaces are a hard line break
@@ -332,16 +346,13 @@ README.md                                       this file
 .claude/skills/dotkernel-psr-standards/          PSR-1/3/4/6/7/11/12/15/16/17 as applied here
 .claude/skills/dotkernel-qa-gate/                cs-check, static analysis, tests, forbidden "fixes"
 .claude/skills/dotkernel-troubleshooting/        symptom → cause table
-.claude/skills/dotkernel-package-status/         whether a dotkernel/* package is maintained, PHP support
-.claude/skills/dependency-policy/                the ladder: installed → dotkernel/* → laminas →
-                                                 vetted community → hand-rolled; proposal format
-.claude/skills/dependency-policy/scripts/        sync-dotkernel-packages.sh — regenerates the
-                                                 dotkernel/* manifest from Packagist (curl + jq)
+.claude/skills/dotkernel-package-status/         the dependency ladder (installed → dotkernel/* →
+                                                 laminas → vetted community → hand-rolled), proposal
+                                                 format, and dotkernel/* lifecycle + PHP support
+                                                 from the dotkernel.com listing
 ```
 
-Every skill directory holds a `SKILL.md`. `dependency-policy` additionally carries `scripts/` and
-the `references/dotkernel-packages.json` it generates — that manifest is git-ignored here, being a
-dated snapshot, and is regenerated in the project where it is used.
+Every skill directory holds a `SKILL.md` and nothing else.
 
 ## Feature documentation
 
@@ -352,8 +363,9 @@ in a chat.
 
 Where it lands is detected, not assumed. Many Dotkernel repositories already carry a
 `documentation/` directory — command docs, a generated `openapi.json`, Postman collections — and
-which ones do is not predictable from the variant, so the skill checks rather than inferring: it
-writes to `documentation/features/` when that directory exists and `docs/features/` otherwise, never
+the stock API ships one while derived projects vary, so the skill checks rather than inferring: it
+writes to `documentation/features/` when the repo has a `documentation/` directory and to
+`docs/features/` otherwise, never
 a second documentation root next to an existing one. Both paths are in the `allow` tier, prose in a
 docs directory being the lowest-risk write in the tree.
 
@@ -364,7 +376,7 @@ instead.
 
 The generation half is a command, so it only runs when asked. To make Claude *read* the docs before
 it rebuilds something that already exists, add this to your project's `CLAUDE.md` alongside the
-dependency-policy block:
+dependency policy block:
 
 ```markdown
 ## Feature docs
@@ -399,8 +411,9 @@ per edit.
 Claude Code's `.claude/settings.json` schema and hook event names move faster than most things. If a
 permission rule or hook does not take effect, check
 <https://docs.claude.com/en/docs/claude-code/overview> — in particular the glob syntax accepted by
-`permissions.deny` and whether `permissions.ask` exists in your version. The hooks are the reliable
-layer; the permission rules are the convenient one.
+`permissions.deny` and whether `permissions.ask` exists in your version. The hooks are the stricter
+layer, since they see inside compound commands where the permission globs cannot, but they match
+command text rather than parsing the shell: an unusual spelling can still get past both.
 
 ## Maintaining this
 
@@ -409,10 +422,9 @@ missing line in a skill, not a Claude problem. Skill **descriptions** drive load
 not triggering, make its description list the words you actually type, not the words the
 documentation uses.
 
-The Packagist snapshot behind `dependency-policy` goes stale silently, so re-run
-`.claude/skills/dependency-policy/scripts/sync-dotkernel-packages.sh` when a `dot-*` package is
-abandoned or superseded — `dot-annotated-services` → `dot-dependency-injection`, the case the skill
-names, is exactly what a stale manifest gets wrong.
+`dotkernel-package-status` has nothing to refresh: it reads the dotkernel.com listing live. If an
+entry there is wrong, report it against `dotkernel/dotkernel.com`, or a wrong lifecycle value
+against the package's own repository, whose `OSSMETADATA` file declares it.
 
 Before adapting this to a new Dotkernel project, spend an hour reading that repo and correcting
 the skills against what is actually there. A skill written from framework docs rather than the

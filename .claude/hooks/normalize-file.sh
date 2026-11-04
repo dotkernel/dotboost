@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # PostToolUse normaliser for Dotkernel projects.
 # Enforces: UTF-8 without BOM, LF line endings, no trailing whitespace,
-# exactly one trailing newline. Pure bash + sed, no jq.
+# exactly one trailing newline. Pure bash + sed + awk, no jq.
+# Rewrites the file in place, so its permissions, owner and links survive.
 # Exit 0 always — this fixes silently rather than blocking.
 
 set -u
@@ -35,19 +36,24 @@ case "$lower" in
 esac
 
 changed=""
-tmp="${path}.dk-normalize.$$"
+tmp=$(mktemp "${TMPDIR:-/tmp}/dk-normalize.XXXXXX") || exit 0
+trap 'rm -f "$tmp"' EXIT
+
+# Copy the fixed text back over the original. Writing through the existing file, rather
+# than moving a new one into place, keeps its mode (an executable script stays
+# executable), its owner, and any symlink or hard link to it.
+write_back() { { cat "$tmp" > "$path"; } 2>/dev/null; }
 
 # 1. Strip UTF-8 BOM.
 bom=$(printf '\357\273\277')
 if [ "$(head -c 3 "$path" 2>/dev/null)" = "$bom" ]; then
-  tail -c +4 "$path" > "$tmp" && mv "$tmp" "$path"
-  changed="${changed} BOM-removed"
+  tail -c +4 "$path" > "$tmp" && write_back && changed="${changed} BOM-removed"
 fi
 
-# 2. CRLF/CR -> LF.
+# 2. CRLF -> LF, then a lone CR (classic Mac line ending) -> LF.
 if LC_ALL=C grep -qU $'\r' "$path" 2>/dev/null; then
-  tr -d '\r' < "$path" > "$tmp" && mv "$tmp" "$path"
-  changed="${changed} CRLF->LF"
+  LC_ALL=C sed $'s/\r$//' "$path" | tr '\r' '\n' > "$tmp" && write_back \
+    && changed="${changed} CRLF->LF"
 fi
 
 # 3. Trailing whitespace (skip markdown: two trailing spaces are a hard line break).
@@ -55,16 +61,27 @@ case "$lower" in
   *.md) ;;
   *)
     if LC_ALL=C grep -q '[[:space:]]$' "$path"; then
-      sed 's/[[:space:]]*$//' "$path" > "$tmp" && mv "$tmp" "$path"
-      changed="${changed} trailing-ws-stripped"
+      sed 's/[[:space:]]*$//' "$path" > "$tmp" && write_back \
+        && changed="${changed} trailing-ws-stripped"
     fi
     ;;
 esac
 
-# 4. Exactly one trailing newline.
-if [ -s "$path" ] && [ "$(tail -c 1 "$path" | wc -l)" -eq 0 ]; then
-  printf '\n' >> "$path"
-  changed="${changed} newline-added"
+# 4. Exactly one trailing newline: add a missing one, drop blank or whitespace-only lines
+#    at the end. A file with nothing but whitespace is left alone.
+if [ -s "$path" ]; then
+  LC_ALL=C awk '
+    /^[ \t\f\v]*$/ { held = held $0 "\n"; next }   # blank: hold until a line follows
+    { printf "%s%s\n", held, $0; held = "" }        # still held at the end: dropped
+  ' "$path" > "$tmp"
+  if [ -s "$tmp" ] && ! cmp -s "$tmp" "$path"; then
+    if [ "$(wc -c < "$tmp")" -gt "$(wc -c < "$path")" ]; then
+      fix=newline-added
+    else
+      fix=trailing-blank-lines-removed
+    fi
+    write_back && changed="${changed} ${fix}"
+  fi
 fi
 
 if [ -n "$changed" ]; then

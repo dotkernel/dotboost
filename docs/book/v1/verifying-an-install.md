@@ -1,6 +1,6 @@
 # Verifying an Install
 
-There is no CI in this repository - Dotboost is configuration, not code with a build step - so this manual smoke test is the closest thing to a test suite.
+There is no test CI in this repository — the only workflow, `.github/workflows/docs-build.yml`, builds this documentation. Dotboost is configuration, not code with a build step, so this manual smoke test is the closest thing to a test suite.
 Run it after installing into a project.
 
 ## Skill routing
@@ -9,9 +9,9 @@ Ask *"where does a new Doctrine entity go?"* — it should reach for `dotkernel-
 
 ## The `CLAUDE.md` block
 
-With the dependency-policy block in place (see [Getting Started](getting-started.md)), ask *"how do I send mail from here?"* — a question with no package name in it.
-It should load `dependency-policy` and walk the ladder, grepping `composer.lock` first and then the `dotkernel/*` manifest (generating it if absent), rather than replying with a package name from memory.
-See [Dependency Policy](skills/dependency-policy.md).
+With the dependency policy block in place (see [Getting Started](getting-started.md)), ask *"how do I send mail from here?"* — a question with no package name in it.
+It should load `dotkernel-package-status` and walk the ladder, grepping `composer.lock` first and then fetching the dotkernel.com listing, rather than replying with a package name from memory.
+See [Package Status](skills/dotkernel-package-status.md).
 
 ## Guardrails
 
@@ -24,4 +24,4 @@ See [Dependency Policy](skills/dependency-policy.md).
 
 Claude Code's own `settings.json` schema and hook event names move faster than most things in this repo.
 If a permission rule or hook doesn't take effect, check the current Claude Code docs — in particular the glob syntax accepted by `permissions.deny` and whether `permissions.ask` exists in your installed version.
-Treat the hooks as the reliable layer and the permission rules as the convenient one when the two seem to disagree.
+When the two seem to disagree, the hooks are the stricter layer, but neither is a sandbox: the hooks match command text rather than parsing the shell, so an unusual spelling can still get past them.
