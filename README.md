@@ -5,7 +5,7 @@ API, Admin, Frontend, Light, Queue, or a project derived from one of them. Every
 variant first and applies the matching dialect.
 
 This repository is not itself a Dotkernel project. Its entire payload is the `.claude/`
-directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and eighteen
+directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and nineteen
 skills. You install it by copying that directory into the Dotkernel project you are working on.
 
 Maintained by Borsan Sergiu.
@@ -28,6 +28,19 @@ Order of preference, stop at the first hit: **already in composer.lock** -> **`d
 - Never run `composer require` in an upstream Dotkernel repo. Present a proposal; the user decides.
 - Consult the `dotkernel-package-status` skill before any package suggestion, including implicit
   ones ("how do I send mail from here?" is a package question).
+```
+
+Dotkernel projects also write all prose in ASD-STE100 Simplified Technical English.
+The `dotkernel-writing-style` skill holds the rules, but it loads only when its description matches the task.
+Paste this block into the same `CLAUDE.md` to make the rule always active:
+
+```markdown
+## Writing style
+
+Write all prose in ASD-STE100 Simplified Technical English.
+This includes chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments, docblock descriptions, exception messages, CLI output and OpenAPI descriptions.
+Do not apply it to the code itself: identifiers, keywords, syntax and docblock tags stay as they are.
+Load the `dotkernel-writing-style` skill before you write any of this prose.
 ```
 
 Three things worth knowing about how that behaves:
@@ -100,7 +113,7 @@ What lands in the project:
 ├── hooks/                         six bash hooks (guards, normaliser, php -l, markdownlint, briefing)
 ├── agents/                        the review subagent
 ├── commands/                      the ten /dk-* commands
-└── skills/                        eighteen dotkernel-* skills
+└── skills/                        nineteen dotkernel-* skills
 ```
 
 Optionally, for personal overrides that stay out of git:
