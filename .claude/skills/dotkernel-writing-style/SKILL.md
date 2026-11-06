@@ -103,8 +103,7 @@ You cannot easily revert the migration after you run it.
 
 ## Limits of this skill
 
-This skill is a short summary of the main STE writing rules, in our own words.
-It is not the official specification, and it does not include the ASD-STE100 dictionary of approved words.
+This skill does not include the ASD-STE100 dictionary of approved words.
 ASD owns the copyright of the specification and its dictionary, so do not copy them into the project.
 
 Get the specification from https://www.asd-ste100.org/.
