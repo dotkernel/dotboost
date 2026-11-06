@@ -47,3 +47,9 @@
 | Skill | Fires on |
 | --- | --- |
 | `dotkernel-package-status` | Any package decision — the order: already installed → `dotkernel/*` → `laminas`/`mezzio` → vetted community package → hand-rolled code — and whether a Dotkernel package is still maintained and which PHP versions it supports, from the dotkernel.com listing. See [Package Status](dotkernel-package-status.md) |
+
+## Writing style
+
+| Skill | Fires on |
+| --- | --- |
+| `dotkernel-writing-style` | Any prose — chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments and docblock descriptions — written in ASD-STE100 Simplified Technical English; the code itself is out of scope |
