@@ -52,4 +52,4 @@
 
 | Skill | Fires on |
 | --- | --- |
-| `dotkernel-writing-style` | Any prose — chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments and docblock descriptions — written in ASD-STE100 Simplified Technical English; the code itself is out of scope |
+| `dotkernel-writing-style` | Any prose — chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments, docblock descriptions, exception messages, CLI output and OpenAPI descriptions — written in ASD-STE100 Simplified Technical English, at a Strict or a Standard level. The code itself is out of scope |

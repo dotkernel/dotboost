@@ -38,7 +38,7 @@ Paste this block into the same `CLAUDE.md` to make the rule always active:
 ## Writing style
 
 Write all prose in ASD-STE100 Simplified Technical English.
-This includes chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments and docblock descriptions.
+This includes chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments, docblock descriptions, exception messages, CLI output and OpenAPI descriptions.
 Do not apply it to the code itself: identifiers, keywords, syntax and docblock tags stay as they are.
 Load the `dotkernel-writing-style` skill before you write any of this prose.
 ```
