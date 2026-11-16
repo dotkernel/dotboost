@@ -45,7 +45,7 @@ Merging still overwrites same-named files: if the target project already has its
 
 The dependency policy in `dotkernel-package-status`, the feature-docs check and the writing style in `dotkernel-writing-style` need a short block pasted into the *project's own* `CLAUDE.md` to become proactive rather than merely loadable — see [Architecture Overview](architecture.md#the-claudemd-contract) and [Package Status](skills/dotkernel-package-status.md).
 
-All Dotkernel projects write prose in ASD-STE100 Simplified Technical English.
+All Dotkernel projects and packages write prose in ASD-STE100 Simplified Technical English.
 Paste this block to make the `dotkernel-writing-style` skill always active:
 
 ```markdown

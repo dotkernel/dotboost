@@ -30,7 +30,7 @@ Order of preference, stop at the first hit: **already in composer.lock** -> **`d
   ones ("how do I send mail from here?" is a package question).
 ```
 
-Dotkernel projects also write all prose in ASD-STE100 Simplified Technical English.
+Dotkernel projects and packages also write all prose in ASD-STE100 Simplified Technical English.
 The `dotkernel-writing-style` skill holds the rules, but it loads only when its description matches the task.
 Paste this block into the same `CLAUDE.md` to make the rule always active:
 

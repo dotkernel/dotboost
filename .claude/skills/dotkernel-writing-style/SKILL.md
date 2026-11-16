@@ -1,7 +1,7 @@
 ---
 name: dotkernel-writing-style
 description: >
-  Use when writing any prose in a Dotkernel project — a chat answer, a commit message, a tag
+  Use when writing any prose in a Dotkernel project or package — a chat answer, a commit message, a tag
   message, an MR or PR description, a Markdown file (README, feature doc, release notes,
   CHANGELOG), a code comment, a docblock description, an exception or error message, CLI command
   output, or an OpenAPI summary or description. Applies ASD-STE100 Simplified Technical English:
@@ -15,10 +15,10 @@ description: >
 ```text
 Applies to
   Projects:  - all
-  Packages:  - none
+  Packages:  - all
 ```
 
-Dotkernel projects write all prose in ASD-STE100 Simplified Technical English (STE).
+Dotkernel projects and packages write all prose in ASD-STE100 Simplified Technical English (STE).
 STE is a controlled language from ASD, the Aerospace, Security and Defence Industries Association of Europe.
 It makes technical text clear for all readers, also for readers whose first language is not English.
 It also helps a second agent or a translation tool, which cannot ask the author what a sentence means.
@@ -103,7 +103,7 @@ When you need that information, keep the present perfect.
 ## Word rules
 
 These rules come from the ASD-STE100 dictionary.
-We do not have the dictionary in this project, so use these rules as a direction.
+We do not have the dictionary in this repository, so use these rules as a direction.
 Do not say that a text complies with the dictionary.
 
 - Use one word for one meaning in a document.
@@ -211,7 +211,7 @@ You cannot easily revert the migration after you run it.
 ## Limits of this skill
 
 This skill does not include the ASD-STE100 dictionary of approved words.
-ASD owns the copyright of the specification and its dictionary, so do not copy them into the project.
+ASD owns the copyright of the specification and its dictionary, so do not copy them into the repository.
 
 Get the specification from https://www.asd-ste100.org/.
 When the approval of a word is important, check it in the official dictionary.
