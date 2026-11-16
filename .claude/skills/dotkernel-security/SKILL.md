@@ -143,7 +143,8 @@ Interactive documentation should not be enabled in production.
 - [ ] Each new route has an explicit authorization entry, with no accidental guest access.
 - [ ] Object-level ownership is checked where a resource belongs to a user.
 - [ ] CSRF is present and validated on each form (templated projects).
-- [ ] No secrets outside `*.local.php`; no keys committed.
+- [ ] Secrets are only in `*.local.php`.
+- [ ] No key is in a commit.
 - [ ] No interpolation into raw SQL or DQL, and all parameters are bound.
 - [ ] Sort and filter values are whitelisted, and `limit` is clamped.
 - [ ] Uploads are validated and stored outside executable paths.

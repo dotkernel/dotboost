@@ -362,7 +362,7 @@ README.md                                       this file
 .claude/commands/dk-document.md                 write or update a feature doc
 .claude/commands/dk-check.md                    run and fix the QA gate
 .claude/commands/dk-deprecate.md                evolution-pattern breaking change
-.claude/commands/dk-review.md                   pre-PR convention review
+.claude/commands/dk-review.md                   pre-PR review of conventions and writing style
 .claude/commands/dk-hygiene.md                  encoding / line-ending audit
 
 .claude/skills/dotkernel-project-variants/       detect API vs Admin vs Frontend vs Light vs Queue
@@ -386,6 +386,8 @@ README.md                                       this file
                                                  laminas → vetted community → hand-rolled), proposal
                                                  format, and dotkernel/* lifecycle + PHP support
                                                  from the dotkernel.com listing
+.claude/skills/dotkernel-writing-style/          ASD-STE100 rules for all prose: chat, commits,
+                                                 docs, comments, messages and OpenAPI text
 ```
 
 Each skill directory contains a `SKILL.md` and nothing else.
@@ -453,7 +455,7 @@ Then it runs one time per turn, not one time per edit.
 
 The `.claude/settings.json` schema and the hook event names of Claude Code change more quickly than most things.
 If a permission rule or a hook has no effect, check <https://docs.claude.com/en/docs/claude-code/overview>.
-Specially, check the glob syntax that `permissions.deny` accepts, and whether your version has `permissions.ask`.
+Especially, check the glob syntax that `permissions.deny` accepts, and whether your version has `permissions.ask`.
 The hooks are the stricter layer, because they see inside compound commands and the permission globs cannot.
 But the hooks match the command text, and they do not parse the shell.
 Thus, an unusual spelling can still get past the two layers.

@@ -83,8 +83,7 @@ Migration necessary: yes / no. Give the command, but do not run it.
 
 ## Config
 
-Authorization entries, ConfigProvider registrations, new config keys, and where their secrets
-live (`*.local.php`, never committed).
+Authorization entries, ConfigProvider registrations, new config keys, and the location of their secrets (`*.local.php`, never committed).
 
 ## Testing
 
