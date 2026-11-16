@@ -1,9 +1,9 @@
 ---
 name: dotkernel-handler-naming
 description: >
-  Use when naming or reviewing a PSR-15 request handler class, a route URL, a route name, or an
-  authorization key in any Dotkernel project — creating a new endpoint or page, renaming
-  one, adding a route to a RoutesDelegator, wiring a handler into a ConfigProvider, or checking
+  Use when you name or review a PSR-15 request handler class, a route URL, a route name, or an
+  authorization key in any Dotkernel project. This includes when you create a new endpoint or page,
+  rename one, add a route to a RoutesDelegator, wire a handler into a ConfigProvider, or check
   that a handler follows the Dotkernel naming pattern. Also use when a route returns 403 or 404
   unexpectedly, when choosing between PATCH and POST, or when deciding whether a handler needs
   a Form suffix.
@@ -19,21 +19,23 @@ Applies to
   Packages:  - none
 ```
 
-The naming pattern exists so that any developer can tell what a file does from its name alone.
-It has **two dialects**, and the word order differs between them — pick by variant
-(`dotkernel-project-variants`). Frontend has no handlers: it routes to controllers with an
-`{action}` segment, so none of this applies there.
+The naming pattern lets each developer know what a file does from its name only.
+The pattern has **two dialects**, and the sequence of the words is different in each dialect.
+Select the dialect from the variant (`dotkernel-project-variants`).
+Frontend has no handlers.
+It routes to controllers with an `{action}` segment, so this skill does not apply to Frontend.
 
-## Dialect A — API (REST, no forms)
+## Dialect A: API (REST, no forms)
 
 ```text
 {HttpVerb}{Resource}[{SubResource}][{Action}]{Resource|Collection}Handler
 ```
 
-Resource first, then the optional action. Suffix with `ResourceHandler` (a single entity) or
-`CollectionHandler` (a paginated list). Non-CRUD actions that return a message rather than a
-resource end in `…{Action}Handler`. No CRUD word in the class name — the HTTP verb says it.
-**Updates use PATCH, never PUT.**
+Put the resource first, then the optional action.
+Add the suffix `ResourceHandler` (a single entity) or `CollectionHandler` (a paginated list).
+A non-CRUD action that returns a message, not a resource, ends in `…{Action}Handler`.
+Do not put a CRUD word in the class name, because the HTTP verb gives that information.
+**Use PATCH for updates, never PUT.**
 
 | Class | Route |
 | --- | --- |
@@ -46,15 +48,17 @@ resource end in `…{Action}Handler`. No CRUD word in the class name — the HTT
 | `PostUserAvatarResourceHandler` | `POST /user/{id}/avatar` |
 | `GetUserRoleCollectionHandler` | `GET /user/role` |
 
-## Dialect B — Admin (templated, form-driven)
+## Dialect B: Admin (templated, with forms)
 
 ```text
 {HttpVerb}{Action}{Resource}[{SubResource}][Form]Handler
 ```
 
-Action first, then the resource — the reverse of the API. A `Form` suffix means the handler
-**renders a form** that submits to another handler. The pair is always a `Get…FormHandler` that
-renders and a `Post…Handler` that acts — deletes included, which get a confirmation form.
+Put the action first, then the resource.
+This is the opposite sequence of the API.
+A `Form` suffix means that the handler **renders a form** that submits to a different handler.
+The handlers are always a pair: a `Get…FormHandler` that renders and a `Post…Handler` that does the action.
+This also applies to deletes, which get a confirmation form.
 
 | Class | Route | Route name |
 | --- | --- | --- |
@@ -68,35 +72,40 @@ renders and a `Post…Handler` that acts — deletes included, which get a confi
 | `PostEditUserAvatarHandler` | `POST /user/edit-user-avatar/{id}` | `user::edit-user-avatar` |
 | `GetListUserHandler` | `GET /user/list-user` | `user::list-user` |
 
-Action words are `Create`, `Edit`, `Delete`, `List` and `View`, plus explicit verbs
-(`ChangeAccountPassword`, `Logout`, `Store`). Admin uses **POST for updates** (browser form
-submit), never PATCH, and puts the action in the URL.
+The action words are `Create`, `Edit`, `Delete`, `List` and `View`, and also explicit verbs (`ChangeAccountPassword`, `Logout`, `Store`).
+Admin uses **POST for updates** (a browser form submit), never PATCH.
+Admin puts the action in the URL.
 
-Light is a starter with two handlers, `GetIndexViewHandler` and `GetPageViewHandler`; the second
-registers one `GET` route per template listed in config, named `<prefix>::<template>`. Its names
-put the resource first. When you add to Light, match those two files rather than either dialect.
+Light is a starter with two handlers, `GetIndexViewHandler` and `GetPageViewHandler`.
+The second handler registers one `GET` route for each template in the config, with the name `<prefix>::<template>`.
+The Light names put the resource first.
+When you add to Light, use the same pattern as these two files, not one of the two dialects.
 
-## Naming a new one — the one-minute method
+## Name a new handler: the one-minute method
 
-1. Which HTTP verb? → prefix.
-2. API: resource, then sub-resource, then a non-CRUD action. Admin: action, then resource.
-3. Admin only: does it render a form to be submitted later? → append `Form`.
-4. API only: one thing or a list? → `Resource` / `Collection`.
-5. Append `Handler`.
+1. Find the HTTP verb.
+   This gives the prefix.
+2. API: write the resource, then the sub-resource, then a non-CRUD action.
+   Admin: write the action, then the resource.
+3. Admin only: if the handler renders a form that the user submits later, add `Form`.
+4. API only: for one item, add `Resource`.
+   For a list, add `Collection`.
+5. Add `Handler`.
 
 ## URL conventions
 
 API:
 
-- Lowercase, `kebab-case` for multi-word segments: `/user/account/reset-password`.
-- Singular resource segments: `/user`, not `/users` — collection-ness comes from verb and path.
-- Item identifiers are UUIDs, matched by the `REGEXP_UUID` constant in Core's `App`
-  `ConfigProvider`, whose placeholder is `{id}`. Never declare an unconstrained placeholder —
-  the UUID pattern is what keeps fixed segments like `/user/role` from colliding with
-  `/user/{id}`.
-- Sub-resources nest: `/user/{id}/avatar`.
+- Use lowercase, and `kebab-case` for segments with more than one word: `/user/account/reset-password`.
+- Use the singular for resource segments: `/user`, not `/users`.
+  The verb and the path show that the route is a collection.
+- Item identifiers are UUIDs.
+  The `REGEXP_UUID` constant in the `App` `ConfigProvider` of Core matches them, and its placeholder is `{id}`.
+  Never declare a placeholder without a constraint.
+  The UUID pattern prevents a conflict between fixed segments such as `/user/role` and `/user/{id}`.
+- Put sub-resources under their parent: `/user/{id}/avatar`.
 
-Admin: `/<module>/<action>-<resource>[/{id}]`, grouped by module prefix — `/admin/edit-admin/{id}`.
+Admin: `/<module>/<action>-<resource>[/{id}]`, grouped by module prefix, for example `/admin/edit-admin/{id}`.
 
 ## Route names
 
@@ -106,23 +115,25 @@ Admin: `/<module>/<action>-<resource>[/{id}]`, grouped by module prefix — `/ad
 
 | | API | Admin |
 | --- | --- | --- |
-| Actions | `list`, `view`, `create`, `update`, `delete`, plus `activate`, `recover`… | `list`, `view`, `create`, `edit`, `delete`, plus `store`, `change`… |
-| Form-rendering route | n/a | add `-form`: `admin::edit-admin-form` |
+| Actions | `list`, `view`, `create`, `update`, `delete`, and also `activate`, `recover`… | `list`, `view`, `create`, `edit`, `delete`, and also `store`, `change`… |
+| Route that renders a form | n/a | add `-form`: `admin::edit-admin-form` |
 | Example | `PatchUserResourceHandler` → `user::update-user` | `PostEditUserHandler` → `user::edit-user` |
 
-## Route name = authorization key — but the default differs
+## The route name is the authorization key, but the default is different
 
-- **API** — RBAC permissions in `authorization.global.php`. **A route name absent there is
-  denied for every role**, the usual cause of "my new route returns Forbidden".
-- **Admin** — roles map to permissions (`authenticated`, `unauthenticated`, …) in
-  `authorization.global.php`; route names map to those permissions in
-  `authorization-guards.global.php`. The guards use `POLICY_ALLOW`, so **a route name absent from
-  the guards is open to everyone, guests included**. Forgetting the entry never shows up as a
-  403 — it shows up as an unprotected page.
+- **API**: RBAC permissions are in `authorization.global.php`.
+  **If a route name is not in that file, the API denies it for all roles.**
+  This is the usual cause of "my new route returns Forbidden".
+- **Admin**: `authorization.global.php` maps roles to permissions (`authenticated`, `unauthenticated`, …).
+  `authorization-guards.global.php` maps route names to those permissions.
+  The guards use `POLICY_ALLOW`, so **a route name that is not in the guards is open to all users, also to guests**.
+  A missing entry never causes a 403.
+  It causes a page without protection.
 
 ## RoutesDelegator style
 
-Group by path prefix; order routes alphabetically inside a group.
+Group the routes by path prefix.
+Sort the routes alphabetically in each group.
 
 ```php
 $routeCollector->group('/book')
@@ -139,21 +150,25 @@ return $callback();
 
 ## Handler body conventions (all variants)
 
-Handlers hold **no business logic**: validate → call service → shape response. Extend the
-project's abstract handler if it has one, take dependencies through `#[Inject]` where the project
-uses `dot-dependency-injection`, throw the project's typed exceptions for errors, and never
-`echo` or hand-build a response object.
+Handlers contain **no business logic**.
+A handler validates the input, calls a service and shapes the response.
+
+- If the project has an abstract handler, extend it.
+- If the project uses `dot-dependency-injection`, get the dependencies through `#[Inject]`.
+- For errors, throw the typed exceptions of the project.
+- Never use `echo`, and never build a response object by hand.
 
 ## Checklist for a new route
 
-- [ ] Class name follows the dialect for **this** project.
-- [ ] File under `src/<Module>/src/Handler/<Resource>[/<Sub>]/`.
-- [ ] Extends the repo's abstract handler; deps via `#[Inject]`.
-- [ ] Registered in `ConfigProvider` under `factories` (and `delegators` in the API).
-- [ ] Route in `RoutesDelegator` named for this dialect.
-- [ ] Authorization entry added — API: every role that should reach it; Admin: a guard rule,
-      without which the route is public.
-- [ ] Presentation registered — HAL metadata (API) or template (templated project).
-- [ ] Documented, if this project publishes OpenAPI.
-- [ ] Test covering success and the denied path.
-- [ ] The repo's route-listing command shows it as expected.
+- [ ] The class name follows the dialect for **this** project.
+- [ ] The file is under `src/<Module>/src/Handler/<Resource>[/<Sub>]/`.
+- [ ] The class extends the abstract handler of the repository, and gets dependencies through `#[Inject]`.
+- [ ] The class is registered in `ConfigProvider` under `factories` (and `delegators` in the API).
+- [ ] The route is in `RoutesDelegator`, with a name for this dialect.
+- [ ] The authorization entry is added.
+      API: add each role that must get access.
+      Admin: add a guard rule, because without it the route is public.
+- [ ] The presentation is registered: HAL metadata (API) or a template (templated project).
+- [ ] The route is documented, if this project publishes OpenAPI.
+- [ ] A test covers the success path and the denied path.
+- [ ] The route-listing command of the repository shows the route as expected.

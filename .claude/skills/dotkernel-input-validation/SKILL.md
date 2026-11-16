@@ -1,9 +1,9 @@
 ---
 name: dotkernel-input-validation
 description: >
-  Use when handling incoming data in a Dotkernel project — writing or changing an
-  InputFilter, an Input class, or a laminas-form Form; wiring validators, filters and error
-  messages; handling CSRF on a templated project; validating uploads; or deciding where a value
+  Use when you handle incoming data in a Dotkernel project: writing or changing an
+  InputFilter, an Input class, or a laminas-form Form, wiring validators, filters and error
+  messages, handling CSRF on a templated project, validating uploads, or deciding where a value
   should be checked. Also use when a write endpoint accepts data it should reject, when
   validation messages are inconsistent, or when a form redisplays without its errors.
 ---
@@ -18,18 +18,18 @@ Applies to
   Packages:  - none
 ```
 
-**Never trust input.** Nothing from the request reaches a service, entity or query builder
-before it has been through validation.
+**Never trust input.**
+No data from the request goes to a service, an entity or a query builder before validation.
 
-Which mechanism depends on the variant (`dotkernel-project-variants`):
+The mechanism depends on the variant (`dotkernel-project-variants`):
 
 | Variant | Mechanism |
 | --- | --- |
 | API | `laminas/laminas-inputfilter` |
-| Admin / Frontend | `laminas/laminas-form` — objects for elements, wrapping an InputFilter, plus CSRF |
+| Admin / Frontend | `laminas/laminas-form`: objects for elements, a wrapper around an InputFilter, plus CSRF |
 
-The stock Light accepts no input and the stock Queue validates no request data; if you add
-either to one of them, use an InputFilter.
+The stock Light accepts no input, and the stock Queue validates no request data.
+If you add input or request data to one of them, use an InputFilter.
 
 ## InputFilters (every variant)
 
@@ -40,7 +40,8 @@ src/<Module>/src/InputFilter/
 └── UpdateBookInputFilter.php
 ```
 
-An Input class owns one field, and attaches **both** a filter chain and a validator chain:
+An Input class owns one field.
+It attaches **both** a filter chain and a validator chain:
 
 ```php
 class TitleInput extends Input
@@ -68,14 +69,15 @@ class TitleInput extends Input
 
 Rules:
 
-- Reuse the shared Input classes in the project's `App` module (API and Admin: email, password, UUID,
-  image, identity…) before writing a new one.
-- `max` length must match the entity's column length. Drifting these two is a 500 waiting for
-  a long input.
-- Messages come from the shared message catalogue constant, never inline strings.
-- The `true` third argument breaks the chain on failure, so one field yields one message.
-- Nested structures use `CollectionInputFilter` / a child InputFilter added under a key.
-- Document the validated shape with `@phpstan-type` on the filter so phpstan can narrow it.
+- Before you write a new Input class, use a shared Input class from the `App` module of the project if one applies.
+  API and Admin have shared Input classes for email, password, UUID, image, identity and more.
+- The `max` length must match the column length of the entity.
+  If the two values are different, a long input causes a 500.
+- Messages come from the constants of the shared message catalogue.
+  Never use inline strings.
+- The `true` third argument stops the chain on failure, so one field gives one message.
+- For nested structures, use `CollectionInputFilter` or a child InputFilter that you add under a key.
+- Document the validated shape with `@phpstan-type` on the filter, so that phpstan can narrow it.
 
 ## Using an InputFilter (API style)
 
@@ -90,45 +92,47 @@ if (! $this->inputFilter->isValid()) {
 $data = (array) $this->inputFilter->getValues();   // never getRawValues()
 ```
 
-`getValues()` returns filtered values; `getRawValues()` bypasses the filter chain and defeats
-the point.
+`getValues()` returns filtered values.
+`getRawValues()` bypasses the filter chain, so the filters have no effect.
 
 ## Forms (Admin / Frontend)
 
-`laminas-form` gives a thin object layer over elements, an InputFilter per input, and binding
-data to and from the form. It integrates with the Laminas security ecosystem —
-`laminas-escaper`, `laminas-validator`, `laminas-filter`, `laminas-session` — so validation,
-filtering and rendering enforce escaping by design.
+`laminas-form` gives a thin object layer over elements, an InputFilter for each input, and data binding to and from the form.
+It integrates with the Laminas security packages: `laminas-escaper`, `laminas-validator`, `laminas-filter` and `laminas-session`.
+Thus, validation, filtering and rendering apply escaping by design.
 
-- One `Form` class per use case, in `src/<Module>/src/Form/`.
-- Attach the InputFilter rather than declaring validators inline, so the same rules are
-  reusable from a CLI command or an API.
-- **Every form needs a CSRF element**, and the handler must validate it. A form without CSRF is
-  a vulnerability, not a simplification.
-- On failure, re-render the same template with the form bound so the user sees their input and
-  the messages — do not redirect and lose them.
-- Escaping is the view layer's job; never build HTML in a handler or service.
+- Write one `Form` class for each use case, in `src/<Module>/src/Form/`.
+- Attach the InputFilter, and do not declare validators inline.
+  Then a CLI command or an API can use the same rules again.
+- **Each form needs a CSRF element**, and the handler must validate it.
+  A form without CSRF is a vulnerability, not a simplification.
+- On failure, render the same template again with the bound form.
+  Then the user sees their input and the messages.
+  Do not redirect, because a redirect loses them.
+- Escaping is the job of the view layer.
+  Never build HTML in a handler or a service.
 
 ## Query parameters are input too
 
-Sort, filter, pagination and search values arrive unvalidated. **Whitelist sortable and
-filterable columns against an explicit array** before they reach a query builder, and clamp
-`limit` to a maximum. An unwhitelisted `sort` is an injection and enumeration risk, not a style
-detail.
+Sort, filter, pagination and search values arrive without validation.
+**Whitelist the sortable and filterable columns against an explicit array** before the values go to a query builder.
+Clamp `limit` to a maximum.
+A `sort` value without a whitelist is an injection and enumeration risk, not a style detail.
 
 ## Uploads
 
-Validate MIME type and size with the shared image/file Input, store outside any
-web-executable path, and never trust the client-supplied filename or extension.
+Validate the MIME type and the size with the shared image or file Input.
+Do not store the file in a web-executable path.
+Never trust the filename or the extension from the client.
 
 ## Checklist
 
-- [ ] Every write path validates before any business logic runs.
-- [ ] Input `max` lengths match the entity column lengths.
+- [ ] Each write path validates before any business logic runs.
+- [ ] The Input `max` lengths match the column lengths of the entity.
 - [ ] Messages come from the shared catalogue.
-- [ ] `getValues()`, not `getRawValues()`.
-- [ ] CSRF element present and validated (templated projects).
-- [ ] Failed form re-renders bound, with messages.
-- [ ] Sort/filter/limit whitelisted and clamped.
-- [ ] Uploads checked for type and size.
-- [ ] Validated shape typed for phpstan.
+- [ ] The code uses `getValues()`, not `getRawValues()`.
+- [ ] The CSRF element is present and validated (templated projects).
+- [ ] A failed form renders again with the bound form and the messages.
+- [ ] Sort, filter and limit values are whitelisted and clamped.
+- [ ] Uploads are checked for type and size.
+- [ ] The validated shape has a type for phpstan.

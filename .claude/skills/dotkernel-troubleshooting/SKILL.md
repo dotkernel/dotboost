@@ -1,7 +1,7 @@
 ---
 name: dotkernel-troubleshooting
 description: >
-  Use when something in a Dotkernel project is not working and the cause is unclear — a route
+  Use when something in a Dotkernel project does not work and the cause is not clear: a route
   returns 403, 404, 406, 415 or 500 unexpectedly, a service is not found in the container, a
   handler throws while building a response, config changes have no effect, routes are missing,
   tests fail in setUp, autoloading fails, a form silently rejects a submit, or CORS preflight
@@ -16,47 +16,64 @@ Applies to
   Packages:  - none
 ```
 
-Work top-down; the first match is usually it.
+Read the sections from the top down.
+Usually, the first section that matches gives the cause.
 
 ## 403 / access denied on a route you just added
 
-API: the route name is missing from the RBAC permissions in `authorization.global.php`. Route
-names **are** authorization keys. Add it for every role that should reach it, and check the role
-hierarchy comment at the top of the file — inheritance direction is not always what people assume.
+API: the RBAC permissions in `authorization.global.php` do not contain the route name.
+Route names **are** authorization keys.
+Add the route name for each role that must get access to the route.
+Read the comment about the role hierarchy at the top of the file.
+The direction of inheritance is not always the direction that people expect.
 
-Admin / Frontend: a *missing* guard entry does not cause a 403 — the guards use `POLICY_ALLOW`,
-so an unlisted route is open to everyone. A 403 there means a guard rule exists in
-`authorization-guards.global.php` and the caller's role lacks that permission in
-`authorization.global.php`. The reverse symptom — a new page reachable while logged out — is
-the missing entry.
+Admin / Frontend: a *missing* guard entry does not cause a 403.
+The guards use `POLICY_ALLOW`, so a route that is not in the list is open to all users.
+In these projects, a 403 means that `authorization-guards.global.php` has a guard rule for the route.
+It also means that the role of the caller does not have that permission in `authorization.global.php`.
+The opposite symptom is a new page that a logged-out user can open.
+That symptom comes from the missing entry.
 
 ## 404 on a route you just added
 
-1. The module's `ConfigProvider` is not listed in `config/config.php`.
-2. `RoutesDelegator` is not registered as a delegator on `Application::class` in that ConfigProvider.
-3. Config cache is stale → run the repo's cache-clear script.
-4. Confirm with the route-listing command. Absent → causes 1–3. Present → your URL or method
-   differs from what you are calling (API updates are PATCH; templated projects submit POST).
+1. `config/config.php` does not list the `ConfigProvider` of the module.
+2. That ConfigProvider does not register `RoutesDelegator` as a delegator on `Application::class`.
+3. The config cache is stale.
+   Run the cache-clear script of the repository.
+4. Use the route-listing command to make sure.
+   If the route is not in the list, the cause is 1, 2 or 3.
+   If the route is in the list, your URL or method is different from the route that you call.
+   API updates use PATCH.
+   Templated projects submit with POST.
 
 ## 404 on an existing route with a valid identifier
 
-The resource-resolution attribute could not find the entity — identifier or placeholder mismatch,
-or the record genuinely does not exist.
+The resource-resolution attribute did not find the entity.
+The cause is one of these:
+
+- The identifier and the placeholder do not match.
+- The record really does not exist.
 
 ## "Service not found" / container exception
 
-A missing `factories` entry, or you type-hinted an interface with no `aliases` entry mapping it to
-the concrete class. Both live in the module `ConfigProvider`.
+One of these two causes applies:
+
+- The `factories` entry is missing.
+- You type-hinted an interface, and no `aliases` entry maps it to the concrete class.
+
+Both entries are in the `ConfigProvider` of the module.
 
 ## Handler throws while building a response
 
-The handler is missing its delegator registration. In the API that is the handler delegator that
-injects the HAL response factory and resource generator — they are not constructor-injected.
+The delegator registration of the handler is missing.
+In the API, this is the handler delegator that injects the HAL response factory and the resource generator.
+The constructor does not inject these two services.
 
 ## `#[Inject]` appears to be ignored
 
-The class is registered with the wrong factory. It needs `AttributedServiceFactory::class`, not
-`InvokableFactory` or a hand-written factory.
+The class uses the wrong factory.
+It must use `AttributedServiceFactory::class`.
+Do not use `InvokableFactory` or a hand-written factory.
 
 ## Config change has no effect
 
@@ -65,68 +82,89 @@ file overrides both under tests.
 
 ## 406 Not Acceptable
 
-The `Accept` header does not match what content negotiation allows for that route.
+The `Accept` header does not match the values that content negotiation allows for that route.
 
 ## 415 Unsupported Media Type
 
-Missing or wrong `Content-Type` on a write request.
+The `Content-Type` header of a write request is missing or wrong.
 
 ## Empty or malformed body on a write
 
-The malformed-body middleware rejected it, or you read the raw stream after the body-params
-middleware consumed it. Use `getParsedBody()`.
+One of these two causes applies:
+
+- The malformed-body middleware rejected the body.
+- You read the raw stream after the body-params middleware consumed it.
+
+Use `getParsedBody()`.
 
 ## A form submit is silently rejected (templated projects)
 
-Missing, stale or unvalidated CSRF token. Check the form has the CSRF element and the handler
-validates it. A rotated session invalidates in-flight forms.
+The CSRF token is missing, stale or not validated.
+Make sure that the form has the CSRF element.
+Make sure that the handler validates the token.
+When the session rotates, the forms that are open in the browser become invalid.
 
 ## CORS preflight fails
 
-The CORS middleware must be piped **before** the routing middleware, and the origin must be listed
-in the CORS local config — which does not exist until you copy it from the `.dist`.
+Pipe the CORS middleware **before** the routing middleware.
+The CORS local config must list the origin.
+This config file does not exist until you copy it from the `.dist` file.
 
 ## 403 with a token that "should" work
 
-In stock Dotkernel API a token that fails validation does not produce 401: the authentication
-middleware turns any request it cannot authenticate into a guest, so a route not granted to guest
-answers 403. Causes: expired token, wrong client id or scope, or the OAuth keys were regenerated
-after the token was issued. A 403 that persists with a freshly issued token is an authorization
-problem instead — see "403 / access denied on a route you just added" above.
+In stock Dotkernel API, a token that fails validation does not cause a 401.
+The authentication middleware changes each request that it cannot authenticate into a guest request.
+Thus, a route that the guest role cannot use returns 403.
+The possible causes are:
 
-401 comes only from the token-issuing operations, or from a project that pipes Mezzio's own
-`AuthenticationMiddleware` instead of the stock one — that middleware answers 401 when
-authentication fails. Check which one `config/pipeline.php` or the route's middleware list uses.
+- The token expired.
+- The client id or the scope is wrong.
+- Somebody generated the OAuth keys again after the server issued the token.
+
+When the 403 continues with a newly issued token, the cause is an authorization problem.
+Read "403 / access denied on a route you just added" above.
+
+A 401 comes only from the operations that issue tokens.
+It can also come from a project that pipes Mezzio's own `AuthenticationMiddleware` instead of the stock middleware.
+That middleware returns 401 when authentication fails.
+Find which middleware `config/pipeline.php` or the middleware list of the route uses.
 
 ## Class not found after adding a namespace
 
-`composer dump-autoload`, then check the PSR-4 mapping. Case-sensitive, even where the local
-filesystem is not.
+Run `composer dump-autoload`.
+Then examine the PSR-4 mapping.
+The mapping is case-sensitive, also when the local filesystem is not case-sensitive.
 
 ## Tests fail in `setUp()`
 
 - *"test mode is NOT enabled"* → the test-local config file is missing.
-- *"non in-memory database"* → present but not configured for memory. Do not repoint tests at a
-  real database.
-- Column type errors only under test → an enum DBAL type with no SQLite branch.
+- *"non in-memory database"* → the file exists, but it does not configure an in-memory database.
+  Do not point the tests at a real database.
+- Errors about the column type occur only under test → an enum DBAL type has no SQLite branch.
 
 ## Schema-validation CI job is red
 
-Entities and migrations have drifted. Generate a migration; do not edit the entity to match an old
-migration, and do not hand-edit the migration.
+The entities and the migrations are not in sync.
+Generate a migration.
+Do not edit the entity to match an old migration.
+Do not edit the migration by hand.
 
 ## Passes locally, fails in CI (or the reverse)
 
-A different PHP version in the matrix, or a stale local `.phpcs-cache` / `.phpunit.result.cache`.
+One of these causes applies:
+
+- The CI matrix uses a different PHP version.
+- The local `.phpcs-cache` or `.phpunit.result.cache` is stale.
 
 ## Diagnostic commands
 
-All read-only except `composer clear-config-cache`, which deletes the cached merged config — safe,
-and it touches no committed file, but it is a write.
+All these commands only read data, except `composer clear-config-cache`.
+That command deletes the cached merged config.
+It is safe, and it changes no committed file, but it writes data.
 
 ```bash
-php bin/cli.php route:list          # API / Admin; or the repo's equivalent
-php bin/cli.php                     # console commands — API, Admin, Queue (no bin/cli.php in Frontend or Light)
+php bin/cli.php route:list          # API / Admin, or the equivalent command of the repository
+php bin/cli.php                     # console commands: API, Admin, Queue (Frontend and Light have no bin/cli.php)
 composer clear-config-cache
 php -l <file>
 composer cs-check
@@ -135,4 +173,5 @@ php ./vendor/bin/doctrine-migrations status
 php ./bin/doctrine fixtures:list
 ```
 
-If nothing above matches, say so and ask. Do not start editing config files to see what happens.
+If no section above matches, tell the user and ask.
+Do not edit config files to see what occurs.

@@ -1,6 +1,6 @@
 ---
 name: dotkernel-package-status
-description: 'Choose, justify and verify PHP/Composer dependencies in Dotkernel projects, and answer whether a Dotkernel package is still maintained. Use this skill ANY time you are about to suggest, add, evaluate or replace a package, edit composer.json, run `composer require`/`composer remove`, or answer "what should I use for X" — including when the user only asks how to implement something a library could solve (mail, queues, caching, logging, validation, pagination, auth, CLI, fixtures, uploads, GeoIP, error handling, HTTP client). Also use when asked whether a Dotkernel package is still maintained, what a package does, which PHP versions it supports, whether it is safe for a new project, or what the state of the Dotkernel open-source portfolio is. Enforces this order — already installed, then dotkernel/*, then laminas & mezzio, then a vetted community package, then hand-rolled code — and answers from the published dotkernel.com listing rather than from memory. Also use whenever you catch yourself naming a package from memory.'
+description: 'Select, justify and verify PHP/Composer dependencies in Dotkernel projects, and tell whether a Dotkernel package is still maintained. Use this skill ANY time before you suggest, add, evaluate or replace a package, edit composer.json, run `composer require`/`composer remove`, or answer "what should I use for X". Also use it when the user only asks how to implement something that a library can solve (mail, queues, caching, logging, validation, pagination, auth, CLI, fixtures, uploads, GeoIP, error handling, HTTP client). Also use when asked whether a Dotkernel package is still maintained, what a package does, which PHP versions it supports, whether it is safe for a new project, or what the state of the Dotkernel open-source portfolio is. Enforces this order: already installed, then dotkernel/*, then laminas & mezzio, then a vetted community package, then hand-rolled code. Answers from the published dotkernel.com listing, not from memory. Also use each time that you find yourself naming a package from memory.'
 ---
 
 # Dotkernel package status and dependency policy
@@ -11,27 +11,29 @@ Applies to
   Packages:  - all
 ```
 
-Dotkernel is a Mezzio/Laminas ecosystem with its own first-party `dot-*` layer. Most "I need a
-library for this" moments are already solved inside the stack. Reaching outside it is a governance
-decision, not a convenience.
+Dotkernel is a Mezzio/Laminas ecosystem with its own first-party `dot-*` layer.
+The stack usually already contains a solution when you think "I need a library for this".
+A package from outside the stack is a governance decision, not a convenience.
 
 ## Source of truth
 
-Dotkernel publishes the support status of its open-source packages as a machine-readable listing,
-rebuilt daily from the GitHub organization. It is the only source this skill uses for `dotkernel/*`
-packages. Prefer it over recollection: names drift, lifecycle states change, and a package that was
-active at training time may be security-only now.
+Dotkernel publishes the support status of its open-source packages as a machine-readable listing.
+The site builds the listing again each day from the GitHub organization.
+This skill uses only this source for `dotkernel/*` packages.
+Use the listing, not your memory.
+Names change, lifecycle states change, and a package that was active at training time can be security-only now.
 
 - Data: <https://www.dotkernel.com/dotkernel-packages.json>
 - Human-readable page: <https://www.dotkernel.com/dotkernel-packages-oss-lifecycle/>
 - Site that publishes both, and the code that generates them:
   <https://github.com/dotkernel/dotkernel.com>
 
-The listing is a product of the dotkernel.com site rather than of any single package, so nothing
-needs to be installed or generated to use it and it works from any repository. Fetch it fresh for
-each question; do not save a copy into the project. Report a wrong or stale entry against
-`dotkernel/dotkernel.com`, and a wrong lifecycle value against the package's own repository, which
-is where the `OSSMETADATA` file that declares it lives.
+The dotkernel.com site makes the listing, not a single package.
+Thus you do not install or generate anything to use it, and it works from all repositories.
+Get a new copy of the listing for each question.
+Do not save a copy into the project.
+Report a wrong or old entry against `dotkernel/dotkernel.com`.
+Report a wrong lifecycle value against the repository of the package, because the `OSSMETADATA` file that declares the value is in that repository.
 
 ### Shape
 
@@ -52,29 +54,34 @@ is where the `OSSMETADATA` file that declares it lives.
 }
 ```
 
-- `name` - the bare repository name. The Composer package is `dotkernel/<name>`.
-- `description` - the GitHub repository description; `null` when the repository has none.
-- `lifecycle` - see below. Values outside the four listed are possible and mean the repository
-  declared something unrecognized; report it as undeclared rather than guessing.
-- `php` - the `require.php` constraint from the package's `composer.json`, or `null` when it
-  declares none or the file could not be read. A `null` is missing data, not "any PHP version."
-- `archived` - GitHub's own archived flag, which is independent of `lifecycle`. A repository can be
-  archived on GitHub while still declaring an older lifecycle, and the page surfaces that as a
-  separate "Archived on GitHub" note.
+- `name` - the repository name without the vendor.
+  The Composer package is `dotkernel/<name>`.
+- `description` - the GitHub repository description.
+  The value is `null` when the repository has no description.
+- `lifecycle` - see the table below.
+  Values other than the four in the table are possible.
+  Such a value means that the repository declared a value that the site does not know.
+  Report it as undeclared, and do not guess.
+- `php` - the `require.php` constraint from the `composer.json` of the package.
+  The value is `null` when the package declares no constraint, or when the site could not read the file.
+  A `null` is missing data, not "any PHP version."
+- `archived` - the archived flag of GitHub, which is independent of `lifecycle`.
+  A repository can be archived on GitHub and still declare an older lifecycle.
+  The page shows that case as a separate "Archived on GitHub" note.
 
-The listing carries no keywords, release dates, download counts or successor field. Do not present
-any of those as coming from it.
+The listing has no keywords, release dates, download counts or successor field.
+Do not say that any of those come from the listing.
 
 ### What each lifecycle means for a consumer
 
-| Value | What to tell someone | As a new dependency |
+| Value | What to tell the user | As a new dependency |
 | --- | --- | --- |
-| `active` | Actively developed, new features and fixes. Safe for a new project. | Yes |
-| `maintenance` | Still supported, receiving fixes but no new features. Safe to stay on; expect no new capabilities. | Yes, and say so |
-| `security-only` | Only security fixes are released. Plan an upgrade or replacement now. | No — red flag, ask first |
-| `archived` | No longer maintained. Do not use in new projects; migrate existing ones. | No |
+| `active` | The maintainers develop it actively, with new features and fixes. It is safe for a new project. | Yes |
+| `maintenance` | The maintainers support it and release fixes, but no new features. You can stay on it, but expect no new capabilities. | Yes, and say so |
+| `security-only` | The maintainers release only security fixes. Plan an upgrade or a replacement now. | No. This is a red flag, so ask first. |
+| `archived` | Nobody maintains it. Do not use it in new projects. Migrate the existing projects. | No |
 
-Treat `archived: true` the same as the `archived` lifecycle, whatever `lifecycle` says.
+Apply the same rules to `archived: true` as to the `archived` lifecycle, whatever the value of `lifecycle` is.
 
 ### Querying it
 
@@ -85,14 +92,15 @@ curl -fsSL https://www.dotkernel.com/dotkernel-packages.json \
       | "\(.name)  \(.lifecycle)  php=\(.php // "unknown")  archived=\(.archived)  \(.description // "")")'
 ```
 
-Match on `name` and `description`, not on a guessed name. If the shell cannot reach the site, load
-the human-readable page instead.
+Match on `name` and `description`, not on a name that you guess.
+If the shell cannot connect to the site, load the human-readable page.
 
-## The ladder — walk it in order, stop at the first hit
+## The ladder: use it in sequence, and stop at the first match
 
-**0. Already installed.** Read `composer.json` and grep `composer.lock` before anything else.
-Dotkernel API ships a large transitive tree (laminas-*, mezzio-*, doctrine/*, league/oauth2-server,
-symfony components, psr/*). If a package is already in the lock file, use it — no new dependency.
+**0. Already installed.** Read `composer.json` and grep `composer.lock` before you do other steps.
+Dotkernel API has a large transitive tree (laminas-*, mezzio-*, doctrine/*, league/oauth2-server, symfony components, psr/*).
+If the lock file already contains a package, use it.
+This adds no new dependency.
 
 ```bash
 jq -r '.require, .["require-dev"] | keys[]' composer.json | sort
@@ -100,74 +108,91 @@ jq -r '.packages[].name, .["packages-dev"][].name' composer.lock | sort   # full
 composer show | grep -i <keyword>                                         # installed packages only
 ```
 
-**1. A `dotkernel/*` package.** Search the listing (see *Source of truth*). Prefer it even if a more
-popular community package exists — consistency with the ecosystem and the maintainers' expectations
-outweighs raw feature count. Only `active` or `maintenance`, not archived on GitHub, and a `php`
-constraint that covers every PHP version this project's `composer.json` `require.php` allows.
+**1. A `dotkernel/*` package.** Search the listing (see *Source of truth*).
+Use it also when a more popular community package exists.
+Consistency with the ecosystem and with the expectations of the maintainers is more important than the number of features.
+Use only a package that agrees with all these conditions:
 
-**2. `laminas/*` or `mezzio/*`.** These are effectively first-party-adjacent: Dotkernel is built on
-them, they are usually already in the tree, and `dot-*` packages are thin wrappers over them.
+- The lifecycle is `active` or `maintenance`.
+- The package is not archived on GitHub.
+- The `php` constraint covers each PHP version that `require.php` in the `composer.json` of this project allows.
 
-**3. A vetted community package.** Only when 0–2 genuinely cannot cover the need. Prefer
-`symfony/*`, `doctrine/*`, `psr/*` and `league/*` — the stack already depends on them, so you are
-widening an existing surface rather than opening a new one. It must be actively maintained,
-installable on every PHP version this project's `require.php` allows, not abandoned, carry a real
-license, and not duplicate something already in the tree. "Actively maintained" means a release in
-the last 12 months — the rule of thumb the user applies when confirming the package; this skill has
-no release dates to check it against itself.
+**2. `laminas/*` or `mezzio/*`.** These packages are almost first-party.
+Dotkernel uses them as its base, the tree usually already contains them, and the `dot-*` packages are thin wrappers around them.
 
-**4. Write it yourself.** For a small, well-understood need (a value object, a 40-line helper, a
-single middleware), in-tree code beats a dependency. Say so explicitly instead of silently picking a
-package.
+**3. A vetted community package.** Use one only when steps 0–2 cannot cover the need.
+Use `symfony/*`, `doctrine/*`, `psr/*` and `league/*` first.
+The stack already depends on them, so you make an existing surface larger and do not open a new one.
+The package must agree with all these conditions:
+
+- It is actively maintained.
+- You can install it on each PHP version that `require.php` of this project allows.
+- It is not abandoned.
+- It has a real license.
+- It does not duplicate a package that is already in the tree.
+
+"Actively maintained" means a release in the last 12 months.
+This is the approximate rule that the user applies when the user confirms the package.
+This skill has no release dates, so it cannot check the rule itself.
+
+**4. Write it yourself.** For a small need that is easy to understand (a value object, a 40-line helper, a single middleware), code in the tree is better than a dependency.
+Say this clearly.
+Do not select a package silently.
 
 ## Verifying a name
 
-Never name a package from memory. A name is **verified** only when you read it in one of:
+Never name a package from memory.
+A name is **verified** only when you read it in one of these sources:
 
-- this project's `composer.lock` (any vendor), or
+- the `composer.lock` of this project (any vendor), or
 - the dotkernel.com listing (`dotkernel/*` only).
 
-Anything else — a `laminas/*`, `mezzio/*` or community package that is not already installed — is
-**unverified**. Say so in those words, and hand its maintenance status, PHP support and license to
-the user to confirm; this skill has no source for them.
+All other names are **unverified**, for example a `laminas/*`, `mezzio/*` or community package that is not already installed.
+Use the word "unverified" for them.
+Tell the user to confirm the maintenance status, the PHP support and the license, because this skill has no source for them.
 
-If the listing cannot be fetched, say so and call every `dotkernel/*` name that is not in
-`composer.lock` unverified. Do not fall back to remembered status, which is exactly what the listing
-exists to replace.
+If you cannot get the listing, say so.
+Then call each `dotkernel/*` name that is not in `composer.lock` unverified.
+Do not use the status that you remember, because the listing exists to replace that memory.
 
 ## Answering status questions
 
-- Cite `generated_at`. The listing is a daily snapshot, so say what it was current as of.
-- Absence is not non-existence. A repository is only listed when it carries an `OSSMETADATA` file
-  declaring its lifecycle, and the site excludes non-package repositories (documentation, skeleton
-  projects, the site itself). If a name is missing, say it is not in the published package listing
-  and check <https://github.com/orgs/dotkernel/repositories> - do not say it does not exist.
-- For "is X maintained?", lead with the lifecycle sentence above, then the PHP constraint if the
-  question is about upgrading.
-- For "what should I use instead?", the listing gives no successor field. Say the package is
-  archived or security-only, walk the ladder for the underlying need, and point at the GitHub `url`
-  and the lifecycle page rather than inventing a replacement.
+- Give the `generated_at` value.
+  The listing is a daily snapshot, so say the date and time of the data.
+- Absence does not mean that the package does not exist.
+  The site lists a repository only when the repository has an `OSSMETADATA` file that declares its lifecycle.
+  The site also excludes repositories that are not packages (documentation, skeleton projects, the site itself).
+  If a name is missing, say that it is not in the published package listing.
+  Then check <https://github.com/orgs/dotkernel/repositories>.
+  Do not say that the package does not exist.
+- For "is X maintained?", start with the lifecycle sentence from the table above.
+  Then give the PHP constraint if the question is about an upgrade.
+- For "what should I use instead?", remember that the listing has no successor field.
+  Say that the package is archived or security-only.
+  Use the ladder for the need that the package served.
+  Give the GitHub `url` and the lifecycle page.
+  Do not invent a replacement.
 
-The JSON is served from the document root of dotkernel.com, so its URL tracks the deployed file
-name. If the request 404s, load the human-readable page above and read the "View as JSON" link from
-it, or check the `dataFile` setting in `config/autoload/packages.global.php` in
-<https://github.com/dotkernel/dotkernel.com>.
+The site serves the JSON from the document root of dotkernel.com, so its URL follows the name of the deployed file.
+If the request returns 404, load the human-readable page above and read the "View as JSON" link from it.
+Alternatively, check the `dataFile` setting in `config/autoload/packages.global.php` in <https://github.com/dotkernel/dotkernel.com>.
 
 ## Contributing to dotkernel/api specifically
 
-This is someone else's repository. Adding a dependency changes the dependency surface of every
-downstream Dotkernel project.
+This repository belongs to other persons.
+A new dependency changes the dependency surface of each downstream Dotkernel project.
 
-- **Do not run `composer require` on a contribution branch.** Solve the problem with what is
-  installed. If that is impossible, produce a proposal (below) and let the maintainers decide — the
-  right first step is an issue or discussion on the repo, not a commit.
-- A new dependency in a PR that was not agreed in advance is the most common reason a Dotkernel PR
-  stalls. Flag this to the user before writing any code that assumes a new package.
-- `require-dev` is not a free pass — CI runs it.
+- **Do not run `composer require` on a contribution branch.** Solve the problem with the installed packages.
+  If that is not possible, write a proposal (see below) and let the maintainers decide.
+  The correct first step is an issue or a discussion on the repository, not a commit.
+- A new dependency in a PR without agreement before the PR is the most frequent cause of a stopped Dotkernel PR.
+  Tell the user about this before you write code that needs a new package.
+- `require-dev` does not make a dependency free of cost, because CI runs it.
 
-## Output format when a dependency is genuinely needed
+## Output format when you really need a dependency
 
-Always show the work. Never present a single option as if it were the only one.
+Always show the work.
+Never show a single option as if it is the only option.
 
 ```text
 Dependency proposal
@@ -183,34 +208,33 @@ Decision:    yours — I have not modified composer.json
 
 ## Where to look first, by need
 
-Verify each against the listing and `composer.lock` — treat this as a search hint, not a source of
-truth.
+Verify each entry against the listing and `composer.lock`.
+Use this table as a search hint, not as a source of truth.
 
 | Need | Look at |
 | --- | --- |
-| DI / factories via attributes | `dot-dependency-injection` |
+| DI / factories through attributes | `dot-dependency-injection` |
 | Routing, route groups | `dot-router` + `mezzio-router` |
 | Errors, logging, error middleware | `dot-errorhandler`, `dot-log` |
 | Mail | `dot-mail` (wraps symfony/mailer) |
 | Caching | `dot-cache` |
 | CLI commands | `dot-cli` + `laminas-cli` |
 | Pagination / collections | `dot-paginator` |
-| Input validation & filtering | `dot-inputfilter`, `dot-filter`, `dot-validator`, `laminas-inputfilter` |
+| Input validation and filtering | `dot-inputfilter`, `dot-filter`, `dot-validator`, `laminas-inputfilter` |
 | Authorization / RBAC / guards | `dot-authorization*`, `dot-rbac-guard` |
-| API authentication | `league/oauth2-server` via `mezzio-authentication-oauth2` (already in API) |
+| API authentication | `league/oauth2-server` through `mezzio-authentication-oauth2` (already in API) |
 | Doctrine fixtures | `dot-data-fixtures` |
 | GeoIP | `dot-geoip` |
 | Response headers | `dot-response-header` |
-| Queues / async | `symfony/messenger`, wired the way stock Queue does it: `netglue/laminas-messenger` plus a transport such as `symfony/redis-messenger`. `dotkernel/queue` is a project skeleton to start a worker from — never `composer require` it |
-| Scaffolding new code | `dot-maker` (generate, do not hand-write boilerplate) |
-| HTTP client | whatever is in the lock file already — do not add guzzle if `symfony/http-client` is present |
+| Queues / async | `symfony/messenger`, connected as in the stock Queue: `netglue/laminas-messenger` and a transport such as `symfony/redis-messenger`. `dotkernel/queue` is a project skeleton to start a worker from. Never `composer require` it. |
+| Scaffolding new code | `dot-maker` (generate boilerplate, do not write it by hand) |
+| HTTP client | the client that is already in the lock file. Do not add guzzle if `symfony/http-client` is present. |
 
-## Red flags — stop and ask
+## Red flags: stop and ask
 
-- You are about to write a package name you did not read out of the listing or the lock file.
-- The package solves a problem you have not confirmed exists in this codebase.
-- It duplicates something already in `composer.lock` under a different vendor.
-- Its PHP constraint excludes a version this project's `require.php` allows, or the listing's `php`
-  is `null`.
+- You are about to write a package name that you did not read in the listing or in the lock file.
+- The package solves a problem that you did not confirm in this codebase.
+- It duplicates a package that is already in `composer.lock` under a different vendor.
+- Its PHP constraint excludes a version that `require.php` of this project allows, or the `php` value in the listing is `null`.
 - It is `security-only` or `archived` in the listing, or `archived: true` on GitHub.
-- You are adding it to make a test pass.
+- You want to add it to make a test pass.

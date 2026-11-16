@@ -1,11 +1,11 @@
 ---
 name: dotkernel-core-submodule
 description: >
-  Use whenever a change touches the Core layer of a Dotkernel project — adding or editing a
-  Doctrine entity, repository, enum, DBAL type, fixture, migration or shared service — or when
-  deciding whether code belongs in Core versus an application module. Also use for git submodule
-  mechanics (.gitmodules, git submodule add/init/update, committing from inside src/Core) and for
-  questions about sharing code between Dotkernel projects on one database.
+  Use whenever a change touches the Core layer of a Dotkernel project: adding or editing a
+  Doctrine entity, repository, enum, DBAL type, fixture, migration or shared service. Also use
+  when you decide whether code belongs in Core versus an application module. Also use for git
+  submodule mechanics (.gitmodules, git submodule add/init/update, committing from inside
+  src/Core) and for questions about sharing code between Dotkernel projects on one database.
 ---
 
 # The shared Core layer
@@ -17,38 +17,46 @@ Applies to
   Packages:  - none
 ```
 
-Dotkernel's headless platform is a set of projects over one database: an API as the root, and
-optionally an Admin for management. The arrangement is flexible — two APIs and one Admin is
-equally valid.
+The headless platform of Dotkernel is a set of projects on one database.
+An API is the root, and an Admin for management is optional.
+The arrangement is flexible.
+For example, two APIs and one Admin is also a valid arrangement.
 
-`src/Core` is the codebase they share, so one change to a shared entity or service propagates
-rather than being copy-pasted into each project. The stock API and Admin ship the same `Core`
-modules — `Admin`, `App`, `Security`, `Setting`, `User`.
+`src/Core` is the codebase that these projects share.
+Thus, one change to a shared entity or service goes to all projects, and you do not copy it into each project.
+The stock API and Admin include the same `Core` modules: `Admin`, `App`, `Security`, `Setting`, `User`.
 
-The stock Frontend, Light and Queue have no `Core`: Frontend keeps its entities inside its own
-modules, and Light and Queue have no persistence. A derived project can adopt `Core`, but do not
-assume it has.
+The stock Frontend, Light and Queue have no `Core`.
+Frontend keeps its entities in its own modules.
+Light and Queue have no persistence.
+A derived project can use `Core`, but do not assume that it does.
 
-In API and Admin, `src/Core` ships as an ordinary module, designed as the starting point for
-extraction into a git submodule. **Treat it as if it already were one.**
+In API and Admin, `src/Core` is an ordinary module.
+Its design makes it the start point for an extraction into a git submodule.
+**Use it as if it is a submodule already.**
 
 ## Rules for Core code
 
-1. **Core is the only place that manages database entities.** All Doctrine entities,
-   repositories, enums and DBAL types live under `src/Core/src/<Module>/src/`.
-2. **Core must never depend on a project namespace.** No `Api\…`, `Admin\…`, `Frontend\…`
-   imports; nothing HTTP-request-shaped, no HAL, no forms. If a Core service must signal failure,
-   throw a Core-level exception or return null and let the application layer translate it.
-3. **Anything in Core is potentially consumed by every other project.** Before changing a
-   Core signature, ask whether it breaks the siblings. Prefer additive changes; deprecate rather
-   than rename.
-4. **Not everything shared-looking belongs in Core.** Logic used by exactly one project stays
-   in that project's module. Core is for genuinely common code.
-5. Migration directories under Core are **generated** — never hand-edit.
+1. **Only Core manages database entities.**
+   All Doctrine entities, repositories, enums and DBAL types are under `src/Core/src/<Module>/src/`.
+2. **Core must never depend on a project namespace.**
+   Do not import `Api\…`, `Admin\…` or `Frontend\…`.
+   Do not put HTTP request structures, HAL or forms in Core.
+   If a Core service must report a failure, throw a Core exception or return null.
+   Then let the application layer translate it.
+3. **All other projects can use anything in Core.**
+   Before you change a Core signature, find out if the change breaks the other projects.
+   Prefer changes that only add.
+   Deprecate, do not rename.
+4. **Not all code that looks shared belongs in Core.**
+   When only one project uses some logic, keep it in the module of that project.
+   Core is for code that is really common.
+5. Tools **generate** the migration directories under Core.
+   Never edit them by hand.
 
 ## Splitting a change
 
-A typical feature spans both layers:
+A typical feature is in the two layers:
 
 ```text
 src/Core/src/Book/src/Entity/Book.php               ← schema, invariants, accessors
@@ -57,25 +65,27 @@ src/Book/src/Service/BookService.php                ← use-case orchestration
 src/Book/src/Handler/Book/…Handler.php              ← HTTP / presentation
 ```
 
-Both layers get their own `ConfigProvider`, and both are registered in `config/config.php`.
+Each layer has its own `ConfigProvider`, and `config/config.php` registers the two layers.
 
 ## Creating the submodule
 
-Create a new git repository for the Core code, then from the project root:
+Create a new git repository for the Core code.
+Then, from the project root, run:
 
 ```bash
 git submodule add <url> src/Core
 ```
 
-Git writes `.gitmodules`, mapping the URL to the local path so it can clone, update and track it.
-**Delete the existing `src/Core` directory before adding the submodule** to a second project.
+Git writes `.gitmodules`.
+This file maps the URL to the local path, so that git can clone, update and track the submodule.
+**Before you add the submodule to a second project, delete the existing `src/Core` directory.**
 
-No Dotkernel project ships `.gitmodules` out of the box — it only exists once you have
-isolated Core into its own repository.
+No Dotkernel project includes `.gitmodules` by default.
+The file exists only after you move Core into its own repository.
 
 ## Day-to-day mechanics
 
-Cloning a project that has one:
+To clone a project that has a submodule:
 
 ```bash
 git submodule init
@@ -83,7 +93,7 @@ git submodule update
 # or: git clone --recurse-submodules <url>
 ```
 
-Committing Core changes — **from inside the submodule directory**, which is its own repository:
+To commit Core changes, work **from inside the submodule directory**, because it is its own repository:
 
 ```bash
 cd src/Core
@@ -100,23 +110,30 @@ git add src/Core
 git commit -m "Bump Core submodule"
 ```
 
-Skipping that second step is the classic failure: teammates pull and still get the old Core.
+The usual failure is to skip that second step.
+Then other developers pull and still get the old Core.
 
 ## Working rules for an agent
 
-- Before editing Core, state that the change is cross-project and name the likely consumers.
-- `git submodule` and `git push` are in the deny tier and refused by the `guard-bash.sh` hook,
-  approval or not — never try to run them. Give the user the exact commands to run instead.
-- `git add` and `git commit` prompt for approval; run them only when the user has asked for the
-  commit.
-- If `.gitmodules` exists, do not stage Core content changes from the parent repo — they belong
-  to the submodule's own history.
-- Schema changes need a migration, generated not written, and **applied by every project on
-  that database**.
-- A schema-validation CI job will catch entity/migration drift.
+- Before you edit Core, state that the change affects more than one project.
+  Name the projects that probably use the changed code.
+- `git submodule` and `git push` are in the deny tier.
+  The `guard-bash.sh` hook refuses them, with or without approval.
+  Never try to run them.
+  Give the user the exact commands to run.
+- `git add` and `git commit` ask for approval.
+  Run them only when the user asks for the commit.
+- If `.gitmodules` exists, do not stage changes to Core content from the parent repository.
+  These changes belong to the history of the submodule.
+- A schema change needs a migration.
+  Generate the migration, do not write it.
+  **Every project on that database must apply it.**
+- A schema-validation CI job finds differences between entities and migrations.
 
 ## Why this design
 
-Consistency across projects, one place to fix a bug, work splittable across developers
-without merge storms, easier onboarding, and a platform that scales by adding projects that
-all speak to the same Core-defined model.
+- The projects stay consistent.
+- You fix a bug in one place.
+- Developers can share the work without many merge conflicts.
+- New developers learn the platform more easily.
+- The platform grows when you add projects that all use the same model from Core.

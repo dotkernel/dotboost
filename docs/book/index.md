@@ -1,8 +1,9 @@
 # Home
 
-Dotboost is documented in two places:
+Two places document Dotboost:
 
-- the [project README](https://github.com/dotkernel/dotboost#readme) — install steps, the full file tree, and everything needed to get the payload into a project
-- this book — a deeper reference per subsystem (permissions, hooks, commands, skills) for once it's installed and you want to understand or extend it
+- The [project README](https://github.com/dotkernel/dotboost#readme) gives the installation steps, the full file tree, and all the information that you need to put the payload into a project.
+- This book gives a more detailed reference for each subsystem (permissions, hooks, commands, skills).
+  Use it after the installation, when you want to understand or extend Dotboost.
 
-Start with [Introduction](v1/introduction.md) if you're new to the project.
+If you are new to the project, start with the [Introduction](v1/introduction.md).

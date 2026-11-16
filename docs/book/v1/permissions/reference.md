@@ -2,8 +2,9 @@
 
 ## Never read
 
-`Read` denies — Claude's file tools and the Bash file commands Claude Code recognises (`cat`, `head`, `tail`, `sed`, `tee`) cannot open these.
-A command that reads files without naming them, such as `grep -r`, is not covered:
+`Read` denies.
+Claude's file tools and the Bash file commands that Claude Code recognises (`cat`, `head`, `tail`, `sed`, `tee`) cannot open these files.
+The rules do not cover a command that reads files without their names, such as `grep -r`:
 
 - `.env`
 - every `*.local.php`
@@ -13,12 +14,14 @@ A command that reads files without naming them, such as `grep -r`, is not covere
 
 ## Never written
 
-`Edit` denies — Claude Code applies `Edit` rules to every file-editing tool, `Write` included, and `guard-protected-paths.sh` blocks these paths for every file-writing tool at the hook layer too (for `data/`, only `cache/`, `lock/` and `oauth/`):
+`Edit` denies.
+Claude Code applies `Edit` rules to each file-editing tool, and also to `Write`.
+`guard-protected-paths.sh` also blocks these paths for each file-writing tool at the hook layer (for `data/`, only `cache/`, `lock/` and `oauth/`):
 
 - dependency manifests: `composer.json`, `composer.lock`, `package.json`, `package-lock.json`
 - `vendor/`, `node_modules/`
 - `data/`, `log/`, `public/uploads/`
-- anything under `Migration/` or `Migrations/`
+- all files under `Migration/` or `Migrations/`
 - every `*.local.php`, `config/autoload/local.php`, `config/autoload/local.test.php`
 
 ## Never run
@@ -43,7 +46,8 @@ A command that reads files without naming them, such as `grep -r`, is not covere
 
 - the Composer QA scripts: `check`, `cs-check`, `cs-fix`, `static-analysis`, `test`
 - `clear-config-cache`, `development-status`, `dump-autoload`
-- `php ./vendor/bin/phpcs`, `phpcbf`, `phpstan`, `phpunit` — only with the `php ./` prefix; a bare `vendor/bin/phpunit` prompts
+- `php ./vendor/bin/phpcs`, `phpcbf`, `phpstan`, `phpunit` — only with the `php ./` prefix.
+  A bare `vendor/bin/phpunit` shows a prompt
 - `markdownlint-cli2`, `./node_modules/.bin/markdownlint-cli2`
 - `php -l`, `php -v`, `php -m`
 - `date +%F`

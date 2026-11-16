@@ -1,33 +1,36 @@
 # dotboost — Claude Code configuration for Dotkernel projects
 
-Drop-in configuration that teaches Claude Code the conventions of any Dotkernel project —
-API, Admin, Frontend, Light, Queue, or a project derived from one of them. Every skill detects the
-variant first and applies the matching dialect.
+dotboost is a drop-in configuration that teaches Claude Code the conventions of any Dotkernel project.
+It supports API, Admin, Frontend, Light, Queue, and each project derived from one of them.
+Each skill first detects the variant, then applies the matching dialect.
 
-This repository is not itself a Dotkernel project. Its entire payload is the `.claude/`
-directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and nineteen
-skills. You install it by copying that directory into the Dotkernel project you are working on.
+This repository is not a Dotkernel project.
+Its full payload is the `.claude/` directory: settings, hooks, a status line, a review subagent, ten `/dk-*` commands and nineteen skills.
+To install it, copy that directory into the Dotkernel project that you work on.
 
 Maintained by Borsan Sergiu.
 
 ## Add this to your project's CLAUDE.md
 
-dotboost ships the `dotkernel-package-status` skill, which holds the dependency policy, but a skill
-`description:` is only a hint — it decides whether the skill *can* load, not whether Claude stops to
-think before naming a package. The rule that makes it reach for the skill has to be always loaded,
-which means it lives in your project's own `CLAUDE.md`. Paste this block there:
+dotboost ships the `dotkernel-package-status` skill, which holds the dependency policy.
+But the `description:` of a skill is only a hint.
+It decides whether the skill *can* load, not whether Claude stops to think before it names a package.
+The rule that makes Claude use the skill must always be loaded, so it must be in the `CLAUDE.md` of your project.
+Paste this block there:
 
 ```markdown
 ## Dependency policy
 
-Order of preference, stop at the first hit: **already in composer.lock** -> **`dotkernel/*`** ->
-**`laminas/*` / `mezzio/*`** -> vetted `symfony|doctrine|psr|league` package -> hand-rolled code.
+Use this order of preference, and stop at the first match: **already in composer.lock** -> **`dotkernel/*`** -> **`laminas/*` / `mezzio/*`** -> vetted `symfony|doctrine|psr|league` package -> hand-rolled code.
 
-- Never name a package from memory. Verify against `composer.lock`, or the `dotkernel/*` listing
-  published at <https://www.dotkernel.com/dotkernel-packages.json>. Any other name is unverified — say so.
-- Never run `composer require` in an upstream Dotkernel repo. Present a proposal; the user decides.
-- Consult the `dotkernel-package-status` skill before any package suggestion, including implicit
-  ones ("how do I send mail from here?" is a package question).
+- Never name a package from memory.
+  Verify it against `composer.lock`, or against the `dotkernel/*` listing published at <https://www.dotkernel.com/dotkernel-packages.json>.
+  Say that any other name is unverified.
+- Never run `composer require` in an upstream Dotkernel repository.
+  Present a proposal.
+  The user decides.
+- Before you suggest a package, use the `dotkernel-package-status` skill.
+  This also applies to implicit suggestions: "how do I send mail from here?" is a package question.
 ```
 
 Dotkernel projects and packages also write all prose in ASD-STE100 Simplified Technical English.
@@ -43,23 +46,27 @@ Do not apply it to the code itself: identifiers, keywords, syntax and docblock t
 Load the `dotkernel-writing-style` skill before you write any of this prose.
 ```
 
-Three things worth knowing about how that behaves:
+Note these three facts about the dependency policy:
 
-- The only source for `dotkernel/*` packages is the listing **dotkernel.com publishes**, rebuilt
-  daily from the GitHub organization. Claude fetches it fresh for each question; nothing is
-  generated, shipped or stored in the project. It needs network access; without it Claude is
-  instructed to call a package name **unverified** rather than assert it.
-- Nothing queries Packagist. A `laminas/*`, `mezzio/*` or community package that is not already in
-  `composer.lock` is reported as **unverified**, and confirming its maintenance status, PHP support
-  and license is left to you. The rule of thumb for "actively maintained" is a release in the last
-  12 months.
-- Fetching the listing is in neither the allow nor the deny list in `settings.json`, so it prompts.
-  That is deliberate — expect a prompt the first time.
+- The only source for `dotkernel/*` packages is the listing that **dotkernel.com publishes**.
+  The listing is rebuilt each day from the GitHub organization.
+  Claude fetches a new copy of the listing for each question.
+  dotboost does not generate, ship or store a copy in the project.
+  The fetch needs network access.
+  Without network access, the instructions tell Claude to call a package name **unverified**, and not to assert it.
+- Nothing queries Packagist.
+  When a `laminas/*`, `mezzio/*` or community package is not already in `composer.lock`, Claude reports it as **unverified**.
+  Claude does not confirm its maintenance status, PHP support and license, so that task is yours.
+  As a general rule, a package is "actively maintained" when it has a release in the last 12 months.
+- Neither the allow list nor the deny list in `settings.json` contains the fetch of the listing, so Claude Code shows a prompt.
+  This is intentional.
+  Expect a prompt the first time.
 
 ## Install
 
-The payload is the `.claude/` directory and it has to sit at the root of your project. Two ways to
-get it there — same files either way, pick whichever suits the machine you are on.
+The payload is the `.claude/` directory, and it must be at the root of your project.
+There are two ways to put it there.
+Both ways give the same files, so select the way that suits your machine.
 
 ### Clone it inside the project
 
@@ -71,12 +78,13 @@ cp -r .dotboost/.claude/. .claude/
 rm -rf .dotboost
 ```
 
-`--depth 1` because only the current state of `main` is of any use in a target project. The clone
-goes away right after the copy, so nothing nested is left for a `git add .` to trip over.
+The clone uses `--depth 1` because only the current state of `main` is useful in a target project.
+The last command removes the clone immediately after the copy.
+Thus, no nested clone stays in the project to cause a problem for `git add .`.
 
 ### Download the zip
 
-No git needed, which is the point:
+This way does not need git, and that is its purpose:
 
 ```bash
 cd <project>
@@ -87,9 +95,11 @@ cp -r dotboost-main/.claude/. .claude/
 rm -rf dotboost-main dotboost.zip
 ```
 
-The archive unpacks to `dotboost-main/` and does carry the dotfiles, `.claude/` included. No `unzip`
-— Git Bash on Windows ships without one — then take the ZIP from the green **Code** button on the
-repo page, extract it anywhere, and copy the `.claude` folder into your project root by hand.
+The archive extracts to `dotboost-main/`, and it contains the dotfiles, `.claude/` too.
+Git Bash on Windows does not include `unzip`.
+If you do not have `unzip`, download the ZIP from the green **Code** button on the repository page.
+Extract it to any location.
+Then copy the `.claude` folder into the root of your project manually.
 
 ### Then, either way
 
@@ -98,11 +108,12 @@ chmod +x .claude/hooks/*.sh .claude/statusline.sh
 echo '.claude/settings.local.json' >> .git/info/exclude
 ```
 
-Nothing here is committed with an executable bit, and a zip extracted on Windows carries no
-permission bits at all. `settings.json` invokes the hooks and the status line as `bash <path>`, so
-they run regardless; the `chmod` only matters when you run one of them by hand.
+This repository commits no file with an executable bit.
+Also, a zip that you extract on Windows has no permission bits at all.
+`settings.json` runs the hooks and the status line as `bash <path>`, so they run without the bits.
+The `chmod` is necessary only when you run one of them manually.
 
-What lands in the project:
+These files go into the project:
 
 ```text
 <project>/.claude/
@@ -116,98 +127,101 @@ What lands in the project:
 └── skills/                        nineteen dotkernel-* skills
 ```
 
-Optionally, for personal overrides that stay out of git:
+Optionally, make a file for personal overrides that stay out of git:
 
 ```bash
 cp .claude/settings.local.json.example .claude/settings.local.json
 ```
 
-The trailing `/.` copies the *contents* of the payload's `.claude/`, so it merges into a `.claude/`
-the project already has instead of nesting a second one at `.claude/.claude/`. Merging still
-overwrites same-named files: if the project already has its own `.claude/settings.json` or its own
-`.claude/commands/`, merge by hand rather than running the `cp -r` blind.
+The trailing `/.` copies the *contents* of the `.claude/` directory in the payload.
+Thus, the copy merges into a `.claude/` directory that the project already has.
+It does not put a second directory at `.claude/.claude/`.
+But the merge still overwrites the files that have the same name.
+If the project already has its own `.claude/settings.json` or its own `.claude/commands/`, merge the files manually.
+Do not run the `cp -r` without a check.
 
-To update later, run the whole install again over the top. Anything you changed in the project's
-copy is lost, which is the reason personal changes belong in `settings.local.json`.
+To update dotboost later, run the full installation again on top of the existing files.
+You lose all the changes that you made in the copy in the project.
+For this reason, put personal changes in `settings.local.json`.
 
 ### Optional: markdown linting
 
-`.claude/hooks/markdown-lint.sh` checks every `.md` file Claude writes against
-`.claude/markdownlint.jsonc`. It needs `markdownlint-cli2`, which is not bundled — install it once,
-yourself:
+`.claude/hooks/markdown-lint.sh` checks each `.md` file that Claude writes against `.claude/markdownlint.jsonc`.
+It needs `markdownlint-cli2`, which dotboost does not include.
+Install it one time, yourself:
 
 ```bash
 npm install -g markdownlint-cli2
 ```
 
-A project-local `devDependency` works too; the hook prefers `./node_modules/.bin/markdownlint-cli2`
-and falls back to the global one. Claude cannot run either install for you — the `npm` install verbs
-are in the `deny` tier. Until the binary is resolvable the hook exits silently, so `.claude/` stays
-drop-in for projects with no Node toolchain at all.
+A project-local `devDependency` also works.
+The hook uses `./node_modules/.bin/markdownlint-cli2` first, and uses the global one when the local one is not available.
+Claude cannot run these installations for you, because the `npm` install verbs are in the `deny` tier.
+Until the hook can find the binary, it exits without output.
+Thus, `.claude/` stays drop-in for projects that have no Node toolchain at all.
 
 ## What `settings.json` decides for you
 
-It is a committed file, so it carries only what the whole team should share. One setting beyond the
-guardrails:
+`settings.json` is a committed file, so it contains only the settings that the full team should share.
+It has one setting in addition to the guardrails:
 
 ```text
 env.COMPOSER_MEMORY_LIMIT: "-1"    Composer runs without a memory ceiling
 ```
 
-Personal preferences — permission mode (`permissions.defaultMode`), `theme`, `tui` and
-`spinnerVerbs` — are not set here. `settings.local.json.example` carries a sample of each; copy the
-ones you want into your own `settings.local.json`. Its `defaultMode: "auto"` is only an example of the
-key: Claude Code does not apply `auto` from project or local settings, so if you want auto mode, set
-it in `~/.claude/settings.json` instead.
+This file does not set the personal preferences: the permission mode (`permissions.defaultMode`), `theme`, `tui` and `spinnerVerbs`.
+`settings.local.json.example` contains a sample of each.
+Copy the samples that you want into your own `settings.local.json`.
+Its `defaultMode: "auto"` is only an example of the key.
+Claude Code does not apply `auto` from project settings or local settings.
+If you want auto mode, set it in `~/.claude/settings.json` instead.
 
-The permission rules fall into four groups.
+The permission rules have four groups.
 
-**Never read.** These are `Read` denies, not just write protection — Claude's file tools, and the
-Bash file commands Claude Code recognises (`cat`, `head`, `tail`, `sed`, `tee`), cannot open them:
+**Never read.** These rules are `Read` denies, not only write protection.
+Claude's file tools cannot open these files.
+The Bash file commands that Claude Code recognises (`cat`, `head`, `tail`, `sed`, `tee`) also cannot open them:
 
-- `.env`, every `*.local.php`, `config/autoload/local.php`, `config/autoload/local.test.php`,
-  and `data/oauth/`.
+- `.env`, every `*.local.php`, `config/autoload/local.php`, `config/autoload/local.test.php`, and `data/oauth/`.
 
-That keeps your database credentials, your OAuth signing keys and your environment secrets out of
-the transcript in normal work, but it is a rule, not a sandbox: a command that reads files without
-naming them (`grep -r password config/`) or a script that opens a file itself gets past it. For an
-OS-level guarantee, use the sandbox described in the
-[Claude Code permissions docs](https://code.claude.com/docs/en/permissions).
+In normal work, these rules keep your database credentials, your OAuth signing keys and your environment secrets out of the transcript.
+But they are a rule, not a sandbox.
+A command that reads files without their names (`grep -r password config/`) gets past the rule.
+A script that opens a file itself also gets past the rule.
+For a guarantee at the OS level, use the sandbox that the [Claude Code permissions docs](https://code.claude.com/docs/en/permissions) describe.
 
-**Never written.** `Edit` denies, which Claude Code applies to `Write` as well:
+**Never written.** These rules are `Edit` denies, and Claude Code also applies them to `Write`:
 
-- dependency manifests (`composer.json`, `composer.lock`, `package.json`, `package-lock.json`),
-  `vendor/`, `node_modules/`, `data/`, `log/`, `public/uploads/`, anything under
-  `Migration/` or `Migrations/`, and every `*.local.php`, `config/autoload/local.php` and
-  `config/autoload/local.test.php`.
+- dependency manifests (`composer.json`, `composer.lock`, `package.json`, `package-lock.json`), `vendor/`, `node_modules/`, `data/`, `log/`, `public/uploads/`, anything under `Migration/` or `Migrations/`, and every `*.local.php`, `config/autoload/local.php` and `config/autoload/local.test.php`.
 
-**Never run.** Bash denies:
+**Never run.** These rules are Bash denies:
 
-- `composer require`/`remove`/`update`/`install`/`global`, the `npm`/`yarn`/`pnpm` install and
-  removal verbs, `git push`, `git reset --hard`, `git clean`, `git submodule`, `rm -rf`.
+- `composer require`/`remove`/`update`/`install`/`global`, the `npm`/`yarn`/`pnpm` install and removal verbs, `git push`, `git reset --hard`, `git clean`, `git submodule`, `rm -rf`.
 
 **Ask first**, and **allowed outright**:
 
-- **ask** — `doctrine-migrations`, `bin/doctrine`, `bin/cli.php`, `mysql`/`mariadb`,
-  `git commit`/`add`/`checkout`/`rebase`/`merge`, `config/pipeline.php`, `config/config.php`, the
-  authorization config, `phpcs.xml`/`phpstan.neon`/`phpunit.xml`, `.github/`, `CHANGELOG.md`,
-  `SECURITY.md`, and the project's own `README.md`.
-- **allow** — the `composer` QA scripts (`check`, `cs-check`, `cs-fix`, `static-analysis`, `test`)
-  plus `clear-config-cache`, `development-status` and `dump-autoload`;
-  `php ./vendor/bin/{phpcs,phpcbf,phpstan,phpunit}` (only with the `php ./` prefix — a bare
-  `vendor/bin/phpunit` prompts); `markdownlint-cli2` and `./node_modules/.bin/markdownlint-cli2`;
-  `php -l`, `php -v`, `php -m`; `date +%F`; read-only git (`status`, `diff`, `log`, `show`,
-  `branch`, `ls-files`, `config --get`); and edits under `docs/features/` and
-  `documentation/features/`.
+- **ask**: `doctrine-migrations`, `bin/doctrine`, `bin/cli.php`, `mysql`/`mariadb`, `git commit`/`add`/`checkout`/`rebase`/`merge`, `config/pipeline.php`, `config/config.php`, the authorization config, `phpcs.xml`/`phpstan.neon`/`phpunit.xml`, `.github/`, `CHANGELOG.md`, `SECURITY.md`, and the project's own `README.md`.
+- **allow**:
+    - the `composer` QA scripts (`check`, `cs-check`, `cs-fix`, `static-analysis`, `test`), and also `clear-config-cache`, `development-status` and `dump-autoload`
+    - `php ./vendor/bin/{phpcs,phpcbf,phpstan,phpunit}`, only with the `php ./` prefix.
+      A bare `vendor/bin/phpunit` prompts.
+    - `markdownlint-cli2` and `./node_modules/.bin/markdownlint-cli2`
+    - `php -l`, `php -v`, `php -m`
+    - `date +%F`
+    - read-only git (`status`, `diff`, `log`, `show`, `branch`, `ls-files`, `config --get`)
+    - edits under `docs/features/` and `documentation/features/`
 
-The `ask` and `allow` tiers are personal preference. Override any of them per machine in
-`.claude/settings.local.json`, which layers on top and is git-ignored — never in the shared file.
+The `ask` and `allow` tiers are a personal preference.
+To override one of them on a machine, use `.claude/settings.local.json`.
+This file layers on top of the shared file, and git ignores it.
+Never override the tiers in the shared file.
 
 ### Where the hooks are stricter than the tiers
 
-`guard-bash.sh` refuses outright some commands `settings.json` only marks **ask**. This is
-deliberate — the hook sees compound commands the permission globs cannot — but it means the prompt
-you would expect from the `ask` tier never appears. You get a refusal instead:
+`guard-bash.sh` refuses some commands that `settings.json` only marks as **ask**.
+This is intentional, because the hook sees compound commands that the permission globs cannot see.
+But as a result, the prompt that you expect from the `ask` tier never appears.
+You get a refusal instead:
 
 | Command | `settings.json` says | `guard-bash.sh` does |
 | --- | --- | --- |
@@ -218,39 +232,43 @@ you would expect from the `ask` tier never appears. You get a refusal instead:
 | `composer development-enable` / `-disable` | — | blocks |
 | `pip install`, `git filter-branch` | — | blocks |
 
-Everything else under `ask` — commits, `mysql`, the config and QA files — prompts as documented.
-If you want one of the blocked commands back, edit the hook; relaxing `settings.local.json` will
-not reach it.
+All other items under `ask` (commits, `mysql`, the config files and the QA files) prompt as documented.
+To allow one of the blocked commands again, edit the hook.
+A less strict `settings.local.json` does not change the behavior of the hook.
 
 ## Status line
 
-`.claude/statusline.sh` renders your real account and session usage, taken from the payload Claude
-Code (≥ 2.1) passes to the status line on stdin — the rate limits are the same numbers `/usage` reports:
+`.claude/statusline.sh` shows your real account usage and session usage.
+It reads this data from the payload that Claude Code (≥ 2.1) sends to the status line on stdin.
+The rate limits are the same numbers that `/usage` reports:
 
 ```text
  ~/project   Opus 5.5 · high   $ 0.45   ctx ▰▱▱▱▱▱ 6%
 5h ███████▍             37%  ↻ 2h 14m (16:20)   7d ▰▰▰▰▰▰▱▱▱▱ 61%
 ```
 
-Line 1: directory, model and effort, session cost (Claude Code's USD estimate), and context-window
-fill. Line 2: the 5h window as a 20-cell heat gradient with its reset time, and the 7d window.
-Colours are 24-bit, so the terminal needs truecolor support.
+Line 1 shows the directory, the model and effort, the session cost (the USD estimate from Claude Code) and the fill of the context window.
+Line 2 shows the 5h window as a 20-cell heat gradient with its reset time, and the 7d window.
+The colours are 24-bit, so the terminal must support truecolor.
 
-Pure bash and `awk`. No `jq`, no python, no transcript scanning or guessed token budgets, so it
-works in Git Bash on Windows.
+The script uses only bash and `awk`.
+It does not use `jq` or python, it does not scan the transcript, and it does not guess token budgets.
+Thus, it works in Git Bash on Windows.
 
-Two placements, and the shipped files disagree on purpose — pick one:
+There are two locations for the script, and the shipped files intentionally use different locations.
+Select one:
 
-- `settings.json` points at `$CLAUDE_PROJECT_DIR/.claude/statusline.sh` — the per-project copy,
-  which is what you get from the install above and needs nothing further.
-- `settings.local.json.example` points at `~/.claude/statusline.sh` — one shared copy for every
-  project. If you prefer that, `cp .claude/statusline.sh ~/.claude/` from a project that already has
-  the install, or the status line comes up empty.
+- `settings.json` points at `$CLAUDE_PROJECT_DIR/.claude/statusline.sh`, the copy in each project.
+  The installation above gives you this copy, and it needs no more steps.
+- `settings.local.json.example` points at `~/.claude/statusline.sh`, one shared copy for all projects.
+  If you prefer that location, run `cp .claude/statusline.sh ~/.claude/` from a project that already has the installation.
+  If you do not, the status line is empty.
 
 ## Line endings on Windows
 
-Dotkernel repos ship `.gitattributes` with `* text eol=lf`, which governs anything git checks out.
-Belt and braces, configure your client so nothing converts:
+Dotkernel repositories ship `.gitattributes` with `* text eol=lf`.
+This setting controls all the files that git checks out.
+As an additional safety measure, configure your client so that it does not convert line endings:
 
 ```bash
 git config core.autocrlf false
@@ -265,10 +283,9 @@ git config --get core.autocrlf              # false
 git ls-files --eol | grep -v 'w/lf' | head  # nothing for text files
 ```
 
-Already committed CRLF? Renormalise once with `git add --renormalize .`.
+If you already committed CRLF line endings, renormalise them one time with `git add --renormalize .`.
 
-In PhpStorm: *Editor → Code Style → Line separator = Unix (\n)*, and *File Encodings → UTF-8*,
-*Create UTF-8 files: with NO BOM*.
+In PhpStorm, set *Editor → Code Style → Line separator = Unix (\n)*, *File Encodings → UTF-8* and *Create UTF-8 files: with NO BOM*.
 
 ## Verify
 
@@ -279,24 +296,30 @@ Start Claude Code in the project:
              #           dk-check, dk-deprecate, dk-review, dk-hygiene
 ```
 
-The session-start hook should open with a short briefing: which variant it detected, the root
-namespace, the authorization style (flagging a guard policy that leaves unlisted routes public), and
-which config files are still missing.
+The session-start hook should start with a short briefing.
+The briefing shows the detected variant, the root namespace and the authorization style.
+It flags a guard policy that leaves unlisted routes public.
+It also shows which config files are still missing.
 
-Skills load from their own `description:` frontmatter — there is no routing table telling Claude
-which to pick. Ask *"where does a new Doctrine entity go?"*; it should reach for
-`dotkernel-module-structure` rather than answering from general framework knowledge.
+Each skill loads because of its own `description:` frontmatter.
+No routing table tells Claude which skill to select.
+Ask *"where does a new Doctrine entity go?"*.
+Claude should load `dotkernel-module-structure`, and not answer from general framework knowledge.
 
-With the `CLAUDE.md` block in place, ask *"how do I send mail from here?"* — a question with no
-package in it. It should load `dotkernel-package-status` and walk the ladder, grepping
-`composer.lock` first and then fetching the dotkernel.com listing, rather than replying `dot-mail`
-from memory.
+When the `CLAUDE.md` block is in place, ask *"how do I send mail from here?"*.
+This question does not name a package.
+Claude should load `dotkernel-package-status` and follow the ladder.
+It should grep `composer.lock` first, and then fetch the dotkernel.com listing.
+It should not reply `dot-mail` from memory.
 
-Test the guardrails: ask it to edit `vendor/autoload.php` (blocked by
-`guard-protected-paths.sh`) and to add a package to `composer.json` (blocked by the same hook; it
-should propose the change in chat instead). Then ask it to run `cd src && composer require foo` —
-`guard-bash.sh` catches installs inside compound commands, which path-based permission rules
-cannot see.
+Test the guardrails:
+
+1. Ask Claude to edit `vendor/autoload.php`.
+   `guard-protected-paths.sh` blocks the edit.
+2. Ask Claude to add a package to `composer.json`.
+   The same hook blocks the edit, and Claude should propose the change in chat instead.
+3. Then ask Claude to run `cd src && composer require foo`.
+   `guard-bash.sh` catches installs inside compound commands, which path-based permission rules cannot see.
 
 ## What's here
 
@@ -365,80 +388,89 @@ README.md                                       this file
                                                  from the dotkernel.com listing
 ```
 
-Every skill directory holds a `SKILL.md` and nothing else.
+Each skill directory contains a `SKILL.md` and nothing else.
 
 ## Feature documentation
 
-`/dk-document` writes one markdown file per feature into the project — what it does, why, the routes
-and the roles that reach them, the data added, and how to exercise it. It is the part a cleared
-session cannot reconstruct from `src/`, and the reason it is a file in the repo rather than a note
-in a chat.
+`/dk-document` writes one markdown file for each feature into the project.
+The file tells what the feature does and why.
+It also gives the routes, the roles that can access them, the added data, and how to try the feature.
+A cleared session cannot get this information again from `src/`.
+For this reason, it is a file in the repository and not a note in a chat.
 
-Where it lands is detected, not assumed. Many Dotkernel repositories already carry a
-`documentation/` directory — command docs, a generated `openapi.json`, Postman collections — and
-the stock API ships one while derived projects vary, so the skill checks rather than inferring: it
-writes to `documentation/features/` when the repo has a `documentation/` directory and to
-`docs/features/` otherwise, never
-a second documentation root next to an existing one. Both paths are in the `allow` tier, prose in a
-docs directory being the lowest-risk write in the tree.
+The skill detects the location of the file, and does not assume it.
+Many Dotkernel repositories already have a `documentation/` directory, for example with command docs, a generated `openapi.json` and Postman collections.
+The stock API ships one, but derived projects are different from each other.
+Thus, the skill checks the repository and does not infer the location:
 
-The frontmatter is load-bearing: `/dk-review` greps each doc's `routes:` and `handlers:` to decide
-whether a new route in the diff is documented, and reports a missing or stale doc as *Should fix*.
-It never writes one — that command is read-only by design, and it tells you to run `/dk-document`
-instead.
+- When the repository has a `documentation/` directory, the skill writes to `documentation/features/`.
+- Otherwise, it writes to `docs/features/`.
+- It never makes a second documentation root next to an existing one.
 
-The generation half is a command, so it only runs when asked. To make Claude *read* the docs before
-it rebuilds something that already exists, add this to your project's `CLAUDE.md` alongside the
-dependency policy block:
+Both paths are in the `allow` tier, because prose in a docs directory is the write with the lowest risk in the tree.
+
+The frontmatter is necessary for the review.
+`/dk-review` greps the `routes:` and `handlers:` of each doc to decide whether a doc covers a new route in the diff.
+It reports a missing or stale doc as *Should fix*.
+`/dk-review` never writes a doc, because that command is read-only by design.
+It tells you to run `/dk-document` instead.
+
+The part that writes the docs is a command, so it runs only when you ask for it.
+You can also make Claude *read* the docs before it rebuilds something that already exists.
+To do this, add this block to the `CLAUDE.md` of your project, next to the dependency policy block:
 
 ```markdown
 ## Feature docs
 
-Before adding or changing behaviour, check `docs/features/` (or `documentation/features/`) for a doc
-covering that area and read it. After the change, update that doc or write a new one with
-`/dk-document`. A doc that contradicts the code is a bug in the doc.
+Before you add or change behaviour, examine `docs/features/` (or `documentation/features/`) for a doc about that area.
+If a doc exists, read it.
+After the change, update that doc, or write a new doc with `/dk-document`.
+A doc that does not agree with the code is a bug in the doc.
 ```
 
-The session-start hook prints the directory and a doc count, so the files are at least discoverable
-without the block. The block is what makes them read.
+The session-start hook shows the directory and the number of docs.
+Thus, the files are at least easy to find without the block.
+The block is what makes Claude read them.
 
 ## A note on the PostToolUse hooks
 
-`normalize-file.sh` rewrites the file Claude just wrote (whitespace only). `php-lint.sh` and
-`markdown-lint.sh` are deliberately **report-only** — no `phpcbf`, no `markdownlint --fix` — because
-reformatting a file immediately after Claude writes it invalidates its in-memory copy and can break
-the next targeted edit. Bulk formatting belongs at the end of a task, via `composer cs-fix` or
-`/dk-check`.
+`normalize-file.sh` rewrites the file that Claude wrote last, and it changes only whitespace.
+`php-lint.sh` and `markdown-lint.sh` are intentionally **report-only**.
+They do not run `phpcbf` or `markdownlint --fix`.
+The reason: when a hook reformats a file immediately after Claude writes it, the copy in Claude's memory no longer matches the file.
+This can break the next targeted edit.
+Do bulk formatting at the end of a task, with `composer cs-fix` or `/dk-check`.
 
-Both linters skip themselves out of the way rather than failing: `php-lint.sh` when `php` is not on
-`PATH`, `markdown-lint.sh` when `markdownlint-cli2` is not resolvable or
-`.claude/markdownlint.jsonc` is absent. A project that has not adopted the markdown rule set sees
-nothing from the hook.
+When a linter cannot run, it skips its check and does not fail.
+`php-lint.sh` skips its check when `php` is not on `PATH`.
+`markdown-lint.sh` skips its check when it cannot find `markdownlint-cli2`, or when `.claude/markdownlint.jsonc` is absent.
+A project that does not use the markdown rule set gets no output from the hook.
 
-If you ever see "string not found" errors on consecutive edits to one file, move
-`normalize-file.sh` from `PostToolUse` to the `Stop` event so it runs once per turn instead of once
-per edit.
+If you see "string not found" errors on consecutive edits to one file, move `normalize-file.sh` from `PostToolUse` to the `Stop` event.
+Then it runs one time per turn, not one time per edit.
 
 ## Verify against current docs
 
-Claude Code's `.claude/settings.json` schema and hook event names move faster than most things. If a
-permission rule or hook does not take effect, check
-<https://docs.claude.com/en/docs/claude-code/overview> — in particular the glob syntax accepted by
-`permissions.deny` and whether `permissions.ask` exists in your version. The hooks are the stricter
-layer, since they see inside compound commands where the permission globs cannot, but they match
-command text rather than parsing the shell: an unusual spelling can still get past both.
+The `.claude/settings.json` schema and the hook event names of Claude Code change more quickly than most things.
+If a permission rule or a hook has no effect, check <https://docs.claude.com/en/docs/claude-code/overview>.
+Specially, check the glob syntax that `permissions.deny` accepts, and whether your version has `permissions.ask`.
+The hooks are the stricter layer, because they see inside compound commands and the permission globs cannot.
+But the hooks match the command text, and they do not parse the shell.
+Thus, an unusual spelling can still get past the two layers.
 
 ## Maintaining this
 
-Treat the skills as living documents. When a review turns up the same mistake twice, that is a
-missing line in a skill, not a Claude problem. Skill **descriptions** drive loading — if a skill is
-not triggering, make its description list the words you actually type, not the words the
-documentation uses.
+Treat the skills as documents that change over time.
+When a review finds the same mistake two times, a skill is missing a line.
+It is not a problem in Claude.
+Skill **descriptions** control which skill loads.
+If a skill does not trigger, write its description with the words that you actually type, not with the words of the documentation.
 
-`dotkernel-package-status` has nothing to refresh: it reads the dotkernel.com listing live. If an
-entry there is wrong, report it against `dotkernel/dotkernel.com`, or a wrong lifecycle value
-against the package's own repository, whose `OSSMETADATA` file declares it.
+`dotkernel-package-status` has nothing to refresh, because it reads the dotkernel.com listing live.
+If an entry in the listing is wrong, report it against `dotkernel/dotkernel.com`.
+If a lifecycle value is wrong, report it against the repository of the package, because its `OSSMETADATA` file declares the value.
 
-Before adapting this to a new Dotkernel project, spend an hour reading that repo and correcting
-the skills against what is actually there. A skill written from framework docs rather than the
-codebase produces confident wrong answers, which is worse than no skill.
+Before you adapt dotboost to a new Dotkernel project, use an hour to read that repository.
+In that hour, correct the skills against what the repository actually contains.
+A skill that comes from framework docs and not from the codebase gives wrong answers with confidence.
+Such a skill is worse than no skill.
