@@ -1,6 +1,6 @@
 # dotboost — Claude Code configuration for Dotkernel projects
 
-dotboost is a drop-in configuration that teaches Claude Code the conventions of any Dotkernel project.
+**dotboost** is a drop-in configuration that teaches Claude Code the conventions of any Dotkernel project.
 It supports API, Admin, Frontend, Light, Queue, and each project derived from one of them.
 Each skill first detects the variant, then applies the matching dialect.
 
@@ -12,7 +12,7 @@ Maintained by Borsan Sergiu.
 
 ## Add this to your project's CLAUDE.md
 
-dotboost ships the `dotkernel-package-status` skill, which holds the dependency policy.
+**dotboost** ships the `dotkernel-package-status` skill, which holds the dependency policy.
 But the `description:` of a skill is only a hint.
 It decides whether the skill *can* load, not whether Claude stops to think before it names a package.
 The rule that makes Claude use the skill must always be loaded, so it must be in the `CLAUDE.md` of your project.
@@ -51,7 +51,7 @@ Note these three facts about the dependency policy:
 - The only source for `dotkernel/*` packages is the listing that **dotkernel.com publishes**.
   The listing is rebuilt each day from the GitHub organization.
   Claude fetches a new copy of the listing for each question.
-  dotboost does not generate, ship or store a copy in the project.
+  **dotboost** does not generate, ship or store a copy in the project.
   The fetch needs network access.
   Without network access, the instructions tell Claude to call a package name **unverified**, and not to assert it.
 - Nothing queries Packagist.
@@ -140,14 +140,14 @@ But the merge still overwrites the files that have the same name.
 If the project already has its own `.claude/settings.json` or its own `.claude/commands/`, merge the files manually.
 Do not run the `cp -r` without a check.
 
-To update dotboost later, run the full installation again on top of the existing files.
+To update **dotboost** later, run the full installation again on top of the existing files.
 You lose all the changes that you made in the copy in the project.
 For this reason, put personal changes in `settings.local.json`.
 
 ### Optional: markdown linting
 
 `.claude/hooks/markdown-lint.sh` checks each `.md` file that Claude writes against `.claude/markdownlint.jsonc`.
-It needs `markdownlint-cli2`, which dotboost does not include.
+It needs `markdownlint-cli2`, which **dotboost** does not include.
 Install it one time, yourself:
 
 ```bash
@@ -472,7 +472,7 @@ If a skill does not trigger, write its description with the words that you actua
 If an entry in the listing is wrong, report it against `dotkernel/dotkernel.com`.
 If a lifecycle value is wrong, report it against the repository of the package, because its `OSSMETADATA` file declares the value.
 
-Before you adapt dotboost to a new Dotkernel project, use an hour to read that repository.
+Before you adapt **dotboost** to a new Dotkernel project, use an hour to read that repository.
 In that hour, correct the skills against what the repository actually contains.
 A skill that comes from framework docs and not from the codebase gives wrong answers with confidence.
 Such a skill is worse than no skill.
