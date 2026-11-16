@@ -1,36 +1,47 @@
 # Feature Documentation
 
-`/dk-document` writes one markdown file per feature into the target project — what it does, why, the routes and roles that reach it, the data it adds, and how to exercise it.
-It's the part of a change a cleared session can't reconstruct from `src/` alone, which is why it's a file in the repo rather than a note in a chat transcript.
+`/dk-document` writes one markdown file for each feature into the target project.
+The file tells what the feature does and why, the routes and roles that reach it, the data it adds, and how to try it.
+A cleared session cannot find this part of a change again from `src/` alone.
+For this reason, it is a file in the repo and not a note in a chat transcript.
 
 ## Where it lands
 
-Detected, not assumed.
-Many Dotkernel repositories already carry a `documentation/` directory — command docs, a generated `openapi.json`, Postman collections — the stock API ships one while derived projects vary, so the skill checks rather than infers:
+The skill finds the location in the repo and does not guess it.
+Many Dotkernel repositories already have a `documentation/` directory, with command docs, a generated `openapi.json` and Postman collections.
+The standard API has this directory, but derived projects are different.
+Thus the skill checks the repo and does not infer:
 
 - `documentation/features/` when the repo already has a `documentation/` directory
 - `docs/features/` otherwise
 
 It never creates a second documentation root next to an existing one.
-Both paths are in the `allow` permission tier — prose in a docs directory is about the lowest-risk write in the tree.
+Both paths are in the `allow` permission tier.
+Prose in a docs directory is approximately the write with the lowest risk in the tree.
 
-## The frontmatter is load-bearing
+## The review uses the frontmatter
 
-Each feature doc's frontmatter carries `routes:` and `handlers:`.
-`/dk-review` greps these to decide whether a new route in the current diff is documented, and reports a missing or stale doc as *Should fix*.
-`/dk-review` never writes one itself — it's read-only by design and tells you to run `/dk-document` instead.
+The frontmatter of each feature doc has `routes:` and `handlers:`.
+`/dk-review` greps these keys to find whether a doc describes each new route in the current diff.
+It reports a doc that is missing or out of date as *Should fix*.
+`/dk-review` never writes a doc itself.
+It is read-only by design, and it tells you to run `/dk-document`.
 
-## Making Claude read them before rebuilding something
+## Make Claude read the docs before a change
 
-The generation half only runs when asked.
-To make Claude check for an existing doc before adding or changing behaviour in that area, add this to the project's `CLAUDE.md`:
+Claude writes a doc only when you ask for it.
+You can make Claude look for an existing doc before it adds or changes behaviour in that area.
+To do this, add this block to the `CLAUDE.md` of the project:
 
 ```markdown
 ## Feature docs
 
-Before adding or changing behaviour, check `docs/features/` (or `documentation/features/`) for a doc
-covering that area and read it. After the change, update that doc or write a new one with
-`/dk-document`. A doc that contradicts the code is a bug in the doc.
+Before you add or change behaviour, examine `docs/features/` (or `documentation/features/`) for a doc about that area.
+If a doc exists, read it.
+After the change, update that doc, or write a new doc with `/dk-document`.
+A doc that does not agree with the code is a bug in the doc.
 ```
 
-The session-start hook prints the directory and a doc count regardless, so the files are at least discoverable without this block — the block is what makes them actually get *read*.
+The session-start hook always prints the directory and the number of docs.
+Thus Claude can find the files without this block.
+But the block makes Claude actually *read* them.

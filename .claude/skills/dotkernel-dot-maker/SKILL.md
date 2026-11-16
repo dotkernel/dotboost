@@ -1,7 +1,7 @@
 ---
 name: dotkernel-dot-maker
 description: >
-  Use before hand-writing any new scaffolding in a Dotkernel project — a module, entity,
+  Use before hand-writing any new scaffolding in a Dotkernel project: a module, entity,
   repository, service, service interface, handler, collection, form, input, input filter,
   middleware or CLI command. dot-maker (dotkernel/dot-maker, "composer make …") generates these
   to the Dotkernel file structure and naming pattern. Also use when asked how to create a new
@@ -17,80 +17,94 @@ Applies to
   Packages:  - none
 ```
 
-`dotkernel/dot-maker` generates files matching the Dotkernel/Mezzio layout and the handler
-naming pattern. It is comparable to the Symfony Maker Bundle, and more opinionated than Mezzio's
-own CLI tooling because it targets Dotkernel conventions specifically.
+`dotkernel/dot-maker` generates files that match the Dotkernel/Mezzio layout and the handler naming pattern.
+It is similar to the Symfony Maker Bundle.
+It has more fixed opinions than the CLI tools of Mezzio, because it targets the Dotkernel conventions.
 
-**Always propose the `composer make …` command before hand-writing boilerplate.** Manual file
-creation is where registrations get missed.
+**Always propose the `composer make …` command before you write boilerplate by hand.**
+When you create files manually, you can easily forget a registration.
 
-Availability varies: the stock API and Admin have it in `require-dev` with a `make` script alias;
-the stock Frontend, Light and Queue do not. Check `composer.json`. If the project does not have
-it, say so and fall back to copying the nearest existing module by hand.
+Not all projects have dot-maker.
+The stock API and Admin have it in `require-dev`, with a `make` script alias.
+The stock Frontend, Light and Queue do not have it.
+Check `composer.json`.
+If the project does not have dot-maker, tell the user.
+Then copy the nearest existing module by hand.
 
 ## Running it
 
-`composer make <thing>` or `./vendor/bin/dot-maker <thing>` — the `composer make` form needs the
-script alias present in `composer.json`.
+Run `composer make <thing>` or `./vendor/bin/dot-maker <thing>`.
+The `composer make` form needs the script alias in `composer.json`.
 
-It is **interactive** and prompts through a series of choices. In an agent session, do not try to
-pipe answers blindly: give the user the exact command and the answers to give, then continue from
-the generated files. Treat generation like an install — the user's call.
+dot-maker is **interactive**, and it asks a series of questions.
+In an agent session, do not pipe answers into it without a check.
+Give the user the exact command and the answers to give.
+Then continue from the generated files.
+Treat generation like an install: the user decides.
 
 ## Commands
 
 | Command | Generates |
 | --- | --- |
-| `module` | a full module: entity, repository, service, handler(s), ConfigProvider, RoutesDelegator, and documentation stub |
-| `entity` | `Entity/X.php` + `Repository/XRepository.php` (skips whichever exists) |
-| `repository` | the same pair, from the repository side |
-| `service` | `Service/XService.php` + `Service/XServiceInterface.php` |
-| `service-interface` | the same pair, from the interface side |
-| `handler` | a handler in an existing module |
-| `collection` | a `…Collection` (API-style projects) |
-| `form` | a Form (Admin — not used in the API) |
-| `input` | a single `Input/…Input.php` |
-| `input-filter` | an InputFilter — prompts for `create` / `edit` / `replace` |
-| `middleware` | a PSR-15 middleware |
-| `command` | a CLI command |
+| `module` | A full module: entity, repository, service, one or more handlers, ConfigProvider, RoutesDelegator, and a documentation stub |
+| `entity` | `Entity/X.php` and `Repository/XRepository.php` (it skips the file that exists) |
+| `repository` | The same pair, from the repository side |
+| `service` | `Service/XService.php` and `Service/XServiceInterface.php` |
+| `service-interface` | The same pair, from the interface side |
+| `handler` | A handler in an existing module |
+| `collection` | A `…Collection` (API-style projects) |
+| `form` | A Form (Admin, not used in the API) |
+| `input` | One `Input/…Input.php` |
+| `input-filter` | An InputFilter. It asks for `create`, `edit` or `replace`. |
+| `middleware` | A PSR-15 middleware |
+| `command` | A CLI command |
 
-**dot-maker detects which Dotkernel project it is running in** and generates accordingly —
-collections in an API, forms and templates in Admin. That detection is also a useful
-confirmation of the variant you think you are in.
+**dot-maker detects the Dotkernel project that it runs in**, and it generates the related files.
+It generates collections in an API, and forms and templates in Admin.
+This detection also helps you to confirm the variant that you think you are in.
 
-## What it does *not* do — your job afterwards
+## What it does *not* do — your tasks after generation
 
-1. **Register the module.** It creates the `ConfigProvider` and prints what to add, but you still
-   add the entry to `config/config.php` and the PSR-4 entries to `composer.json` (which needs
-   user approval).
-2. **Configure authorization.** Add every new route name to this project's authorization
-   config. API: `authorization.global.php`, where a missed entry denies the route. Admin:
-   `authorization-guards.global.php`, where a missed entry leaves the route open to everyone.
-3. **Migrations.** It tells you the command; you run
-   `php ./vendor/bin/doctrine-migrations diff` (it prompts for approval), then give the user the
-   `migrate` command to run — the `guard-bash.sh` hook refuses `migrate` for Claude, approval or
-   not. Never hand-write a migration.
-4. **Real logic.** Generated services and handlers are skeletons. Fill in validation, ownership
-   checks, presentation metadata, documentation detail.
-5. **Tests.** Nothing is generated under `test/`.
-6. **QA.** Run the repo's `cs-fix` then `check` — generated code still has to pass phpcs and
-   phpstan.
+1. **Register the module.**
+   dot-maker creates the `ConfigProvider` and shows what to add.
+   You must still add the entry to `config/config.php`.
+   You must also add the PSR-4 entries to `composer.json`, which needs user approval.
+2. **Configure authorization.**
+   Add each new route name to the authorization config of this project.
+   API: `authorization.global.php`.
+   When an entry is missing there, the API denies the route.
+   Admin: `authorization-guards.global.php`.
+   When an entry is missing there, the route is open to everyone.
+3. **Migrations.**
+   dot-maker tells you the command.
+   Run `php ./vendor/bin/doctrine-migrations diff`, which asks for approval.
+   Then give the user the `migrate` command to run.
+   The `guard-bash.sh` hook refuses `migrate` for Claude, with or without approval.
+   Never write a migration by hand.
+4. **Real logic.**
+   Generated services and handlers are skeletons.
+   Add the validation, the ownership checks, the presentation metadata and the documentation details.
+5. **Tests.**
+   dot-maker generates nothing under `test/`.
+6. **QA.**
+   Run the `cs-fix` script of the repository, then `check`.
+   Generated code must also pass phpcs and phpstan.
 
 ## Post-generation checklist
 
-- [ ] `composer dump-autoload` after any new PSR-4 namespace.
-- [ ] Both `ConfigProvider`s (application module and `Core`) registered in `config/config.php`.
-- [ ] Handlers present under `factories` — and under `delegators` too in the API.
-- [ ] Service interface aliased to the concrete service.
-- [ ] Routes named per this project's dialect (`dotkernel-handler-naming`); authorization entries
-      added.
-- [ ] Presentation registered — HAL metadata or template path.
-- [ ] Documentation completed with real request/response detail, where the project publishes it.
-- [ ] Migration generated, reviewed, applied.
-- [ ] QA suite green.
-- [ ] Generated files are UTF-8 without BOM and LF.
+- [ ] `composer dump-autoload` is run after each new PSR-4 namespace.
+- [ ] The two `ConfigProvider`s (application module and `Core`) are registered in `config/config.php`.
+- [ ] The handlers are under `factories`, and in the API also under `delegators`.
+- [ ] The service interface is aliased to the concrete service.
+- [ ] The routes have names in the dialect of this project (`dotkernel-handler-naming`), and the authorization entries are added.
+- [ ] The presentation is registered: HAL metadata or the template path.
+- [ ] The documentation is complete with real request and response details, where the project publishes it.
+- [ ] The migration is generated, reviewed and applied.
+- [ ] The QA suite passes.
+- [ ] The generated files are UTF-8 without BOM, with LF line endings.
 
 ## When not to use it
 
-Editing an existing class, adding a method, or any single-file change. dot-maker creates; it does
-not refactor.
+Do not use dot-maker to edit an existing class, to add a method, or for any change to one file.
+dot-maker creates files.
+It does not refactor them.

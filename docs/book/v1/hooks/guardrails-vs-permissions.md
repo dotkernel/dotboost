@@ -1,21 +1,36 @@
 # Guardrails vs. Permissions
 
-`guard-bash.sh` refuses some commands outright that `settings.json`'s permission tiers only mark `ask`.
-This is deliberate — the hook can see into compound Bash commands that a path/prefix permission rule cannot — but it means the approval prompt you'd expect from the `ask` tier never appears.
-You get a flat refusal instead.
+`guard-bash.sh` refuses some commands that the permission tiers in `settings.json` only mark `ask`.
+This is on purpose.
+The hook can see into compound Bash commands, and a path or prefix permission rule cannot.
+But because of this, you do not get the approval prompt that the `ask` tier gives.
+You get a refusal.
 
 | Command | `settings.json` says | `guard-bash.sh` does |
 | --- | --- | --- |
 | `git rebase` | ask | blocks |
 | `doctrine-migrations migrate` / `execute` | ask | blocks |
-| `fixtures:execute`, `schema:drop`, `schema:update` (via `bin/doctrine`) | ask | blocks |
-| `git checkout --` | ask, via `git checkout` | blocks |
+| `fixtures:execute`, `schema:drop`, `schema:update` (through `bin/doctrine`) | ask | blocks |
+| `git checkout --` | ask, through `git checkout` | blocks |
 | `composer development-enable` / `-disable` | — | blocks |
 | `pip install`, `git filter-branch` | — | blocks |
 
-Everything else under `ask` — commits, `mysql`, the config and QA files — prompts as documented in [Permissions Reference](../permissions/reference.md).
+All the other items in the `ask` tier show a prompt, as [Permissions Reference](../permissions/reference.md) describes.
+These items include commits, `mysql`, and the config and QA files.
 
-## If you want one of these back
+## Allow one of these commands again
 
-Editing `settings.local.json` will not reach a hook-level block — that override layer only affects the permission tiers.
-To allow one of these commands, edit `guard-bash.sh` itself, and do so deliberately: every command in this table mutates the database, rewrites history, discards uncommitted work (`git checkout --`), installs packages (`pip install`) or changes committed config state (`development-enable`/`-disable`), which is why it's blocked at the hook layer instead of left to a prompt someone could approve on autopilot.
+A change in `settings.local.json` does not remove a block at the hook level.
+That override layer changes only the permission tiers.
+To allow one of these commands, edit `guard-bash.sh`.
+Make this change on purpose, after you think about it.
+Each command in this table does one of these operations:
+
+- It changes the database.
+- It writes the git history again.
+- It discards work that is not committed (`git checkout --`).
+- It installs packages (`pip install`).
+- It changes the committed config state (`development-enable`/`-disable`).
+
+For this reason, the hook layer blocks it.
+A prompt is not sufficient, because a person can approve a prompt without attention.

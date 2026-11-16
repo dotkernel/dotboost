@@ -1,51 +1,64 @@
 # Glossary
 
 Applies to
-: The block under each skill's title that names the projects and packages the skill covers — `all`, `none`, or a list such as `Dotkernel API`.
+: The block under the title of each skill.
+  It names the projects and packages that the skill covers: `all`, `none`, or a list such as `Dotkernel API`.
 
 Command
 : A `.md` file under `.claude/commands/` with frontmatter (`description`, optional `argument-hint`, `allowed-tools`) that defines a `/dk-*` slash command.
-  Invoked explicitly by name, unlike a skill.
+  You start it explicitly by its name, which is different from a skill.
 
 `dot-maker`
-: `dotkernel/dot-maker`, a Composer tool (`composer make …`) that scaffolds new modules, entities, services, handlers and more to Dotkernel's file structure and naming pattern.
+: `dotkernel/dot-maker`, a Composer tool (`composer make …`).
+  It scaffolds new modules, entities, services, handlers and more, to the Dotkernel file structure and naming pattern.
 
 Feature doc
-: A markdown file written by `/dk-document` describing what a feature does, why, and how to exercise it — the part of a change a cleared session can't reconstruct from `src/` alone.
+: A markdown file that `/dk-document` writes.
+  It tells what a feature does, why, and how to try it.
+  A cleared session cannot find this part of a change again from `src/` alone.
   See [Feature Documentation](feature-docs.md).
 
 Frontmatter
-: The YAML block at the top of a `SKILL.md` or command `.md` file (`name`, `description`, etc.) that Claude Code reads to decide whether and how to load the file.
+: The YAML block at the top of a `SKILL.md` file or a command `.md` file (`name`, `description`, and other keys).
+  Claude Code reads it to decide whether and how to load the file.
 
 Guard
-: A hook that blocks a tool call outright rather than just reporting on it — `guard-protected-paths.sh` and `guard-bash.sh`.
+: A hook that blocks a tool call, and does not only report on it: `guard-protected-paths.sh` and `guard-bash.sh`.
 
 Hook
-: A bash script registered in `settings.json` against a lifecycle event (`SessionStart`/`PreToolUse`/`PostToolUse`) that runs automatically when that event fires.
+: A bash script that `settings.json` registers for a lifecycle event (`SessionStart`/`PreToolUse`/`PostToolUse`).
+  The script runs automatically when that event occurs.
   See [Hooks](hooks/introduction.md).
 
 Package
-: A reusable `dotkernel/dot-*` Composer library — `dot-mail`, `dot-cli`, `dot-log` and so on — installed into projects rather than run on its own.
+: A reusable `dotkernel/dot-*` Composer library, for example `dot-mail`, `dot-cli` or `dot-log`.
+  You install it into projects, and you do not run it alone.
 
 Permission tier
-: One of `deny`, `ask`, or `allow` in `settings.json`'s `permissions` block, governing whether a path or command is blocked outright, prompted for approval, or runs without a prompt.
+: One of `deny`, `ask`, or `allow` in the `permissions` block of `settings.json`.
+  It controls whether Claude Code blocks a path or command, asks for approval, or lets it run without a prompt.
   See [Permissions](permissions/introduction.md).
 
 Project
-: A Dotkernel starter codebase you build on — API, Admin, Frontend, Light, or Queue — or a project derived from one of them.
-  Dotkernel has projects and packages, not "applications"; where a skill says *application module* or *application layer*, it means a project's own modules under `src/<Module>/`, as opposed to the shared `Core` layer.
+: A Dotkernel starter codebase that you build on (API, Admin, Frontend, Light, or Queue), or a project derived from one of them.
+  Dotkernel has projects and packages, not "applications".
+  When a skill says *application module* or *application layer*, it means the modules of a project under `src/<Module>/`, not the shared `Core` layer.
 
 Project variant
-: Which kind of Dotkernel project a repo is — API, Admin, Frontend, Light, or Queue — or a project derived from one of them.
-  Detected by `dotkernel-project-variants` and by `session-start.sh`, since conventions differ by variant.
+: The type of Dotkernel project that a repo is: API, Admin, Frontend, Light, or Queue, or a project derived from one of them.
+  `dotkernel-project-variants` and `session-start.sh` find the variant, because the conventions are different for each variant.
 
 `SKILL.md`
-: The file every skill directory must contain — frontmatter plus an instructional body — that Claude Code loads into context when the skill fires.
+: The file that each skill directory must contain, with frontmatter and a body with instructions.
+  Claude Code loads it into the context when it selects the skill.
 
 Skill
-: A packaged set of instructions under `.claude/skills/` that Claude Code auto-loads based on its `description:` frontmatter matching the current task, with no central routing table.
+: A packaged set of instructions under `.claude/skills/`.
+  Claude Code loads it automatically when its `description:` frontmatter matches the current task.
+  There is no central routing table.
   See [Skills](skills/introduction.md).
 
 Subagent
-: A separately-invoked agent defined under `.claude/agents/`, used to keep bulk review work out of the main conversation's context.
+: An agent, defined under `.claude/agents/`, that you or Claude start separately.
+  It keeps bulk review work out of the context of the main conversation.
   Dotboost ships one: `dotkernel-reviewer`.

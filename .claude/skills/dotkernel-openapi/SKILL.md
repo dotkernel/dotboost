@@ -1,11 +1,11 @@
 ---
 name: dotkernel-openapi
 description: >
-  Use when documenting an endpoint in a Dotkernel project that publishes OpenAPI (typically
-  the API) — adding or editing a module's OpenAPI.php, describing request bodies, responses,
-  parameters, security schemes or schemas, marking an operation deprecated, or regenerating the
-  interactive documentation. Also use when an endpoint exists but is missing from the docs, or
-  when checking whether this project publishes OpenAPI at all.
+  Use when you document an endpoint in a Dotkernel project that publishes OpenAPI (usually
+  the API). This includes: adding or editing a module's OpenAPI.php, describing request bodies,
+  responses, parameters, security schemes or schemas, marking an operation deprecated, or
+  regenerating the interactive documentation. Also use when an endpoint exists but is missing
+  from the docs, or when checking whether this project publishes OpenAPI at all.
 ---
 
 # OpenAPI documentation
@@ -16,19 +16,25 @@ Applies to
   Packages:  - none
 ```
 
-**Applies only to projects that publish OpenAPI.** Confirm first: `zircote/swagger-php` in
-`composer.json` and per-module `src/<Module>/src/OpenAPI.php` files. Of the stock projects only the
-API publishes OpenAPI; Admin, Frontend, Light and Queue have no OpenAPI surface. Whether a
-project has a `documentation/` directory varies in derived projects — check, do not infer it.
+**This skill applies only to projects that publish OpenAPI.**
+First, confirm two things: `zircote/swagger-php` is in `composer.json`, and each module has a `src/<Module>/src/OpenAPI.php` file.
+Of the stock projects, only the API publishes OpenAPI.
+Admin, Frontend, Light and Queue have no OpenAPI surface.
+In derived projects, a `documentation/` directory is not always present.
+Check for it, and do not infer it.
 
-Why it matters: it lets front-end and back-end developers work in parallel against mock servers,
-it makes documentation auto-generated rather than hand-maintained, and tooling like Postman and
-codegen consumes it.
+Why OpenAPI is important:
 
-## Where the attributes live
+- Front-end and back-end developers can work in parallel against mock servers.
+- The documentation is generated automatically, not maintained by hand.
+- Tools such as Postman and code generators use it.
 
-Not on the handler. Each module has one dedicated file containing no classes — only a sequence of
-`#[OA\…]` attributes, each preceded by a docblock pointing at the handler it documents:
+## Where the attributes are
+
+The attributes are not on the handler.
+Each module has one dedicated file that contains no classes.
+The file contains only a sequence of `#[OA\…]` attributes.
+A docblock before each attribute points to the handler that the attribute documents:
 
 ```php
 /**
@@ -61,27 +67,31 @@ Not on the handler. Each module has one dedicated file containing no classes —
 
 ## Rules
 
-- Keep operations in the same order as the routes in `RoutesDelegator`, so the two files diff by
-  eye.
-- One `tags` entry per resource, matching the module.
-- The security scheme on **every** authenticated endpoint. Omitting it tells clients the endpoint
-  is public — a documentation bug with security consequences.
-- Status codes via `StatusCodeInterface::STATUS_*`, not literals.
-- Document failure responses too: 400, 403, 404 and 409 where they apply. A missing or invalid
-  token runs as guest, so a protected operation answers 403, not 401. Only the token-issuing
-  operations can answer 401 — verify which errors do in the repo before documenting it.
-- Deprecated operations get `deprecated: true` plus a description naming the replacement, paired
-  with the deprecation attribute on the handler (see `dotkernel-evolution-pattern`).
-- Reuse `OA\Schema` definitions rather than repeating inline shapes.
+- Keep the operations in the same order as the routes in `RoutesDelegator`.
+  Then you can compare the two files by eye.
+- Use one `tags` entry for each resource, and make it match the module.
+- Put the security scheme on **each** authenticated endpoint.
+  Without the scheme, the documentation tells clients that the endpoint is public.
+  This is a documentation bug with security consequences.
+- Use `StatusCodeInterface::STATUS_*` for status codes, not literals.
+- Also document the failure responses: 400, 403, 404 and 409, where they apply.
+  A request with a missing or invalid token runs as guest.
+  Thus a protected operation answers 403, not 401.
+  Only the operations that issue tokens can answer 401.
+  Before you document an error, verify in the repository which operations return it.
+- Give a deprecated operation `deprecated: true` and a description that names the replacement.
+  Use them together with the deprecation attribute on the handler (see `dotkernel-evolution-pattern`).
+- Use `OA\Schema` definitions again.
+  Do not repeat inline shapes.
 
 ## Security constraints
 
-- **Never** put a real credential, token, internal hostname, customer email or production
-  identifier in an `example`. Use obvious placeholders.
-- Interactive documentation should not be enabled in production.
+- **Never** put a real credential, token, internal hostname, customer email or production identifier in an `example`.
+  Use placeholders that are clearly not real.
+- You should not enable the interactive documentation in production.
 
 ## Definition of done
 
-An endpoint is not finished until its operation exists. The route, the authorization entry and the
-documentation are three separate registrations, and it is easy to do two of the three — verify all
-of them.
+An endpoint is not finished until its operation exists.
+The route, the authorization entry and the documentation are three separate registrations.
+It is easy to do only two of the three, so verify all three.

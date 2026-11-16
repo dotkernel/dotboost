@@ -1,7 +1,7 @@
 ---
 name: dotkernel-module-structure
 description: >
-  Use when creating, moving, renaming or locating any file in a Dotkernel project —
+  Use when you create, move, rename or locate any file in a Dotkernel project. This includes:
   deciding whether code belongs in an application module or the shared Core layer, adding a
   Handler, Service, Collection, Form, InputFilter, Input, Entity, Repository, Enum, DBAL type,
   Command, Middleware, ConfigProvider or RoutesDelegator, registering a module in
@@ -18,43 +18,47 @@ Applies to
   Packages:  - none
 ```
 
-Identify the variant first (`dotkernel-project-variants`). The two-layer split below is how the
-stock API and Admin are built; which artefacts a module contains differs between them. Frontend
-keeps entities inside its own modules, Light has no persistence, and Queue is a single flat
-`Queue\` namespace — none of them has a `Core` layer.
+First, identify the variant (`dotkernel-project-variants`).
+The stock API and Admin use the two-layer split below.
+The artefacts in a module are different between the API and the Admin.
+Frontend keeps entities in its own modules.
+Light has no persistence.
+Queue is one flat `Queue\` namespace.
+None of these three has a `Core` layer.
 
 ## The two layers
 
 | Layer | Namespace | Path | Contains |
 | --- | --- | --- | --- |
-| Application module | `<App>\<Module>\` | `src/<Module>/src/` | HTTP / CLI facing code |
-| Shared core module | `Core\<Module>\` | `src/Core/src/<Module>/src/` | persistence + shared domain |
+| Application module | `<App>\<Module>\` | `src/<Module>/src/` | Code for HTTP and CLI |
+| Shared core module | `Core\<Module>\` | `src/Core/src/<Module>/src/` | Persistence and the shared domain |
 
-`<App>` is the project's root namespace — `Api` or `Admin`.
-`Core` is designed to be a git submodule shared between the projects on one database
-(see `dotkernel-core-submodule`). **Nothing in `Core` may depend on a project namespace.**
+`<App>` is the root namespace of the project: `Api` or `Admin`.
+`Core` is designed as a git submodule that the projects on one database share (see `dotkernel-core-submodule`).
+**No code in `Core` can depend on a project namespace.**
 
-**Golden rule: Core is the only place that manages database entities.**
+**Golden rule: only Core manages database entities.**
 
 ### Which layer?
 
 | Artefact | Layer |
 | --- | --- |
-| Handler, RoutesDelegator, Collection, Form, InputFilter, Input, Service, ServiceInterface, OpenAPI | application module |
+| Handler, RoutesDelegator, Collection, Form, InputFilter, Input, Service, ServiceInterface, OpenAPI | Application module |
 | Entity, Repository, Enum, DBAL type, EventListener, Fixture, Migration, shared Message catalogue | `Core` |
-| Middleware, Attribute, Exception, Guard, Template helper | the project's `App` module (cross-cutting) |
-| CLI Command | application module if feature-specific, `Core\App\Command` if infrastructural |
-| ConfigProvider | **both** — one per module, per layer |
+| Middleware, Attribute, Exception, Guard, Template helper | The `App` module of the project (cross-cutting) |
+| CLI Command | The application module if the command is for one feature. `Core\App\Command` if it is for the infrastructure. |
+| ConfigProvider | **Both**: one for each module, in each layer |
 
-A service imports `Core\<Module>\Entity\X`. Never the reverse.
+A service imports `Core\<Module>\Entity\X`.
+Never do the reverse.
 
 ## Canonical module layout
 
-Shared skeleton:
+The shared skeleton:
 
 ```text
 src/<Module>/src/
-├── Handler/<Resource>/…            one folder per resource, nested for sub-resources
+├── Handler/<Resource>/…            one folder for each resource, nested for sub-resources
 ├── InputFilter/
 │   ├── Input/…Input.php
 │   └── {Create,Update}<X>InputFilter.php
@@ -72,31 +76,31 @@ src/Core/src/<Module>/src/
 └── ConfigProvider.php
 ```
 
-Variant-specific additions to the application module:
+The variants add these files to the application module:
 
 - **API**: `Collection/<X>Collection.php`, `OpenAPI.php`
 - **Admin**: `Form/<X>Form.php`, and templates under `src/<Module>/templates/<module>/`
 
-Handler folders mirror the URL: a route at `/user/{id}/avatar` lives in
-`Handler/User/Avatar/`.
+The handler folders follow the URL.
+For example, the handler for the route `/user/{id}/avatar` is in `Handler/User/Avatar/`.
 
-## Wiring a new module — all four steps, or it silently does nothing
+## Wiring a new module — do all four steps, or the module does nothing and gives no error
 
-1. `composer.json` → `autoload.psr-4`: `"<App>\\Book\\": "src/Book/src/"` and
-   `"Core\\Book\\": "src/Core/src/Book/src/"`.
-   **This edits composer.json — ask the user first**, then they run `composer dump-autoload`.
-2. `config/config.php` → add both `ConfigProvider::class` entries to the Dotkernel modules
-   block, alphabetically.
-3. The module `ConfigProvider` → `dependencies` (factories / delegators / aliases), plus
-   whatever else the variant needs (HAL `MetadataMap` for API, `templates` for templated projects,
-   `doctrine.types` for enum columns).
-4. The authorization config → an entry for every new route name.
-   API: `config/autoload/authorization.global.php` — a missing entry denies the route.
-   Admin: `config/autoload/authorization-guards.global.php` — a missing entry leaves the route
-   **open to everyone**, because the guards use `POLICY_ALLOW`.
+1. In `composer.json`, add to `autoload.psr-4`: `"<App>\\Book\\": "src/Book/src/"` and `"Core\\Book\\": "src/Core/src/Book/src/"`.
+   **This is a change to composer.json, so ask the user first.**
+   Then the user runs `composer dump-autoload`.
+2. In `config/config.php`, add the two `ConfigProvider::class` entries to the Dotkernel modules block, in alphabetical order.
+3. In the `ConfigProvider` of the module, fill `dependencies` (factories, delegators, aliases).
+   Also add the other config that the variant needs.
+   This is the HAL `MetadataMap` for the API, `templates` for templated projects, and `doctrine.types` for enum columns.
+4. In the authorization config, add an entry for each new route name.
+   API: `config/autoload/authorization.global.php`.
+   When an entry is missing, the API denies the route.
+   Admin: `config/autoload/authorization-guards.global.php`.
+   When an entry is missing, the Admin route is **open to everyone**, because the guards use `POLICY_ALLOW`.
 
-Config is cached in production; run the repo's cache-clear script (commonly
-`composer clear-config-cache`) after config changes.
+Production caches the config.
+After a config change, run the cache-clear script of the repository (frequently `composer clear-config-cache`).
 
 ## ConfigProvider contract
 
@@ -111,35 +115,37 @@ public function __invoke(): array
 }
 ```
 
-- `delegators` → API: each handler maps to the repo's handler delegator factory. Admin handlers
-  have no delegator entry; there `delegators` holds only `Application::class => [RoutesDelegator::class]`
-  and form delegators.
-- `factories`  → each handler and concrete service maps to `AttributedServiceFactory::class`.
-- `aliases`    → `BookServiceInterface::class => BookService::class`.
+- `delegators`: in the API, each handler maps to the handler delegator factory of the repository.
+  Admin handlers have no delegator entry.
+  In the Admin, `delegators` holds only `Application::class => [RoutesDelegator::class]` and the form delegators.
+- `factories`: each handler and each concrete service maps to `AttributedServiceFactory::class`.
+- `aliases`: `BookServiceInterface::class => BookService::class`.
 
-Keep these arrays alphabetically sorted with aligned `=>` — phpcs enforces the alignment.
+Sort these arrays in alphabetical order, and align `=>`.
+phpcs makes the alignment mandatory.
 
 ## Other paths
 
 | Path | Purpose |
 | --- | --- |
-| `config/autoload/*.global.php` | committed defaults |
-| `config/autoload/*.local.php` | git-ignored secrets; only `.dist` templates are committed |
-| `config/pipeline.php` | PSR-15 middleware order |
-| `config/routes.php` | thin — real routes live in each module's `RoutesDelegator` |
+| `config/autoload/*.global.php` | Committed defaults |
+| `config/autoload/*.local.php` | Secrets that git ignores. Only the `.dist` templates are committed. |
+| `config/pipeline.php` | The order of the PSR-15 middleware |
+| `config/routes.php` | Thin. The real routes are in the `RoutesDelegator` of each module. |
 | `bin/` | CLI entry points |
-| `test/Unit/`, `test/Functional/` | namespaces per `autoload-dev` |
-| `documentation/` | project docs (CLI command docs, a generated `openapi.json`, Postman collections) where present — the stock API ships one, derived projects vary, so check |
-| any Doctrine migrations directory | **generated** — never hand-edit |
+| `test/Unit/`, `test/Functional/` | Namespaces as `autoload-dev` defines them |
+| `documentation/` | Project docs (CLI command docs, a generated `openapi.json`, Postman collections), if the directory exists. The stock API has one. Derived projects are different, so check. |
+| Any Doctrine migrations directory | **Generated**. Never edit these files by hand. |
 
 ## Checklist for a new artefact
 
-- [ ] Namespace matches the directory exactly (PSR-4, case-sensitive).
-- [ ] Entity/Repository in `Core` (API and Admin; Frontend: inside the owning module), everything
-      request-facing in the application module.
-- [ ] Registered in the module `ConfigProvider` (API handlers: factory **and** delegator; Admin
-      handlers: factory).
-- [ ] Route declared in `RoutesDelegator`; authorization entry added.
-- [ ] Presentation registered: HAL metadata (API) or template path (templated project).
-- [ ] `OpenAPI.php` operation added, if this project publishes OpenAPI.
-- [ ] Test added.
+- [ ] The namespace matches the directory exactly (PSR-4, case-sensitive).
+- [ ] The Entity and the Repository are in `Core` (API and Admin) or in the module that owns them (Frontend).
+  All code that faces the request is in the application module.
+- [ ] The artefact is registered in the `ConfigProvider` of the module.
+  API handlers need a factory **and** a delegator.
+  Admin handlers need a factory.
+- [ ] The route is declared in `RoutesDelegator`, and the authorization entry is added.
+- [ ] The presentation is registered: HAL metadata (API) or the template path (templated project).
+- [ ] The `OpenAPI.php` operation is added, if this project publishes OpenAPI.
+- [ ] A test is added.
