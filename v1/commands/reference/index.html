@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -597,7 +597,7 @@
 <tbody>
 <tr>
 <td><code>/dk-bootstrap</code></td>
-<td>Take a fresh Dotkernel clone to a running local install</td>
+<td>Bring a new Dotkernel clone to a local install that runs</td>
 </tr>
 </tbody>
 </table></div>
@@ -612,11 +612,11 @@
 <tbody>
 <tr>
 <td><code>/dk-module</code></td>
-<td>Plan a new module end to end (<code>dot-maker</code> first)</td>
+<td>Plan a new Dotkernel module from start to end (<code>dot-maker</code> first)</td>
 </tr>
 <tr>
 <td><code>/dk-route</code></td>
-<td>Add a fully wired route — an API endpoint (checked against <code>dotkernel-api-endpoint</code>) or an admin/frontend page, e.g. <code>/dk-route POST /book/{id}/review</code></td>
+<td>Add a fully wired route: an API endpoint (checked against <code>dotkernel-api-endpoint</code>) or an admin/frontend page, for example <code>/dk-route POST /book/{id}/review</code></td>
 </tr>
 <tr>
 <td><code>/dk-deprecate</code></td>
@@ -635,19 +635,19 @@
 <tbody>
 <tr>
 <td><code>/dk-test</code></td>
-<td>Write and run tests for a module, route, or class</td>
+<td>Write and run tests for a module, route or class</td>
 </tr>
 <tr>
 <td><code>/dk-check</code></td>
-<td>Run the full QA gate and fix what it reports</td>
+<td>Run the full QA gate and fix the problems that it reports</td>
 </tr>
 <tr>
 <td><code>/dk-hygiene</code></td>
-<td>Verify and fix encoding, line endings, and whitespace across changed files</td>
+<td>Find and fix encoding, line ending and whitespace problems in changed files</td>
 </tr>
 <tr>
 <td><code>/dk-trace</code></td>
-<td>Trace a request end to end through the pipeline, handler, and response</td>
+<td>Trace a request from start to end through the pipeline, handler and response</td>
 </tr>
 </tbody>
 </table></div>
@@ -666,13 +666,17 @@
 </tr>
 <tr>
 <td><code>/dk-review</code></td>
-<td>Pre-PR review of the working tree against Dotkernel conventions</td>
+<td>Review the working tree against Dotkernel conventions before a PR</td>
 </tr>
 </tbody>
 </table></div>
 <p><code>/dk-review</code> is read-only by design.
-If it finds a missing or stale feature doc, it tells you to run <code>/dk-document</code> rather than writing one itself.
+If it finds a feature doc that is missing or out of date, it tells you to run <code>/dk-document</code>.
+It does not write the doc.
 See <a href="../../feature-docs/">Feature Documentation</a>.</p>
+<p><code>/dk-review</code> also checks that new and changed prose obeys ASD-STE100, with the rules from <code>dotkernel-writing-style</code>.
+The check covers comments, docblock descriptions, Markdown prose, messages, CLI output, OpenAPI descriptions and the commit messages on the branch.
+A finding is <em>Should fix</em>, not <em>Blocking</em>.</p>
 
 
 

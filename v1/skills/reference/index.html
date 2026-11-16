@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -591,13 +591,13 @@
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fires on</th>
+<th>Loads on</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>dotkernel-application-variants</code></td>
-<td>Working out whether a repo is API, Admin, Frontend, Light, Queue, or a derived project, and what that implies elsewhere</td>
+<td><code>dotkernel-project-variants</code></td>
+<td>Finding whether a repo is API, Admin, Frontend, Light, Queue, or a derived project, and what that means for other topics</td>
 </tr>
 </tbody>
 </table></div>
@@ -606,13 +606,13 @@
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fires on</th>
+<th>Loads on</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>dotkernel-module-structure</code></td>
-<td>Deciding where a new file belongs — application module vs. the shared Core layer — and registering it</td>
+<td>Deciding where a new file belongs (application module vs. the shared Core layer), and registering the file</td>
 </tr>
 <tr>
 <td><code>dotkernel-handler-naming</code></td>
@@ -620,7 +620,7 @@
 </tr>
 <tr>
 <td><code>dotkernel-api-endpoint</code></td>
-<td>API only — adding or changing an endpoint: <code>/account</code> and action-segment URLs, <code>#[Resource]</code> loading, response helpers, <code>operationId</code>, guest grants, and the end-to-end checklist before calling it done</td>
+<td>API only. Adding or changing an endpoint: <code>/account</code> and action-segment URLs, <code>#[Resource]</code> loading, response helpers, <code>operationId</code>, guest grants, and the end-to-end checklist before you call the endpoint done</td>
 </tr>
 <tr>
 <td><code>dotkernel-dot-maker</code></td>
@@ -628,7 +628,7 @@
 </tr>
 <tr>
 <td><code>dotkernel-core-submodule</code></td>
-<td>Core-layer changes and git submodule mechanics for sharing code across applications</td>
+<td>Changes to the Core layer, and git submodule mechanics to share code between projects</td>
 </tr>
 </tbody>
 </table></div>
@@ -637,7 +637,7 @@
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fires on</th>
+<th>Loads on</th>
 </tr>
 </thead>
 <tbody>
@@ -656,21 +656,21 @@
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fires on</th>
+<th>Loads on</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>dotkernel-responses</code></td>
-<td>Shaping handler output — HAL resources/collections and the MetadataMap, or templates/redirects/flash messages; pagination and error bodies</td>
+<td>Shaping handler output: HAL resources/collections and the MetadataMap, or templates/redirects/flash messages. Also pagination and error bodies</td>
 </tr>
 <tr>
 <td><code>dotkernel-openapi</code></td>
-<td>Documenting an endpoint via swagger-php attributes, for applications that publish OpenAPI</td>
+<td>Documenting an endpoint with swagger-php attributes, for projects that publish OpenAPI</td>
 </tr>
 <tr>
 <td><code>dotkernel-evolution-pattern</code></td>
-<td>Non-breaking API evolution — Sunset/Link headers and deprecation, <code>410 Gone</code> after the sunset date, instead of <code>/v2</code> or a version prefix</td>
+<td>Non-breaking API evolution: Sunset/Link headers and deprecation, and <code>410 Gone</code> after the sunset date, instead of <code>/v2</code> or a version prefix</td>
 </tr>
 </tbody>
 </table></div>
@@ -679,7 +679,7 @@
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fires on</th>
+<th>Loads on</th>
 </tr>
 </thead>
 <tbody>
@@ -689,7 +689,7 @@
 </tr>
 <tr>
 <td><code>dotkernel-qa-gate</code></td>
-<td>Running or interpreting phpcs, phpcbf, phpstan, phpunit; refusing forbidden shortcuts like <code>@phpstan-ignore</code></td>
+<td>Running or interpreting phpcs, phpcbf, phpstan, phpunit. Refusing forbidden shortcuts such as <code>@phpstan-ignore</code></td>
 </tr>
 <tr>
 <td><code>dotkernel-testing</code></td>
@@ -701,15 +701,11 @@
 </tr>
 <tr>
 <td><code>dotkernel-troubleshooting</code></td>
-<td>Symptom-to-cause lookup for 403/404/406/415/500, container errors, config not taking effect</td>
+<td>Finding the cause of a symptom: 403/404/406/415/500, container errors, config that has no effect</td>
 </tr>
 <tr>
 <td><code>dotkernel-feature-docs</code></td>
-<td>Writing and keeping feature docs current — see <a href="../../feature-docs/">Feature Documentation</a></td>
-</tr>
-<tr>
-<td><code>dotkernel-package-status</code></td>
-<td>Whether a Dotkernel package is still maintained and which PHP versions it supports</td>
+<td>Writing feature docs and keeping them current. See <a href="../../feature-docs/">Feature Documentation</a></td>
 </tr>
 </tbody>
 </table></div>
@@ -718,13 +714,28 @@
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fires on</th>
+<th>Loads on</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>dependency-policy</code></td>
-<td>Any package decision — the order: already installed → <code>dotkernel/*</code> → <code>laminas</code>/<code>mezzio</code> → vetted community package → hand-rolled code. See <a href="../dependency-policy/">Dependency Policy</a></td>
+<td><code>dotkernel-package-status</code></td>
+<td>Any package decision, in this order: already installed → <code>dotkernel/*</code> → <code>laminas</code>/<code>mezzio</code> → vetted community package → hand-rolled code. Also whether a Dotkernel package is still maintained and which PHP versions it supports, from the dotkernel.com listing. See <a href="../dotkernel-package-status/">Package Status</a></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="writing-style">Writing style</h2>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Loads on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dotkernel-writing-style</code></td>
+<td>Any prose, written in ASD-STE100 Simplified Technical English at a Strict or a Standard level: chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments, docblock descriptions, exception messages, CLI output and OpenAPI descriptions. The skill does not apply to the code itself</td>
 </tr>
 </tbody>
 </table></div>
@@ -747,8 +758,8 @@
         
         <li class="col text-nowrap text-md-end pe-0">
             
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../dependency-policy/">
-                    Dependency Policy
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../dotkernel-package-status/">
+                    Package Status
                     <i class="bi bi-chevron-right"></i>
                 </a>
             
@@ -795,6 +806,10 @@
             
                 <li class="toc__entry">
                     <a href="#dependency-policy" class="toc__link nav-link">Dependency policy</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#writing-style" class="toc__link nav-link">Writing style</a>
                 </li>
             
             </ul>

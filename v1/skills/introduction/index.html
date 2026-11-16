@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,18 +586,28 @@
     
 
     <h1 id="introduction">Introduction</h1>
-<p>A skill is a directory under <code>.claude/skills/</code> holding a <code>SKILL.md</code> — frontmatter (<code>name</code>, <code>description</code>) plus an instructional body.
-There is no central routing table: Claude Code auto-loads a skill when its <code>description:</code> matches what the current conversation is doing.
-That makes the description the entire activation mechanism — a skill with a vague or narrow description simply never fires, silently, with no error to debug.</p>
-<p>Dotboost ships nineteen skills.
-Eighteen are <code>dotkernel-*</code>, each covering one slice of Dotkernel convention; the nineteenth, <code>dependency-policy</code>, is generic to any package decision and detailed enough to warrant <a href="../dependency-policy/">its own page</a>.
-Most <code>dotkernel-*</code> skills apply to every application variant; <code>dotkernel-api-endpoint</code> applies only in an API application, where it is the end-to-end checklist for a new or changed endpoint and points to the skill that owns each topic.</p>
+<p>A skill is a directory under <code>.claude/skills/</code> that contains a <code>SKILL.md</code> file.
+The file has frontmatter (<code>name</code>, <code>description</code>) and a body with instructions.
+There is no central routing table.
+Claude Code loads a skill automatically when its <code>description:</code> matches the work in the current conversation.
+Thus the description is the only activation mechanism.
+A skill with a vague or narrow description never loads, and you get no message and no error to debug.</p>
+<p>Dotboost has nineteen skills, all <code>dotkernel-*</code>.
+Each skill covers one part of the Dotkernel conventions.
+One of them, <code>dotkernel-package-status</code>, controls each package decision.
+It has sufficient detail for <a href="../dotkernel-package-status/">its own page</a>.
+Each skill gives its scope in an <code>Applies to</code> block under its title.
+The block names the Dotkernel projects (API, Admin, Frontend, Light, Queue) and the packages that the skill covers.
+For example, <code>dotkernel-api-endpoint</code> applies only in an API project.
+There, it is the end-to-end checklist for a new or changed endpoint, and it points to the skill for each topic.</p>
 <h2 id="reading-a-trigger-description">Reading a trigger description</h2>
-<p>Each skill's description is written to include the words a developer would actually type — "where does this go", "403", "InputFilter" — not just the framework term for the concept.
-If a skill isn't triggering when you expect it to, the fix is almost always to add the phrase you used to its description, not to rewrite its instructions.
+<p>The description of each skill includes the words that a developer actually types, for example "where does this go", "403" or "InputFilter".
+It does not include only the framework term for the concept.
+If a skill does not load when you expect it, the fix is almost always to add your phrase to its description.
+The fix is almost never to write its instructions again.
 See <a href="../../maintaining/">Maintaining This</a>.</p>
 <h2 id="full-list">Full list</h2>
-<p><a href="../reference/">Reference</a> groups all nineteen by theme with a one-line trigger description each.</p>
+<p><a href="../reference/">Reference</a> puts all nineteen skills in groups by theme, with a one-line trigger description for each skill.</p>
 
 
 

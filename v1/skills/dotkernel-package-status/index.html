@@ -31,11 +31,11 @@
         <meta name="twitter:image"       content="https://docs.dotkernel.org/img/open-graph/twitter-card-docs.png"/>
 
         
-        <link rel="canonical" href="https://docs.dotkernel.org/dotboost/v1/skills/dependency-policy/">
+        <link rel="canonical" href="https://docs.dotkernel.org/dotboost/v1/skills/dotkernel-package-status/">
         
         <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
-        <title>Dependency Policy - Dotboost - Dotkernel Documentation</title>
+        <title>Package Status - Dotboost - Dotkernel Documentation</title>
 
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item subnavigation__list-item--active">
-    <a href="./" class="subnavigation__link">Dependency Policy</a>
+    <a href="./" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -528,7 +528,7 @@
                     
                 
 
-                <li class="breadcrumb-item active" aria-current="page">Dependency Policy</li>
+                <li class="breadcrumb-item active" aria-current="page">Package Status</li>
             
         
     </ol>
@@ -565,17 +565,17 @@
                     </span>
                 </button>
                 <div class="md-actions-menu" role="menu">
-                    <button type="button" class="md-actions-item" role="menuitem" data-copy-url="../dependency-policy.md"
+                    <button type="button" class="md-actions-item" role="menuitem" data-copy-url="../dotkernel-package-status.md"
                             onclick="copyMarkdownPage(this)">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
                         <span class="label">Copy Page (as Markdown)</span>
                     </button>
-                    <a href="../dependency-policy.md" target="_blank" rel="alternate noopener noreferrer" type="text/markdown"
+                    <a href="../dotkernel-package-status.md" target="_blank" rel="alternate noopener noreferrer" type="text/markdown"
                        class="md-actions-item" role="menuitem" title="View the Markdown source of this page">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h9l7 7v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M13 4v6h6"/><path d="M8 15h8M8 11h4"/></svg>
                         <span class="label">View as Markdown</span>
                     </a>
-                    <a href="https://claude.ai/new?q=Read%20from%20https%3A//docs.dotkernel.org/dotboost/v1/skills/dependency-policy.md%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="noopener noreferrer"
+                    <a href="https://claude.ai/new?q=Read%20from%20https%3A//docs.dotkernel.org/dotboost/v1/skills/dotkernel-package-status.md%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="noopener noreferrer"
                        class="md-actions-item" role="menuitem" title="Open this page in Claude">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 5.5L20 11l-5.5 2.5L12 19l-2.5-5.5L4 11l5.5-2.5z"/></svg>
                         <span class="label">Open in Claude</span>
@@ -585,8 +585,11 @@
         </div>
     
 
-    <h1 id="dependency-policy">Dependency Policy</h1>
-<p><code>dependency-policy</code> is the one skill in Dotboost that isn't specific to a Dotkernel application — it governs any package decision, in any project — and it's the skill with the most moving parts, which is why it gets its own page rather than a row in <a href="../reference/">Reference</a>.</p>
+    <h1 id="package-status">Package Status</h1>
+<p><code>dotkernel-package-status</code> controls each package decision in a Dotkernel project.
+It also tells whether a Dotkernel package is still maintained.
+It contains the dependency policy and the lookup in the package listing that dotkernel.com publishes.
+For this reason, it has its own page and not a row in <a href="../reference/">Reference</a>.</p>
 <h2 id="the-ladder">The ladder</h2>
 <p>Stop at the first hit:</p>
 <ol>
@@ -596,30 +599,46 @@
 <li>a vetted <code>symfony</code>/<code>doctrine</code>/<code>psr</code>/<code>league</code> package</li>
 <li>hand-rolled code</li>
 </ol>
-<p>The rule this enforces: never name a package from memory.
-Verify against <code>composer.lock</code>, the generated <code>dotkernel/*</code> manifest (below), or <code>composer show &lt;pkg&gt; --available</code>.</p>
+<p>The skill enforces this rule: never name a package from memory.
+A name is verified only when it is in <code>composer.lock</code> or in the dotkernel.com listing (below).
+The skill reports each other name as unverified.</p>
+<h2 id="the-source-of-truth-is-dotkernelcom">The source of truth is dotkernel.com</h2>
+<p>Dotkernel publishes the support status of its open-source packages at <a href="https://www.dotkernel.com/dotkernel-packages.json">https://www.dotkernel.com/dotkernel-packages.json</a>.
+Dotkernel builds this file again each day from the GitHub organization.
+A version for human readers is at <a href="https://www.dotkernel.com/dotkernel-packages-oss-lifecycle/">https://www.dotkernel.com/dotkernel-packages-oss-lifecycle/</a>.
+Each entry gives the <code>lifecycle</code> of the package (<code>active</code>, <code>maintenance</code>, <code>security-only</code> or <code>archived</code>), its <code>php</code> constraint, and the <code>archived</code> flag from GitHub.</p>
+<p>The skill fetches a new copy of the listing for each question.
+The skill does not generate, ship or store a file in the project, so you have nothing to refresh or git-ignore.
+The fetch needs network access.
+The fetch is not in the <code>allow</code> list or the <code>deny</code> list of <code>settings.json</code>, so it shows a prompt the first time.
+If the fetch fails, the skill calls <code>dotkernel/*</code> names that are not in <code>composer.lock</code> unverified.
+It does not use its memory as a fallback.</p>
+<p>No part of the skill queries Packagist.
+The skill reports a <code>laminas/*</code>, <code>mezzio/*</code> or community package that is not already installed as unverified.
+You must then confirm its maintenance status, its PHP support and its license.
+A general rule: an "actively maintained" package has a release in the last 12 months.</p>
 <h2 id="it-needs-a-claudemd-block-to-be-proactive">It needs a <code>CLAUDE.md</code> block to be proactive</h2>
-<p>A skill's <code>description:</code> frontmatter only makes it <em>loadable</em> — it doesn't make Claude stop and think before naming a package unprompted.
-That behavior has to be always-loaded, which means it lives in the <em>consuming project's</em> <code>CLAUDE.md</code>, not in Dotboost itself:</p>
+<p>The <code>description:</code> frontmatter of a skill only makes the skill <em>loadable</em>.
+It does not make Claude stop and think before Claude names a package that nobody asked for.
+That behavior must always be loaded.
+Thus it goes in the <code>CLAUDE.md</code> of the <em>project that uses Dotboost</em>, not in Dotboost:</p>
 <pre class="highlight"><code class="language-markdown">## Dependency policy
 
-Order of preference, stop at the first hit: **already in composer.lock** -&gt; **`dotkernel/*`** -&gt;
-**`laminas/*` / `mezzio/*`** -&gt; vetted `symfony|doctrine|psr|league` package -&gt; hand-rolled code.
+Use this order of preference, and stop at the first match: **already in composer.lock** -&gt; **`dotkernel/*`** -&gt; **`laminas/*` / `mezzio/*`** -&gt; vetted `symfony|doctrine|psr|league` package -&gt; hand-rolled code.
 
-- Never name a package from memory. Verify against `composer.lock`, or
-  `skills/dependency-policy/references/dotkernel-packages.json`, or `composer show &lt;pkg&gt; --available`.
-- Never run `composer require` in an upstream Dotkernel repo. Present a proposal; the user decides.
-- Consult the `dependency-policy` skill before any package suggestion, including implicit ones
-  ("how do I send mail from here?" is a package question).</code></pre>
-<p>Without this block pasted into the target project, the skill can still fire on an explicit package question, but a question with no package name in it (<code>"how do I send mail from here?"</code>) is much less likely to trigger it.</p>
-<h2 id="the-dotkernel-manifest-is-generated-not-shipped">The <code>dotkernel/*</code> manifest is generated, not shipped</h2>
-<p><code>.claude/skills/dependency-policy/references/dotkernel-packages.json</code> doesn't exist until the first package question runs <code>.claude/skills/dependency-policy/scripts/sync-dotkernel-packages.sh</code> itself, which needs <code>curl</code>, <code>jq</code>, and network access.
-It's git-ignored, being a dated snapshot regenerated per project.
-Without <code>curl</code>/<code>jq</code>, the skill calls a package name unverified rather than asserting one confidently.</p>
-<p>Neither the sync script nor <code>composer show &lt;pkg&gt; --available</code> is in <code>settings.json</code>'s <code>allow</code> or <code>deny</code> list — both prompt, deliberately, the first time.</p>
-<h2 id="keeping-it-fresh">Keeping it fresh</h2>
-<p>The Packagist snapshot behind <code>dependency-policy</code> goes stale silently.
-Re-run the sync script when a <code>dot-*</code> package is abandoned or superseded — <code>dot-annotated-services</code> → <code>dot-dependency-injection</code> is exactly the kind of thing a stale manifest gets wrong.
+- Never name a package from memory.
+  Verify it against `composer.lock`, or against the `dotkernel/*` listing published at &lt;https://www.dotkernel.com/dotkernel-packages.json&gt;.
+  Say that any other name is unverified.
+- Never run `composer require` in an upstream Dotkernel repository.
+  Present a proposal.
+  The user decides.
+- Before you suggest a package, use the `dotkernel-package-status` skill.
+  This also applies to implicit suggestions: "how do I send mail from here?" is a package question.</code></pre>
+<p>If the target project does not have this block, the skill can still load on an explicit package question.
+But a question with no package name in it (<code>"how do I send mail from here?"</code>) is much less likely to load the skill.</p>
+<h2 id="when-the-listing-is-wrong">When the listing is wrong</h2>
+<p>Report a wrong or out-of-date entry in <a href="https://github.com/dotkernel/dotkernel.com"><code>dotkernel/dotkernel.com</code></a>.
+Report a wrong lifecycle value in the repository of the package, because its <code>OSSMETADATA</code> file declares the value.
 See <a href="../../maintaining/">Maintaining This</a>.</p>
 
 
@@ -671,15 +690,15 @@ See <a href="../../maintaining/">Maintaining This</a>.</p>
                 </li>
             
                 <li class="toc__entry">
+                    <a href="#the-source-of-truth-is-dotkernelcom" class="toc__link nav-link">The source of truth is dotkernel.com</a>
+                </li>
+            
+                <li class="toc__entry">
                     <a href="#it-needs-a-claudemd-block-to-be-proactive" class="toc__link nav-link">It needs a CLAUDE.md block to be proactive</a>
                 </li>
             
                 <li class="toc__entry">
-                    <a href="#the-dotkernel-manifest-is-generated-not-shipped" class="toc__link nav-link">The dotkernel/* manifest is generated, not shipped</a>
-                </li>
-            
-                <li class="toc__entry">
-                    <a href="#keeping-it-fresh" class="toc__link nav-link">Keeping it fresh</a>
+                    <a href="#when-the-listing-is-wrong" class="toc__link nav-link">When the listing is wrong</a>
                 </li>
             
             </ul>

@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -598,37 +598,37 @@
 <tr>
 <td><code>guard-protected-paths.sh</code></td>
 <td><code>PreToolUse</code> (Edit/Write)</td>
-<td>Blocks writes to <code>vendor/</code>, <code>node_modules/</code>, migrations, <code>data/cache|lock|oauth/</code>, <code>log/</code>, <code>public/uploads/</code>, dependency manifests, tool caches, <code>.git/</code> internals, and binary or key material (<code>*.png</code>, <code>*.zip</code>, <code>*.phar</code>, <code>*.key</code>, <code>*.pem</code>). Redirects a blocked <code>*.local.php</code> edit to its <code>.dist</code> template instead of just refusing</td>
+<td>Blocks writes to <code>vendor/</code>, <code>node_modules/</code>, migrations, <code>data/cache|lock|oauth/</code>, <code>log/</code>, <code>public/uploads/</code>, dependency manifests, tool caches, <code>.git/</code> internals, and binary or key material (<code>*.png</code>, <code>*.zip</code>, <code>*.phar</code>, <code>*.key</code>, <code>*.pem</code>). Refuses a <code>*.local.php</code> edit with a message that points to its <code>.dist</code> template. Claude can edit the template, and the user applies it</td>
 </tr>
 <tr>
 <td><code>guard-bash.sh</code></td>
 <td><code>PreToolUse</code> (Bash)</td>
-<td>Blocks installs, destructive git, DB-mutating commands and development-mode toggles — including when they appear inside a compound command, which permission globs can't see into</td>
+<td>Blocks installs, destructive git commands, commands that change the database, and development-mode toggles. It also blocks them inside a compound command, which permission globs cannot see into. Quoted arguments, comments and heredoc bodies are data, so <code>grep "rm -rf" docs/</code> runs. The hook still checks the script after a <code>-c</code> option, the arguments of <code>eval</code>, <code>ssh</code> and <code>watch</code>, and a heredoc that goes to a shell. It matches the command text and does not parse the shell, so an unusual spelling can still get past it</td>
 </tr>
 <tr>
 <td><code>normalize-file.sh</code></td>
 <td><code>PostToolUse</code></td>
-<td>Fixes BOM, CRLF, trailing whitespace, and final newline on the file just written. Skips whitespace-stripping on <code>.md</code>, where two trailing spaces are a deliberate hard line break</td>
+<td>Fixes BOM, CRLF, trailing whitespace, and the final newline in the file that Claude wrote. Does not remove whitespace in <code>.md</code> files, where two trailing spaces are an intentional hard line break</td>
 </tr>
 <tr>
 <td><code>php-lint.sh</code></td>
 <td><code>PostToolUse</code></td>
-<td>Runs <code>php -l</code> on every edited PHP file. Report-only; skips itself if <code>php</code> isn't on <code>PATH</code></td>
+<td>Runs <code>php -l</code> on each edited PHP file. Report-only. Does nothing if <code>php</code> is not on <code>PATH</code></td>
 </tr>
 <tr>
 <td><code>markdown-lint.sh</code></td>
 <td><code>PostToolUse</code></td>
-<td>Runs <code>markdownlint-cli2</code> against <code>.claude/markdownlint.jsonc</code> on every edited <code>.md</code> file. Report-only; silent no-op if the binary isn't resolvable or the config is absent</td>
+<td>Runs <code>markdownlint-cli2</code> with <code>.claude/markdownlint.jsonc</code> on each edited <code>.md</code> file. Report-only. Does nothing and shows no message if it cannot find the binary or the config</td>
 </tr>
 <tr>
 <td><code>session-start.sh</code></td>
 <td><code>SessionStart</code></td>
-<td>Prints a briefing: detected application variant, root namespace, authorization style, current branch, and which config files are still missing. Also warns about CRLF line endings</td>
+<td>Prints a briefing: the detected project variant, the root namespace, the authorization style, and the config files that are still missing. It flags a guard policy that makes unlisted routes public. It also warns about CRLF line endings</td>
 </tr>
 </tbody>
 </table></div>
-<p>See <a href="../guardrails-vs-permissions/">Guardrails vs. Permissions</a> for commands where <code>guard-bash.sh</code> is stricter than the <code>ask</code> tier implies.
-See <a href="../introduction/#failure-mode-consecutive-edits-to-one-file">Introduction</a> for the one known <code>normalize-file.sh</code> failure mode.</p>
+<p>See <a href="../guardrails-vs-permissions/">Guardrails vs. Permissions</a> for commands where <code>guard-bash.sh</code> is stricter than the <code>ask</code> tier.
+See <a href="../introduction/#failure-mode-consecutive-edits-to-one-file">Introduction</a> for the one known failure mode of <code>normalize-file.sh</code>.</p>
 
 
 

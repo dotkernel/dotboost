@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -587,38 +587,71 @@
 
     <h1 id="getting-started">Getting Started</h1>
 <h2 id="install">Install</h2>
-<p>Pick one — both land the same files.</p>
+<p>Select one way.
+Both ways install the same files.</p>
 <h3 id="clone-it-inside-the-project">Clone it inside the project</h3>
 <pre class="highlight"><code class="language-bash">cd &lt;project&gt;
 git clone --depth 1 https://github.com/dotkernel/dotboost.git .dotboost
-cp -r .dotboost/.claude .claude
+mkdir -p .claude
+cp -r .dotboost/.claude/. .claude/
 rm -rf .dotboost</code></pre>
 <h3 id="download-the-zip">Download the zip</h3>
-<p>No git needed:</p>
+<p>This way does not need git:</p>
 <pre class="highlight"><code class="language-bash">cd &lt;project&gt;
 curl -L -o dotboost.zip https://github.com/dotkernel/dotboost/archive/refs/heads/main.zip
 unzip -q dotboost.zip
-cp -r dotboost-main/.claude .claude
+mkdir -p .claude
+cp -r dotboost-main/.claude/. .claude/
 rm -rf dotboost-main dotboost.zip</code></pre>
 <h2 id="after-copying-either-way">After copying, either way</h2>
-<pre class="highlight"><code class="language-bash">chmod +x .claude/hooks/*.sh .claude/statusline.sh \
-         .claude/skills/dependency-policy/scripts/*.sh
+<pre class="highlight"><code class="language-bash">chmod +x .claude/hooks/*.sh .claude/statusline.sh
 echo '.claude/settings.local.json' &gt;&gt; .git/info/exclude</code></pre>
-<p>Nothing in the payload is committed with an executable bit, and a zip extracted on Windows carries no permission bits at all — the <code>chmod</code> step is not optional.
+<p>The payload commits no file with an executable bit.
+Also, a zip that you extract on Windows has no permission bits at all.
+<code>settings.json</code> runs the hooks and the status line as <code>bash &lt;path&gt;</code>, so they run without the bits.
+The <code>chmod</code> is necessary only when you run one of them manually.
 The <code>settings.local.json</code> line keeps personal, git-ignored overrides out of <code>git add .</code>.</p>
-<p>If the target project already has its own <code>.claude/settings.json</code> or <code>.claude/commands/</code>, merge by hand instead of running the copy blind — same-named files are overwritten.</p>
+<p>The trailing <code>/.</code> copies the <em>contents</em> of the <code>.claude/</code> directory in the payload.
+Thus, the copy merges into an existing <code>.claude/</code> directory.
+It does not put a second directory at <code>.claude/.claude/</code>.
+But the merge still overwrites the files that have the same name.
+If the target project already has its own <code>.claude/settings.json</code> or <code>.claude/commands/</code>, merge the files manually.
+Do not run the copy without a check.</p>
 <h2 id="add-the-claudemd-block">Add the <code>CLAUDE.md</code> block</h2>
-<p><code>dependency-policy</code> and the feature-docs check need a short block pasted into the <em>project's own</em> <code>CLAUDE.md</code> to become proactive rather than merely loadable — see <a href="../architecture/#the-claudemd-contract">Architecture Overview</a> and <a href="../skills/dependency-policy/">Dependency Policy</a>.</p>
+<p>Three behaviors need a short block in the <em>project's own</em> <code>CLAUDE.md</code>:</p>
+<ul>
+<li>the dependency policy in <code>dotkernel-package-status</code></li>
+<li>the feature-docs check</li>
+<li>the writing style in <code>dotkernel-writing-style</code></li>
+</ul>
+<p>Without the block, these behaviors are only loadable.
+With the block, they become proactive.
+For more information, see <a href="../architecture/#the-claudemd-contract">Architecture Overview</a> and <a href="../skills/dotkernel-package-status/">Package Status</a>.</p>
+<p>All Dotkernel projects and packages write prose in ASD-STE100 Simplified Technical English.
+Paste this block to make the <code>dotkernel-writing-style</code> skill always active:</p>
+<pre class="highlight"><code class="language-markdown">## Writing style
+
+Write all prose in ASD-STE100 Simplified Technical English.
+This includes chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments, docblock descriptions, exception messages, CLI output and OpenAPI descriptions.
+Do not apply it to the code itself: identifiers, keywords, syntax and docblock tags stay as they are.
+Load the `dotkernel-writing-style` skill before you write any of this prose.</code></pre>
 <h2 id="optional-markdown-linting">Optional: markdown linting</h2>
-<p><code>.claude/hooks/markdown-lint.sh</code> checks every <code>.md</code> file Claude writes against <code>.claude/markdownlint.jsonc</code>.
-It needs <code>markdownlint-cli2</code>, not bundled:</p>
+<p><code>.claude/hooks/markdown-lint.sh</code> checks each <code>.md</code> file that Claude writes against <code>.claude/markdownlint.jsonc</code>.
+It needs <code>markdownlint-cli2</code>, which Dotboost does not include:</p>
 <pre class="highlight"><code class="language-bash">npm install -g markdownlint-cli2</code></pre>
-<p>A project-local <code>devDependency</code> works too — the hook prefers <code>./node_modules/.bin/markdownlint-cli2</code> and falls back to the global one.
-Until the binary is resolvable the hook exits silently, so <code>.claude/</code> stays drop-in for projects with no Node toolchain.</p>
+<p>A project-local <code>devDependency</code> also works.
+The hook uses <code>./node_modules/.bin/markdownlint-cli2</code> first, and uses the global one when the local one is not available.
+Until the hook can find the binary, it exits without output.
+Thus, <code>.claude/</code> stays drop-in for projects that have no Node toolchain.</p>
 <h2 id="verify">Verify</h2>
-<p>Start Claude Code in the project and run <code>/help</code> — you should see <code>dk-bootstrap</code>, <code>dk-module</code>, <code>dk-route</code>, <code>dk-trace</code>, <code>dk-test</code>, <code>dk-document</code>, <code>dk-check</code>, <code>dk-deprecate</code>, <code>dk-review</code>, <code>dk-hygiene</code>.
-The session-start hook should open with a short briefing: detected application variant, root namespace, authorization style, branch, and which config files are still missing.</p>
-<p>Full end-to-end verification steps, including how to test the guardrails themselves, are in <a href="../verifying-an-install/">Verifying an Install</a>.</p>
+<p>Start Claude Code in the project, and run <code>/help</code>.
+You should see <code>dk-bootstrap</code>, <code>dk-module</code>, <code>dk-route</code>, <code>dk-trace</code>, <code>dk-test</code>, <code>dk-document</code>, <code>dk-check</code>, <code>dk-deprecate</code>, <code>dk-review</code>, <code>dk-hygiene</code>.
+The session-start hook should start with a short briefing.
+The briefing shows the detected project variant, the root namespace and the authorization style.
+It flags a guard policy that leaves unlisted routes public.
+It also shows which config files are still missing.</p>
+<p><a href="../verifying-an-install/">Verifying an Install</a> gives the full end-to-end verification steps.
+It also tells how to test the guardrails themselves.</p>
 
 
 

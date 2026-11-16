@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -587,34 +587,54 @@
 
     <h1 id="glossary">Glossary</h1>
 <dl>
-<dt>Application variant</dt>
-<dd>Which kind of Dotkernel application a repo is — API, Admin, Frontend, Light, or Queue — or a project derived from one of them.
-  Detected by <code>dotkernel-application-variants</code> and by <code>session-start.sh</code>, since conventions differ by variant.</dd>
+<dt>Applies to</dt>
+<dd>The block under the title of each skill.
+  It names the projects and packages that the skill covers: <code>all</code>, <code>none</code>, or a list such as <code>Dotkernel API</code>.</dd>
 <dt>Command</dt>
 <dd>A <code>.md</code> file under <code>.claude/commands/</code> with frontmatter (<code>description</code>, optional <code>argument-hint</code>, <code>allowed-tools</code>) that defines a <code>/dk-*</code> slash command.
-  Invoked explicitly by name, unlike a skill.</dd>
+  You start it explicitly by its name, which is different from a skill.</dd>
 <dt><code>dot-maker</code></dt>
-<dd><code>dotkernel/dot-maker</code>, a Composer tool (<code>composer make …</code>) that scaffolds new modules, entities, services, handlers and more to Dotkernel's file structure and naming pattern.</dd>
+<dd><code>dotkernel/dot-maker</code>, a Composer tool (<code>composer make …</code>).
+  It scaffolds new modules, entities, services, handlers and more, to the Dotkernel file structure and naming pattern.</dd>
 <dt>Feature doc</dt>
-<dd>A markdown file written by <code>/dk-document</code> describing what a feature does, why, and how to exercise it — the part of a change a cleared session can't reconstruct from <code>src/</code> alone.
+<dd>A markdown file that <code>/dk-document</code> writes.
+  It tells what a feature does, why, and how to try it.
+  A cleared session cannot find this part of a change again from <code>src/</code> alone.
   See <a href="../feature-docs/">Feature Documentation</a>.</dd>
 <dt>Frontmatter</dt>
-<dd>The YAML block at the top of a <code>SKILL.md</code> or command <code>.md</code> file (<code>name</code>, <code>description</code>, etc.) that Claude Code reads to decide whether and how to load the file.</dd>
+<dd>The YAML block at the top of a <code>SKILL.md</code> file or a command <code>.md</code> file (<code>name</code>, <code>description</code>, and other keys).
+  Claude Code reads it to decide whether and how to load the file.</dd>
 <dt>Guard</dt>
-<dd>A hook that blocks a tool call outright rather than just reporting on it — <code>guard-protected-paths.sh</code> and <code>guard-bash.sh</code>.</dd>
+<dd>A hook that blocks a tool call, and does not only report on it: <code>guard-protected-paths.sh</code> and <code>guard-bash.sh</code>.</dd>
 <dt>Hook</dt>
-<dd>A bash script registered in <code>settings.json</code> against a lifecycle event (<code>SessionStart</code>/<code>PreToolUse</code>/<code>PostToolUse</code>) that runs automatically when that event fires.
+<dd>A bash script that <code>settings.json</code> registers for a lifecycle event (<code>SessionStart</code>/<code>PreToolUse</code>/<code>PostToolUse</code>).
+  The script runs automatically when that event occurs.
   See <a href="../hooks/introduction/">Hooks</a>.</dd>
+<dt>Package</dt>
+<dd>A reusable <code>dotkernel/dot-*</code> Composer library, for example <code>dot-mail</code>, <code>dot-cli</code> or <code>dot-log</code>.
+  You install it into projects, and you do not run it alone.</dd>
 <dt>Permission tier</dt>
-<dd>One of <code>deny</code>, <code>ask</code>, or <code>allow</code> in <code>settings.json</code>'s <code>permissions</code> block, governing whether a path or command is blocked outright, prompted for approval, or runs without a prompt.
+<dd>One of <code>deny</code>, <code>ask</code>, or <code>allow</code> in the <code>permissions</code> block of <code>settings.json</code>.
+  It controls whether Claude Code blocks a path or command, asks for approval, or lets it run without a prompt.
   See <a href="../permissions/introduction/">Permissions</a>.</dd>
+<dt>Project</dt>
+<dd>A Dotkernel starter codebase that you build on (API, Admin, Frontend, Light, or Queue), or a project derived from one of them.
+  Dotkernel has projects and packages, not "applications".
+  When a skill says <em>application module</em> or <em>application layer</em>, it means the modules of a project under <code>src/&lt;Module&gt;/</code>, not the shared <code>Core</code> layer.</dd>
+<dt>Project variant</dt>
+<dd>The type of Dotkernel project that a repo is: API, Admin, Frontend, Light, or Queue, or a project derived from one of them.
+  <code>dotkernel-project-variants</code> and <code>session-start.sh</code> find the variant, because the conventions are different for each variant.</dd>
 <dt><code>SKILL.md</code></dt>
-<dd>The file every skill directory must contain — frontmatter plus an instructional body — that Claude Code loads into context when the skill fires.</dd>
+<dd>The file that each skill directory must contain, with frontmatter and a body with instructions.
+  Claude Code loads it into the context when it selects the skill.</dd>
 <dt>Skill</dt>
-<dd>A packaged set of instructions under <code>.claude/skills/</code> that Claude Code auto-loads based on its <code>description:</code> frontmatter matching the current task, with no central routing table.
+<dd>A packaged set of instructions under <code>.claude/skills/</code>.
+  Claude Code loads it automatically when its <code>description:</code> frontmatter matches the current task.
+  There is no central routing table.
   See <a href="../skills/introduction/">Skills</a>.</dd>
 <dt>Subagent</dt>
-<dd>A separately-invoked agent defined under <code>.claude/agents/</code>, used to keep bulk review work out of the main conversation's context.
+<dd>An agent, defined under <code>.claude/agents/</code>, that you or Claude start separately.
+  It keeps bulk review work out of the context of the main conversation.
   Dotboost ships one: <code>dotkernel-reviewer</code>.</dd>
 </dl>
 

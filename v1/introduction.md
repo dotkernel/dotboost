@@ -1,26 +1,41 @@
 # Introduction
 
 Dotboost is a drop-in Claude Code configuration for Dotkernel projects.
-It is not a Dotkernel application, a library, or something you `composer require` — there is no `composer.json` and no PHP source in this repository at all.
-Its entire payload is a `.claude/` directory: settings, hooks, a status line, a review subagent, ten `/dk-*` slash commands and nineteen skills.
-You install it by copying that directory into the root of the Dotkernel project you're actually working on (API, Admin, Frontend, Light, Queue, or a project derived from one of them).
+It is not a Dotkernel project, not a library, and not a package for `composer require`.
+This repository contains no `composer.json` and no PHP source at all.
+Its full payload is a `.claude/` directory: settings, hooks, a status line, a review subagent, ten `/dk-*` slash commands and nineteen skills.
+To install it, copy that directory into the root of the Dotkernel project that you actually work on.
+This can be an API, Admin, Frontend, Light or Queue project, or a project derived from one of them.
 
 ## The problem it solves
 
-Claude Code has no built-in knowledge of Dotkernel's conventions — handler naming, where an entity belongs (application module vs. the shared Core submodule), which PSR applies where, how authorization keys map to routes, or the difference between a HAL-based API response and a templated redirect.
-Without that knowledge, an agent working in a Dotkernel repo either asks too many questions or confidently produces code that doesn't match house style.
+Claude Code has no built-in knowledge of the Dotkernel conventions, for example:
 
-Dotboost closes that gap two ways:
+- how to name a handler
+- where an entity belongs (an application module or the shared Core submodule)
+- which PSR applies where
+- how authorization keys map to routes
+- the difference between a HAL-based API response and a templated redirect
 
-- **Skills** teach the conventions themselves — naming, structure, validation, responses, security, testing, PSR standards — each loaded automatically when its description matches what you're doing.
-- **Hooks and permissions** protect the repo while an agent works in it — blocking edits to `vendor/`, dependency manifests, migrations and secrets; blocking destructive or dependency-installing shell commands; and normalizing whitespace and line endings on every file Claude touches.
+Without that knowledge, an agent in a Dotkernel repository asks too many questions.
+Or it writes code with confidence, and that code does not match the house style.
+
+Dotboost solves this problem in two ways:
+
+- **Skills** teach the conventions: naming, structure, validation, responses, security, testing and PSR standards.
+  Claude Code loads each skill automatically when its description matches your task.
+- **Hooks and permissions** protect the repository while an agent works in it:
+    - They block edits to `vendor/`, dependency manifests, migrations and secrets.
+    - They block shell commands that are destructive or that install dependencies.
+    - They normalize whitespace and line endings in each file that Claude changes.
 
 ## Who this is for
 
-Anyone using Claude Code inside a Dotkernel repository — application developers, and anyone maintaining a project derived from one of the Dotkernel starter kits.
-It's equally useful whether you're building a new feature, reviewing a PR, or bootstrapping a fresh clone.
+Dotboost is for each person who uses Claude Code in a Dotkernel repository.
+This includes developers on a Dotkernel project, and maintainers of a project derived from one of the Dotkernel starter kits.
+It is equally useful when you build a new feature, review a PR or bootstrap a fresh clone.
 
 ## What's next
 
-- [Architecture Overview](architecture.md) for how the pieces fit together.
-- [Getting Started](getting-started.md) to install it into a project.
+- [Architecture Overview](architecture.md) explains how the parts work together.
+- [Getting Started](getting-started.md) tells how to install Dotboost into a project.

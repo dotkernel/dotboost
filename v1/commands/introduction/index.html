@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,15 +586,22 @@
     
 
     <h1 id="introduction">Introduction</h1>
-<p>A command is a <code>.md</code> file under <code>.claude/commands/</code> with YAML frontmatter — <code>description</code>, an optional <code>argument-hint</code>, and <code>allowed-tools</code> scoping what the command may use.
-Unlike a skill, a command never loads itself: you invoke it explicitly by typing its name, e.g. <code>/dk-review</code>.</p>
-<p>Dotboost ships ten, covering the lifecycle of a change from a fresh clone through to a PR-ready diff.
-See <a href="../reference/">Reference</a> for the full list, grouped by workflow stage.</p>
+<p>A command is a <code>.md</code> file under <code>.claude/commands/</code> with YAML frontmatter.
+The frontmatter has a <code>description</code>, an optional <code>argument-hint</code>, and <code>allowed-tools</code>, which limits the tools that the command can use.
+A command is different from a skill: it never loads automatically.
+You start it explicitly when you type its name, for example <code>/dk-review</code>.</p>
+<p>Dotboost has ten commands.
+They cover the lifecycle of a change, from a new clone to a diff that is ready for a PR.
+See <a href="../reference/">Reference</a> for the full list, in groups for each stage of the workflow.</p>
 <h2 id="commands-vs-skills">Commands vs. skills</h2>
-<p>Use a command when you want a specific, repeatable procedure to run on demand — bootstrapping a clone, running the QA gate, writing a feature doc.
-Use a skill when you want Claude to <em>know</em> something automatically while it works on unrelated tasks — a naming convention, a validation pattern, a security rule.
-Several commands lean on skills internally; <code>/dk-module</code>, for instance, is built on top of <code>dotkernel-dot-maker</code> and <code>dotkernel-module-structure</code> rather than duplicating their guidance.
-<code>/dk-route</code> and <code>/dk-review</code> also load <code>dotkernel-api-endpoint</code> when the repo is an API application, so a new endpoint is built and reviewed against the same checklist.</p>
+<p>Use a command when you want a specific procedure that you can run again on request.
+Examples are to bootstrap a clone, to run the QA gate, or to write a feature doc.
+Use a skill when you want Claude to <em>know</em> something automatically while it works on other tasks.
+Examples are a naming convention, a validation pattern, or a security rule.
+Some commands use skills internally.
+For example, <code>/dk-module</code> uses <code>dotkernel-dot-maker</code> and <code>dotkernel-module-structure</code>, and does not copy their guidance.
+When the repo is an API project, <code>/dk-route</code> and <code>/dk-review</code> also load <code>dotkernel-api-endpoint</code>.
+Thus Claude builds and reviews a new endpoint against the same checklist.</p>
 
 
 

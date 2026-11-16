@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,18 +586,35 @@
     
 
     <h1 id="maintaining-this">Maintaining This</h1>
-<p>Treat the skills as living documents.
-When a review turns up the same mistake twice, that's a missing line in a skill, not a Claude problem.</p>
+<p>Treat the skills as documents that change over time.
+When a review finds the same mistake two times, a skill does not have a necessary line.
+The cause is not a problem in Claude.</p>
 <h2 id="skill-descriptions-drive-loading">Skill descriptions drive loading</h2>
-<p>If a skill isn't triggering, make its <code>description:</code> list the words developers actually type, not the words the official documentation uses.
+<p>If a skill does not load, make its <code>description:</code> include the words that developers actually type.
+Do not use only the words from the official documentation.
 See <a href="../skills/introduction/#reading-a-trigger-description">Skills Introduction</a>.</p>
-<h2 id="keep-the-dependency-manifest-current">Keep the dependency manifest current</h2>
-<p>The Packagist snapshot behind <code>dependency-policy</code> goes stale silently — re-run <code>.claude/skills/dependency-policy/scripts/sync-dotkernel-packages.sh</code> when a <code>dot-*</code> package is abandoned or superseded.
-<code>dot-annotated-services</code> → <code>dot-dependency-injection</code> is exactly the kind of thing a stale manifest gets wrong.
-See <a href="../skills/dependency-policy/">Dependency Policy</a>.</p>
-<h2 id="adapting-dotboost-to-a-new-dotkernel-application">Adapting Dotboost to a new Dotkernel application</h2>
-<p>Before adapting this configuration to a Dotkernel application it hasn't been used against yet, spend an hour reading that repo and correcting the skills against what's actually there.
-A skill written from framework documentation rather than the real codebase produces confident wrong answers — worse than no skill at all, because it doesn't look uncertain.</p>
+<h2 id="keep-each-skills-scope-accurate">Keep each skill's scope accurate</h2>
+<p>Each <code>SKILL.md</code> has an <code>Applies to</code> block immediately under its title.
+The block names the projects and packages that the skill covers:</p>
+<pre class="highlight"><code class="language-text">Applies to
+  Projects:  - Dotkernel API
+             - Dotkernel Admin
+  Packages:  - none</code></pre>
+<p>Use <code>all</code> or <code>none</code> when that is the full answer.
+Put the block under the title, not above the frontmatter.
+Claude Code reads the frontmatter only when it starts on the first line.
+When you add a project to a skill or remove a project from it, update the block in the same change.</p>
+<h2 id="package-status-needs-no-refresh">Package status needs no refresh</h2>
+<p><code>dotkernel-package-status</code> reads the dotkernel.com listing live, so you have no local snapshot to keep current.
+If an entry is wrong, report it in <code>dotkernel/dotkernel.com</code>.
+Report a wrong lifecycle value in the repository of the package, because its <code>OSSMETADATA</code> file declares the value.
+See <a href="../skills/dotkernel-package-status/">Package Status</a>.</p>
+<h2 id="adapting-dotboost-to-a-new-dotkernel-project">Adapting Dotboost to a new Dotkernel project</h2>
+<p>You can adapt this configuration to a Dotkernel project where nobody used it before.
+Before you do this, read that repo for an hour, and correct the skills to agree with the code in it.
+Some skills come from the framework documentation and not from the real codebase.
+Such a skill gives wrong answers that look correct.
+This is worse than no skill, because the answers do not look uncertain.</p>
 
 
 
@@ -648,11 +665,15 @@ A skill written from framework documentation rather than the real codebase produ
                 </li>
             
                 <li class="toc__entry">
-                    <a href="#keep-the-dependency-manifest-current" class="toc__link nav-link">Keep the dependency manifest current</a>
+                    <a href="#keep-each-skills-scope-accurate" class="toc__link nav-link">Keep each skill's scope accurate</a>
                 </li>
             
                 <li class="toc__entry">
-                    <a href="#adapting-dotboost-to-a-new-dotkernel-application" class="toc__link nav-link">Adapting Dotboost to a new Dotkernel application</a>
+                    <a href="#package-status-needs-no-refresh" class="toc__link nav-link">Package status needs no refresh</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#adapting-dotboost-to-a-new-dotkernel-project" class="toc__link nav-link">Adapting Dotboost to a new Dotkernel project</a>
                 </li>
             
             </ul>

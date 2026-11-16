@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,21 +586,40 @@
     
 
     <h1 id="status-line">Status Line</h1>
-<p><code>.claude/statusline.sh</code> renders real account usage in the status bar, taken from the rate-limit payload Claude Code (≥ 2.1) passes to the status line on stdin — the same numbers <code>/usage</code> reports:</p>
-<pre class="highlight"><code class="language-text">~/project                     Opus 5.5  high
-5h ███████▍             37%   resets in 2h 14m (16:20)  7d 61%</code></pre>
-<p>The first line is the working directory, the model and its effort level.
-The 5h bar is a 20-cell heat gradient; colours are 24-bit, so the terminal needs truecolor support.</p>
-<p>Pure bash and <code>awk</code> — no <code>jq</code>, no Python, no transcript scanning or guessed token budgets, so it works in Git Bash on Windows too.</p>
+<p><code>.claude/statusline.sh</code> shows the real account and session usage in the status bar.
+It reads the data from the JSON payload that Claude Code (≥ 2.1) sends to the status line on stdin.
+The rate limits are the same numbers that <code>/usage</code> reports:</p>
+<pre class="highlight"><code class="language-text"> ~/project   Opus 5.5 · high   $ 0.45   ctx ▰▱▱▱▱▱ 6%
+5h ███████▍             37%  ↻ 2h 14m (16:20)   7d ▰▰▰▰▰▰▱▱▱▱ 61%</code></pre>
+<p>The first line is a row of coloured chips, then the context gauge:</p>
+<ul>
+<li>the working directory, the model and its effort level.</li>
+<li><code>$</code>: the estimated billed cost of the session.
+  It stays at <code>0.00</code> while both rate limits are less than 100%.
+  When one of them reaches 100%, and for all the time that the model is Fable, it adds the increase of the USD estimate from Claude Code (<code>cost.total_cost_usd</code>).
+  The payload has no field for billed credit, so this value is an estimate at API prices, not an invoice.
+  The script keeps the running total for each session in <code>${TMPDIR:-/tmp}/claude-statusline-&lt;session_id&gt;.cost</code>.
+  It assigns each increase to the state that is true when the status line redraws.</li>
+<li><code>ctx</code>: how full the context window is (<code>context_window.used_percentage</code>).</li>
+</ul>
+<p>The second line has the gauges for the rate limits.
+The 5-hour window shows as a heat gradient of 20 cells with its reset time, then the 7-day window shows.
+If the payload does not have a field, the status line does not show it (for example, the rate limits with an API key).
+The colours are 24-bit, so the terminal must support truecolor.</p>
+<p>The script uses only bash and <code>awk</code>.
+It does not use <code>jq</code> or Python, it does not scan transcripts, and it does not guess token budgets.
+Thus it also works in Git Bash on Windows.</p>
 <h2 id="placement">Placement</h2>
-<p>The two shipped configs disagree on purpose — pick one:</p>
+<p>The two configs that Dotboost supplies are different on purpose.
+Select one of them:</p>
 <ul>
 <li><code>settings.json</code> points at <code>$CLAUDE_PROJECT_DIR/.claude/statusline.sh</code>, the per-project copy.
-  This is what the standard install gives you, and it needs nothing further.</li>
+  The standard install gives you this config, and it needs no more steps.</li>
 <li><code>settings.local.json.example</code> points at <code>~/.claude/statusline.sh</code>, one shared copy across every project.
-  To use that instead, run <code>cp .claude/statusline.sh ~/.claude/</code> from a project that already has the install — otherwise the status line comes up empty.</li>
+  To use this config, run <code>cp .claude/statusline.sh ~/.claude/</code> from a project that already has the install.
+  If you do not, the status line is empty.</li>
 </ul>
-<p>See <a href="../permissions/customization/">Customization</a> for how <code>settings.local.json</code> layers over the shared config.</p>
+<p>See <a href="../permissions/customization/">Customization</a> to learn how <code>settings.local.json</code> adds a layer on top of the shared config.</p>
 
 
 

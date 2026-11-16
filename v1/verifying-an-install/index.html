@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,25 +586,40 @@
     
 
     <h1 id="verifying-an-install">Verifying an Install</h1>
-<p>There is no CI in this repository - Dotboost is configuration, not code with a build step - so this manual smoke test is the closest thing to a test suite.
-Run it after installing into a project.</p>
+<p>This repository has no test CI.
+The only workflow, <code>.github/workflows/docs-build.yml</code>, builds this documentation.
+Dotboost is configuration, not code with a build step.
+Thus this manual smoke test is the nearest thing to a test suite.
+Run it after you install Dotboost into a project.</p>
 <h2 id="skill-routing">Skill routing</h2>
-<p>Ask <em>"where does a new Doctrine entity go?"</em> — it should reach for <code>dotkernel-module-structure</code> rather than answering from general framework knowledge.</p>
+<p>Ask <em>"where does a new Doctrine entity go?"</em>.
+Claude should use <code>dotkernel-module-structure</code>, and not answer from general framework knowledge.</p>
 <h2 id="the-claudemd-block">The <code>CLAUDE.md</code> block</h2>
-<p>With the dependency-policy block in place (see <a href="../getting-started/">Getting Started</a>), ask <em>"how do I send mail from here?"</em> — a question with no package name in it.
-It should load <code>dependency-policy</code> and walk the ladder, grepping <code>composer.lock</code> first and then the <code>dotkernel/*</code> manifest (generating it if absent), rather than replying with a package name from memory.
-See <a href="../skills/dependency-policy/">Dependency Policy</a>.</p>
+<p>Make sure that the project has the dependency policy block (see <a href="../getting-started/">Getting Started</a>).
+Then ask <em>"how do I send mail from here?"</em>, a question with no package name in it.
+Claude should load <code>dotkernel-package-status</code> and go through the ladder.
+It should first grep <code>composer.lock</code>, then fetch the dotkernel.com listing.
+It should not reply with a package name from memory.
+See <a href="../skills/dotkernel-package-status/">Package Status</a>.</p>
 <h2 id="guardrails">Guardrails</h2>
 <ul>
-<li>Ask it to edit <code>vendor/autoload.php</code> — blocked by <code>guard-protected-paths.sh</code>.</li>
-<li>Ask it to add a package to <code>composer.json</code> — blocked by the same hook; it should propose the change in chat instead of writing it.</li>
-<li>Ask it to run <code>cd src &amp;&amp; composer require foo</code> — <code>guard-bash.sh</code> should catch the install even though it's inside a compound command, which path-based permission rules alone cannot see.
+<li>Ask Claude to edit <code>vendor/autoload.php</code>.
+  <code>guard-protected-paths.sh</code> blocks the edit.</li>
+<li>Ask Claude to add a package to <code>composer.json</code>.
+  The same hook blocks the edit.
+  Claude should propose the change in chat and not write it.</li>
+<li>Ask Claude to run <code>cd src &amp;&amp; composer require foo</code>.
+  <code>guard-bash.sh</code> should stop the install, although it is inside a compound command.
+  Path-based permission rules alone cannot see this.
   See <a href="../hooks/guardrails-vs-permissions/">Guardrails vs. Permissions</a>.</li>
 </ul>
 <h2 id="verify-against-current-docs">Verify against current docs</h2>
-<p>Claude Code's own <code>settings.json</code> schema and hook event names move faster than most things in this repo.
-If a permission rule or hook doesn't take effect, check the current Claude Code docs — in particular the glob syntax accepted by <code>permissions.deny</code> and whether <code>permissions.ask</code> exists in your installed version.
-Treat the hooks as the reliable layer and the permission rules as the convenient one when the two seem to disagree.</p>
+<p>The <code>settings.json</code> schema and the hook event names of Claude Code change faster than most things in this repo.
+If a permission rule or a hook has no effect, read the current Claude Code docs.
+In particular, check the glob syntax that <code>permissions.deny</code> accepts, and whether your installed version has <code>permissions.ask</code>.
+When the two layers seem to disagree, the hooks are the stricter layer.
+But neither layer is a sandbox.
+The hooks match the command text and do not parse the shell, so an unusual spelling can still get past them.</p>
 
 
 

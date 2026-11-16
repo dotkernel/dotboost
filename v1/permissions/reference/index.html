@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -587,7 +587,9 @@
 
     <h1 id="reference">Reference</h1>
 <h2 id="never-read">Never read</h2>
-<p><code>Read</code> denies — these never enter the context window:</p>
+<p><code>Read</code> denies.
+Claude's file tools and the Bash file commands that Claude Code recognises (<code>cat</code>, <code>head</code>, <code>tail</code>, <code>sed</code>, <code>tee</code>) cannot open these files.
+The rules do not cover a command that reads files without their names, such as <code>grep -r</code>:</p>
 <ul>
 <li><code>.env</code></li>
 <li>every <code>*.local.php</code></li>
@@ -596,12 +598,14 @@
 <li><code>data/oauth/</code></li>
 </ul>
 <h2 id="never-written">Never written</h2>
-<p><code>Edit</code> denies — Claude Code applies <code>Edit</code> rules to every file-editing tool, <code>Write</code> included, and <code>guard-protected-paths.sh</code> blocks these paths for every file-writing tool at the hook layer too (for <code>data/</code>, only <code>cache/</code>, <code>lock/</code> and <code>oauth/</code>):</p>
+<p><code>Edit</code> denies.
+Claude Code applies <code>Edit</code> rules to each file-editing tool, and also to <code>Write</code>.
+<code>guard-protected-paths.sh</code> also blocks these paths for each file-writing tool at the hook layer (for <code>data/</code>, only <code>cache/</code>, <code>lock/</code> and <code>oauth/</code>):</p>
 <ul>
 <li>dependency manifests: <code>composer.json</code>, <code>composer.lock</code>, <code>package.json</code>, <code>package-lock.json</code></li>
 <li><code>vendor/</code>, <code>node_modules/</code></li>
 <li><code>data/</code>, <code>log/</code>, <code>public/uploads/</code></li>
-<li>anything under <code>Migration/</code> or <code>Migrations/</code></li>
+<li>all files under <code>Migration/</code> or <code>Migrations/</code></li>
 <li>every <code>*.local.php</code>, <code>config/autoload/local.php</code>, <code>config/autoload/local.test.php</code></li>
 </ul>
 <h2 id="never-run">Never run</h2>
@@ -625,9 +629,13 @@
 <ul>
 <li>the Composer QA scripts: <code>check</code>, <code>cs-check</code>, <code>cs-fix</code>, <code>static-analysis</code>, <code>test</code></li>
 <li><code>clear-config-cache</code>, <code>development-status</code>, <code>dump-autoload</code></li>
-<li><code>vendor/bin</code> tools</li>
+<li><code>php ./vendor/bin/phpcs</code>, <code>phpcbf</code>, <code>phpstan</code>, <code>phpunit</code> — only with the <code>php ./</code> prefix.
+  A bare <code>vendor/bin/phpunit</code> shows a prompt</li>
+<li><code>markdownlint-cli2</code>, <code>./node_modules/.bin/markdownlint-cli2</code></li>
 <li><code>php -l</code>, <code>php -v</code>, <code>php -m</code></li>
+<li><code>date +%F</code></li>
 <li>read-only git: <code>status</code>, <code>diff</code>, <code>log</code>, <code>show</code>, <code>branch</code>, <code>ls-files</code>, <code>config --get</code></li>
+<li>edits under <code>docs/features/</code> and <code>documentation/features/</code></li>
 </ul>
 
 

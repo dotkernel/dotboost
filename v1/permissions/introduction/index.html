@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,22 +586,33 @@
     
 
     <h1 id="introduction">Introduction</h1>
-<p><code>settings.json</code> decides what Claude Code may read, write, and run in a Dotkernel repo before a single word of conversation happens.
-The rules fall into four tiers:</p>
+<p><code>settings.json</code> controls what Claude Code can read, write and run in a Dotkernel repo, before the conversation starts.
+The rules are in four tiers:</p>
 <ul>
-<li><strong>Never read</strong> — <code>Read</code> denies. The contents never enter the context window at all.</li>
-<li><strong>Never written</strong> — <code>Edit</code> denies, which also cover <code>Write</code>.</li>
-<li><strong>Never run</strong> — <code>Bash</code> denies.</li>
-<li><strong>Ask first</strong> / <strong>allowed outright</strong> — everything else, split by risk.</li>
+<li><strong>Never read</strong>: <code>Read</code> denies.
+  Claude's file tools and the Bash file commands that Claude Code recognises (<code>cat</code>, <code>head</code>, <code>tail</code>, <code>sed</code>, <code>tee</code>) cannot open these files.</li>
+<li><strong>Never written</strong>: <code>Edit</code> denies, which also apply to <code>Write</code>.</li>
+<li><strong>Never run</strong>: <code>Bash</code> denies.</li>
+<li><strong>Ask first</strong> / <strong>allowed outright</strong>: all the other rules, in groups by risk.</li>
 </ul>
-<p>The first three tiers exist to make a class of mistake structurally impossible rather than relying on Claude to remember not to do it: secrets never get read into context in the first place, dependency manifests never get silently edited, and destructive git or install commands never get silently run.
-The full lists are in <a href="../reference/">Reference</a>.</p>
-<p>This is deliberately blunter than a skill.
-A skill can be out-argued by a sufficiently persuasive prompt; a <code>deny</code> rule in <code>settings.json</code> cannot.</p>
+<p>The first three tiers prevent a type of mistake with a rule.
+They do not rely on Claude to remember not to do the action.
+With these tiers, the normal tools do not read secrets into the context.
+Claude does not silently edit dependency manifests.
+Claude does not silently run destructive git or install commands.
+They are rules, not a sandbox.
+They do not cover a command that reads files without their names (<code>grep -r password config/</code>), or a script that opens a file itself.
+For a guarantee at the OS level, use the sandbox in the <a href="https://code.claude.com/docs/en/permissions">Claude Code permissions docs</a>.
+<a href="../reference/">Reference</a> gives the full lists.</p>
+<p>This is intentionally less flexible than a skill.
+A prompt with a sufficiently strong argument can make Claude ignore a skill.
+It cannot make Claude ignore a <code>deny</code> rule in <code>settings.json</code>.</p>
 <h2 id="personal-overrides">Personal overrides</h2>
-<p>The <code>ask</code> and <code>allow</code> tiers are opinionated defaults, not fixed policy — see <a href="../customization/">Customization</a> for how to adjust them per machine without touching the shared file.</p>
-<h2 id="where-this-isnt-the-whole-story">Where this isn't the whole story</h2>
-<p>Some commands the <code>ask</code> tier implies should merely prompt are blocked outright by <code>guard-bash.sh</code>, because the hook can see into compound Bash commands that a permission glob cannot.
+<p>The <code>ask</code> and <code>allow</code> tiers are default values that we selected, not fixed policy.
+To change them for each machine without a change to the shared file, see <a href="../customization/">Customization</a>.</p>
+<h2 id="other-controls-the-hooks">Other controls: the hooks</h2>
+<p>For some commands, the <code>ask</code> tier suggests a prompt only, but <code>guard-bash.sh</code> blocks them.
+The hook can see into compound Bash commands, and a permission glob cannot.
 See <a href="../../hooks/guardrails-vs-permissions/">Guardrails vs. Permissions</a>.</p>
 
 
@@ -653,7 +664,7 @@ See <a href="../../hooks/guardrails-vs-permissions/">Guardrails vs. Permissions<
                 </li>
             
                 <li class="toc__entry">
-                    <a href="#where-this-isnt-the-whole-story" class="toc__link nav-link">Where this isn't the whole story</a>
+                    <a href="#other-controls-the-hooks" class="toc__link nav-link">Other controls: the hooks</a>
                 </li>
             
             </ul>

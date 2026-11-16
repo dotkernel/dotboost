@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,9 +586,12 @@
     
 
     <h1 id="architecture-overview">Architecture Overview</h1>
-<p>Everything in Dotboost hangs off one file: <code>.claude/settings.json</code>.
-It registers the hooks, sets the permission tiers, configures the status line, and sets session defaults (<code>defaultMode: "auto"</code>, dark theme, fullscreen TUI).
-Nothing else in the payload is wired together outside of it — skills and commands are discovered by Claude Code from their directory location alone.</p>
+<p>The central file of Dotboost is <code>.claude/settings.json</code>.
+It registers the hooks, sets the permission tiers, and configures the status line.
+It does not set personal preferences (permission mode, theme, TUI, spinner verbs).
+Each developer sets them in their own <code>settings.local.json</code>, and <code>settings.local.json.example</code> contains a sample.
+Outside this file, the payload has no wiring.
+Claude Code finds skills and commands from their directory location only.</p>
 <h2 id="the-four-artifact-types">The four artifact types</h2>
 <div class="table-responsive"><table>
 <thead>
@@ -602,42 +605,55 @@ Nothing else in the payload is wired together outside of it — skills and comma
 <tr>
 <td>Hook</td>
 <td><code>.claude/hooks/*.sh</code></td>
-<td>Registered in <code>settings.json</code> against a lifecycle event (<code>SessionStart</code>, <code>PreToolUse</code>, <code>PostToolUse</code>); always runs when its event and matcher fire</td>
+<td><code>settings.json</code> registers it for a lifecycle event (<code>SessionStart</code>, <code>PreToolUse</code>, <code>PostToolUse</code>). It always runs when its event and matcher fire.</td>
 </tr>
 <tr>
 <td>Skill</td>
 <td><code>.claude/skills/*/SKILL.md</code></td>
-<td>Auto-loaded when its <code>description:</code> frontmatter matches what the conversation is doing — no routing table</td>
+<td>Claude Code loads it automatically when its <code>description:</code> frontmatter matches the current task of the conversation. There is no routing table.</td>
 </tr>
 <tr>
 <td>Command</td>
 <td><code>.claude/commands/*.md</code></td>
-<td>Invoked explicitly by name, e.g. <code>/dk-review</code></td>
+<td>You start it explicitly by name, for example <code>/dk-review</code>.</td>
 </tr>
 <tr>
 <td>Subagent</td>
 <td><code>.claude/agents/*.md</code></td>
-<td>Invoked by a command or by Claude's own judgment, e.g. the review flow delegating to <code>dotkernel-reviewer</code></td>
+<td>A command starts it, or Claude starts it by its own decision. For example, the review flow delegates to <code>dotkernel-reviewer</code>.</td>
 </tr>
 </tbody>
 </table></div>
-<p>This matters because the four types fail differently.
-A hook that isn't registered in <code>settings.json</code> never runs, full stop.
-A skill that's technically present but has a vague <code>description:</code> may simply never be selected — it isn't an error, it's silence.
+<p>This is important because the four types fail in different ways.
+When <code>settings.json</code> does not register a hook, the hook never runs.
+A skill can be present but have a vague <code>description:</code>, and then Claude may never select it.
+This is not an error: nothing happens, and you see no message.
 A command only exists when you type its name.
-Debugging "why didn't Dotboost do X" starts by identifying which of these four categories X falls into.</p>
+To debug "why didn't Dotboost do X", first identify which of these four categories X belongs to.</p>
 <h2 id="two-layers-of-guardrail">Two layers of guardrail</h2>
 <p>Dotboost protects the target repository at two independent layers:</p>
 <ol>
-<li><strong>Permission tiers</strong> (<code>permissions.deny</code> / <code>ask</code> / <code>allow</code> in <code>settings.json</code>) — path-glob and command-prefix rules Claude Code enforces natively.</li>
-<li><strong>Hooks</strong> (<code>guard-protected-paths.sh</code>, <code>guard-bash.sh</code>) — bash scripts that inspect the actual tool call, including compound Bash commands (<code>cd src &amp;&amp; composer require foo</code>) that a glob pattern can't see into.</li>
+<li><strong>Permission tiers</strong> (<code>permissions.deny</code> / <code>ask</code> / <code>allow</code> in <code>settings.json</code>): path-glob rules and command-prefix rules that Claude Code enforces natively.</li>
+<li><strong>Hooks</strong> (<code>guard-protected-paths.sh</code>, <code>guard-bash.sh</code>): bash scripts that examine the actual tool call.
+   They also examine compound Bash commands (<code>cd src &amp;&amp; composer require foo</code>), and a glob pattern cannot see inside these commands.</li>
 </ol>
-<p>The two layers overlap on purpose but don't agree everywhere: some commands the tier list marks <code>ask</code> are blocked outright by a hook.
-See <a href="../hooks/guardrails-vs-permissions/">Guardrails vs. Permissions</a> for the specific list — it's the most common source of "why did it refuse instead of prompting me" confusion.</p>
+<p>The two layers overlap intentionally, but they do not agree on all commands.
+A hook blocks some commands that the tier list marks as <code>ask</code>.
+For the specific list, see <a href="../hooks/guardrails-vs-permissions/">Guardrails vs. Permissions</a>.
+This difference is the most frequent cause of the confusion "why did it refuse instead of prompting me".</p>
 <h2 id="the-claudemd-contract">The <code>CLAUDE.md</code> contract</h2>
-<p>Two skills — <code>dependency-policy</code> and the feature-docs check — only become <em>proactive</em> rather than merely loadable once the consuming project pastes a short block into its own <code>CLAUDE.md</code>.
-A skill's <code>description:</code> frontmatter decides whether it <em>can</em> load; it doesn't decide whether Claude reaches for it unprompted.
-This is why installing <code>.claude/</code> alone under-delivers on those two behaviors — see <a href="../getting-started/">Getting Started</a> and <a href="../feature-docs/">Feature Documentation</a>.</p>
+<p>Three behaviors need a short block in the <code>CLAUDE.md</code> of the consuming project:</p>
+<ul>
+<li>the dependency policy in <code>dotkernel-package-status</code></li>
+<li>the feature-docs check</li>
+<li>the ASD-STE100 writing style in <code>dotkernel-writing-style</code></li>
+</ul>
+<p>Until the project pastes the block into its own <code>CLAUDE.md</code>, these behaviors are only loadable.
+After that, they become <em>proactive</em>.
+The <code>description:</code> frontmatter of a skill decides whether the skill <em>can</em> load.
+It does not decide whether Claude uses the skill when nobody asks for it.
+Thus, when you install only <code>.claude/</code>, these three behaviors do not operate fully.
+For more information, see <a href="../getting-started/">Getting Started</a> and <a href="../feature-docs/">Feature Documentation</a>.</p>
 <h2 id="whats-next">What's next</h2>
 <ul>
 <li><a href="../permissions/introduction/">Permissions</a> for the guardrail tiers.</li>

@@ -1,20 +1,43 @@
 # Maintaining This
 
-Treat the skills as living documents.
-When a review turns up the same mistake twice, that's a missing line in a skill, not a Claude problem.
+Treat the skills as documents that change over time.
+When a review finds the same mistake two times, a skill does not have a necessary line.
+The cause is not a problem in Claude.
 
 ## Skill descriptions drive loading
 
-If a skill isn't triggering, make its `description:` list the words developers actually type, not the words the official documentation uses.
+If a skill does not load, make its `description:` include the words that developers actually type.
+Do not use only the words from the official documentation.
 See [Skills Introduction](skills/introduction.md#reading-a-trigger-description).
 
-## Keep the dependency manifest current
+## Keep each skill's scope accurate
 
-The Packagist snapshot behind `dependency-policy` goes stale silently — re-run `.claude/skills/dependency-policy/scripts/sync-dotkernel-packages.sh` when a `dot-*` package is abandoned or superseded.
-`dot-annotated-services` → `dot-dependency-injection` is exactly the kind of thing a stale manifest gets wrong.
-See [Dependency Policy](skills/dependency-policy.md).
+Each `SKILL.md` has an `Applies to` block immediately under its title.
+The block names the projects and packages that the skill covers:
 
-## Adapting Dotboost to a new Dotkernel application
+```text
+Applies to
+  Projects:  - Dotkernel API
+             - Dotkernel Admin
+  Packages:  - none
+```
 
-Before adapting this configuration to a Dotkernel application it hasn't been used against yet, spend an hour reading that repo and correcting the skills against what's actually there.
-A skill written from framework documentation rather than the real codebase produces confident wrong answers — worse than no skill at all, because it doesn't look uncertain.
+Use `all` or `none` when that is the full answer.
+Put the block under the title, not above the frontmatter.
+Claude Code reads the frontmatter only when it starts on the first line.
+When you add a project to a skill or remove a project from it, update the block in the same change.
+
+## Package status needs no refresh
+
+`dotkernel-package-status` reads the dotkernel.com listing live, so you have no local snapshot to keep current.
+If an entry is wrong, report it in `dotkernel/dotkernel.com`.
+Report a wrong lifecycle value in the repository of the package, because its `OSSMETADATA` file declares the value.
+See [Package Status](skills/dotkernel-package-status.md).
+
+## Adapting Dotboost to a new Dotkernel project
+
+You can adapt this configuration to a Dotkernel project where nobody used it before.
+Before you do this, read that repo for an hour, and correct the skills to agree with the code in it.
+Some skills come from the framework documentation and not from the real codebase.
+Such a skill gives wrong answers that look correct.
+This is worse than no skill, because the answers do not look uncertain.

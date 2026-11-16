@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,23 +586,35 @@
     
 
     <h1 id="introduction">Introduction</h1>
-<p>A hook is a bash script registered in <code>settings.json</code> against a Claude Code lifecycle event.
+<p>A hook is a bash script that <code>settings.json</code> registers for a Claude Code lifecycle event.
 Dotboost uses three events:</p>
 <ul>
-<li><strong><code>SessionStart</code></strong> — runs once when a session begins.</li>
-<li><strong><code>PreToolUse</code></strong> — runs before a tool call, matched against <code>Edit</code>/<code>Write</code>/<code>MultiEdit</code>/<code>NotebookEdit</code> or <code>Bash</code>; can block the call.</li>
-<li><strong><code>PostToolUse</code></strong> — runs after a tool call, matched against <code>Edit</code>/<code>Write</code>/<code>MultiEdit</code>; cannot undo the call, only report on or normalize its result.</li>
+<li><strong><code>SessionStart</code></strong>: runs when a session starts or resumes, and again after <code>/clear</code> or compaction.</li>
+<li><strong><code>PreToolUse</code></strong>: runs before a tool call that matches <code>Edit</code>/<code>Write</code>/<code>MultiEdit</code>/<code>NotebookEdit</code> or <code>Bash</code>.
+  It can block the call.</li>
+<li><strong><code>PostToolUse</code></strong>: runs after a tool call that matches <code>Edit</code>/<code>Write</code>/<code>MultiEdit</code>.
+  It cannot undo the call.
+  It can only report on the result or normalize the result.</li>
 </ul>
 <h2 id="report-only-vs-blocking">Report-only vs. blocking</h2>
-<p>The two <code>PreToolUse</code> hooks (<code>guard-protected-paths.sh</code>, <code>guard-bash.sh</code>) are guards: they refuse the call outright.
-The <code>PostToolUse</code> hooks split differently — <code>normalize-file.sh</code> silently fixes whitespace, while <code>php-lint.sh</code> and <code>markdown-lint.sh</code> are deliberately <strong>report-only</strong>.
-Neither runs <code>phpcbf</code> nor <code>markdownlint --fix</code>, because reformatting a file immediately after Claude writes it invalidates its in-memory copy and can break the next targeted edit in the same turn.
-Bulk formatting belongs at the end of a task, via <code>composer cs-fix</code> or <code>/dk-check</code>.</p>
-<p>Full behavior of each hook is in <a href="../reference/">Reference</a>.
-For the cases where a hook blocks something the permission tiers only mark <code>ask</code>, see <a href="../guardrails-vs-permissions/">Guardrails vs. Permissions</a>.</p>
+<p>The two <code>PreToolUse</code> hooks (<code>guard-protected-paths.sh</code>, <code>guard-bash.sh</code>) are guards.
+They refuse the call.
+The <code>PostToolUse</code> hooks are different.
+<code>normalize-file.sh</code> fixes whitespace and does not show a message.
+<code>php-lint.sh</code> and <code>markdown-lint.sh</code> are <strong>report-only</strong> on purpose.
+They do not run <code>phpcbf</code> or <code>markdownlint --fix</code>.
+When a hook formats a file immediately after Claude writes it, Claude's copy of the file in memory becomes incorrect.
+Then the next targeted edit in the same turn can fail.
+Do the bulk formatting at the end of a task, with <code>composer cs-fix</code> or <code>/dk-check</code>.</p>
+<p><a href="../reference/">Reference</a> gives the full behavior of each hook.
+In some cases, a hook blocks a command that the permission tiers only mark <code>ask</code>.
+For these cases, see <a href="../guardrails-vs-permissions/">Guardrails vs. Permissions</a>.</p>
 <h2 id="failure-mode-consecutive-edits-to-one-file">Failure mode: consecutive edits to one file</h2>
-<p>If you see "string not found" errors on consecutive edits to the same file, it's usually <code>normalize-file.sh</code> rewriting the file between edits and invalidating Claude's in-memory copy.
-Move it from <code>PostToolUse</code> to the <code>Stop</code> event so it runs once per turn instead of once per edit.</p>
+<p>You can see "string not found" errors on consecutive edits to the same file.
+The usual cause is <code>normalize-file.sh</code>.
+It writes the file again between edits, and Claude's copy in memory becomes incorrect.
+Move the hook from <code>PostToolUse</code> to the <code>Stop</code> event.
+Then it runs one time for each turn, not one time for each edit.</p>
 
 
 

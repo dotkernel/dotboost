@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,12 +586,28 @@
     
 
     <h1 id="customization">Customization</h1>
-<p>The <code>ask</code> and <code>allow</code> tiers documented in <a href="../reference/">Reference</a> are personal preference, not fixed policy.
-Override them per machine in <code>.claude/settings.local.json</code>, which layers on top of <code>settings.json</code> and is git-ignored — never edit the shared file to loosen a rule for yourself.</p>
+<p>The <code>ask</code> and <code>allow</code> tiers in <a href="../reference/">Reference</a> are personal preferences, not fixed policy.
+Override them for each machine in <code>.claude/settings.local.json</code>.
+This file is a layer on top of <code>settings.json</code>, and git ignores it.
+Never edit the shared file to make a rule less strict for yourself.</p>
 <pre class="highlight"><code class="language-bash">cp .claude/settings.local.json.example .claude/settings.local.json</code></pre>
-<p>The <code>deny</code> tier (never read / never written / never run) is not meant to be relaxed this way — it protects secrets and guards against destructive operations regardless of who's running the session.</p>
+<p>Do not make the <code>deny</code> tier (never read, never written, never run) less strict in this way.
+It protects secrets and prevents destructive operations, for each person who runs the session.</p>
+<h2 id="session-preferences">Session preferences</h2>
+<p>The shared <code>settings.json</code> sets no permission mode, theme, UI or spinner verbs.
+<code>settings.local.json.example</code> has a sample of each.
+The samples are <code>permissions.defaultMode: "auto"</code>, <code>theme: "dark"</code>, <code>tui: "fullscreen"</code> and a <code>spinnerVerbs</code> list with a Dotkernel theme.
+Keep the samples that you want and delete the others.
+The <code>defaultMode: "auto"</code> entry only shows the key.
+It does not work from that file.
+Claude Code does not apply <code>auto</code> from project or local settings.
+The session starts without auto mode, and you get no error.
+To use auto mode, set <code>permissions.defaultMode</code> in <code>~/.claude/settings.json</code>.
+See <a href="https://code.claude.com/docs/en/permission-modes">Permission modes</a>.</p>
 <h2 id="status-line-placement">Status line placement</h2>
-<p><code>settings.local.json.example</code> also carries an alternate <code>statusLine.command</code> pointing at <code>~/.claude/statusline.sh</code> instead of the per-project copy, for anyone who wants one shared status line across every project rather than one per repo.
+<p><code>settings.local.json.example</code> also has a different <code>statusLine.command</code>.
+It points to <code>~/.claude/statusline.sh</code>, not to the copy in the project.
+Use it if you want one shared status line for all projects, not one for each repo.
 See <a href="../../status-line/">Status Line</a>.</p>
 
 
@@ -637,6 +653,10 @@ See <a href="../../status-line/">Status Line</a>.</p>
         <div class="toc">
             <h6 class="toc__headline">On this page</h6>
             <ul class="toc__list">
+            
+                <li class="toc__entry">
+                    <a href="#session-preferences" class="toc__link nav-link">Session preferences</a>
+                </li>
             
                 <li class="toc__entry">
                     <a href="#status-line-placement" class="toc__link nav-link">Status line placement</a>

@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,9 +586,11 @@
     
 
     <h1 id="guardrails-vs-permissions">Guardrails vs. Permissions</h1>
-<p><code>guard-bash.sh</code> refuses some commands outright that <code>settings.json</code>'s permission tiers only mark <code>ask</code>.
-This is deliberate — the hook can see into compound Bash commands that a path/prefix permission rule cannot — but it means the approval prompt you'd expect from the <code>ask</code> tier never appears.
-You get a flat refusal instead.</p>
+<p><code>guard-bash.sh</code> refuses some commands that the permission tiers in <code>settings.json</code> only mark <code>ask</code>.
+This is on purpose.
+The hook can see into compound Bash commands, and a path or prefix permission rule cannot.
+But because of this, you do not get the approval prompt that the <code>ask</code> tier gives.
+You get a refusal.</p>
 <div class="table-responsive"><table>
 <thead>
 <tr>
@@ -609,8 +611,13 @@ You get a flat refusal instead.</p>
 <td>blocks</td>
 </tr>
 <tr>
-<td><code>fixtures:execute</code>, <code>schema:drop</code>, <code>schema:update</code> (via <code>bin/cli.php</code>)</td>
+<td><code>fixtures:execute</code>, <code>schema:drop</code>, <code>schema:update</code> (through <code>bin/doctrine</code>)</td>
 <td>ask</td>
+<td>blocks</td>
+</tr>
+<tr>
+<td><code>git checkout --</code></td>
+<td>ask, through <code>git checkout</code></td>
 <td>blocks</td>
 </tr>
 <tr>
@@ -619,16 +626,29 @@ You get a flat refusal instead.</p>
 <td>blocks</td>
 </tr>
 <tr>
-<td><code>pip install</code>, <code>git checkout --</code>, <code>git filter-branch</code></td>
+<td><code>pip install</code>, <code>git filter-branch</code></td>
 <td>—</td>
 <td>blocks</td>
 </tr>
 </tbody>
 </table></div>
-<p>Everything else under <code>ask</code> — commits, <code>mysql</code>, the config and QA files — prompts as documented in <a href="../../permissions/reference/">Permissions Reference</a>.</p>
-<h2 id="if-you-want-one-of-these-back">If you want one of these back</h2>
-<p>Editing <code>settings.local.json</code> will not reach a hook-level block — that override layer only affects the permission tiers.
-To allow one of these commands, edit <code>guard-bash.sh</code> itself, and do so deliberately: every command in this table is either a schema-mutating or history-rewriting operation, which is why it's blocked at the hook layer instead of left to a prompt someone could approve on autopilot.</p>
+<p>All the other items in the <code>ask</code> tier show a prompt, as <a href="../../permissions/reference/">Permissions Reference</a> describes.
+These items include commits, <code>mysql</code>, and the config and QA files.</p>
+<h2 id="allow-one-of-these-commands-again">Allow one of these commands again</h2>
+<p>A change in <code>settings.local.json</code> does not remove a block at the hook level.
+That override layer changes only the permission tiers.
+To allow one of these commands, edit <code>guard-bash.sh</code>.
+Make this change on purpose, after you think about it.
+Each command in this table does one of these operations:</p>
+<ul>
+<li>It changes the database.</li>
+<li>It writes the git history again.</li>
+<li>It discards work that is not committed (<code>git checkout --</code>).</li>
+<li>It installs packages (<code>pip install</code>).</li>
+<li>It changes the committed config state (<code>development-enable</code>/<code>-disable</code>).</li>
+</ul>
+<p>For this reason, the hook layer blocks it.
+A prompt is not sufficient, because a person can approve a prompt without attention.</p>
 
 
 
@@ -675,7 +695,7 @@ To allow one of these commands, edit <code>guard-bash.sh</code> itself, and do s
             <ul class="toc__list">
             
                 <li class="toc__entry">
-                    <a href="#if-you-want-one-of-these-back" class="toc__link nav-link">If you want one of these back</a>
+                    <a href="#allow-one-of-these-commands-again" class="toc__link nav-link">Allow one of these commands again</a>
                 </li>
             
             </ul>

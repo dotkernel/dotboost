@@ -410,7 +410,7 @@
         
         
 <li class="subnavigation__list-item ">
-    <a href="../skills/dependency-policy/" class="subnavigation__link">Dependency Policy</a>
+    <a href="../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
 </li>
 
         
@@ -586,21 +586,23 @@
     
 
     <h1 id="windows-and-line-endings">Windows and Line Endings</h1>
-<p>Dotkernel repos ship <code>.gitattributes</code> with <code>* text eol=lf</code>, which governs anything git checks out.
-Belt and braces, configure the client so nothing converts on the way in or out:</p>
+<p>Dotkernel repos have a <code>.gitattributes</code> file with <code>* text eol=lf</code>, which controls all files that git checks out.
+For more safety, also configure the client, so that no conversion occurs in either direction:</p>
 <pre class="highlight"><code class="language-bash">git config core.autocrlf false
 git config core.eol lf
 git config core.safecrlf warn</code></pre>
 <h2 id="verify">Verify</h2>
 <pre class="highlight"><code class="language-bash">git config --get core.autocrlf              # false
 git ls-files --eol | grep -v 'w/lf' | head  # nothing for text files</code></pre>
-<p>Already committed CRLF? Renormalize once with <code>git add --renormalize .</code>.</p>
+<p>If CRLF is already committed, renormalize one time with <code>git add --renormalize .</code>.</p>
 <h2 id="phpstorm">PhpStorm</h2>
-<p><em>Editor → Code Style → Line separator = Unix (\n)</em>, and <em>File Encodings → UTF-8</em>, <em>Create UTF-8 files: with NO BOM</em>.</p>
+<p>Set <em>Editor → Code Style → Line separator = Unix (\n)</em>.
+Set <em>File Encodings → UTF-8</em> and <em>Create UTF-8 files: with NO BOM</em>.</p>
 <h2 id="how-dotboost-enforces-this-while-working">How Dotboost enforces this while working</h2>
-<p><code>normalize-file.sh</code> fixes BOM, CRLF, trailing whitespace, and final newline on every file Claude writes — see <a href="../hooks/reference/">Hooks Reference</a>.
-<code>session-start.sh</code> also warns at the start of a session if it detects CRLF in the working tree.
-<code>/dk-hygiene</code> runs the same checks across a whole set of changed files on demand.</p>
+<p><code>normalize-file.sh</code> fixes BOM, CRLF, trailing whitespace, and the final newline in each file that Claude writes.
+See <a href="../hooks/reference/">Hooks Reference</a>.
+<code>session-start.sh</code> also gives a warning at the start of a session if it finds CRLF in the working tree.
+<code>/dk-hygiene</code> runs the same checks on a full set of changed files when you ask for it.</p>
 
 
 
