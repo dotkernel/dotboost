@@ -77,7 +77,8 @@ Do not use `InvokableFactory` or a hand-written factory.
 
 ## Config change has no effect
 
-Config cache.
+The config cache is stale.
+Run `composer clear-config-cache`.
 Also check the load order: `*.local.php` overrides `*.global.php`.
 Under tests, the test-local file overrides both.
 
