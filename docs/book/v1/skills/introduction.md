@@ -4,7 +4,7 @@ A skill is a directory under `.claude/skills/` holding a `SKILL.md` — frontmat
 There is no central routing table: Claude Code auto-loads a skill when its `description:` matches what the current conversation is doing.
 That makes the description the entire activation mechanism — a skill with a vague or narrow description simply never fires, silently, with no error to debug.
 
-Dotboost ships eighteen skills, all `dotkernel-*`, each covering one slice of Dotkernel convention.
+Dotboost ships nineteen skills, all `dotkernel-*`, each covering one slice of Dotkernel convention.
 One of them, `dotkernel-package-status`, governs every package decision and is detailed enough to warrant [its own page](dotkernel-package-status.md).
 Each skill states its scope in an `Applies to` block under its title — which Dotkernel projects (API, Admin, Frontend, Light, Queue) and which packages it covers.
 `dotkernel-api-endpoint`, for example, applies only in an API project, where it is the end-to-end checklist for a new or changed endpoint and points to the skill that owns each topic.
@@ -17,4 +17,4 @@ See [Maintaining This](../maintaining.md).
 
 ## Full list
 
-[Reference](reference.md) groups all eighteen by theme with a one-line trigger description each.
+[Reference](reference.md) groups all nineteen by theme with a one-line trigger description each.
