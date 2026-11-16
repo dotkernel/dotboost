@@ -12,7 +12,7 @@ Use the `dotkernel-reviewer` agent if that keeps context cleaner. Load
 `dotkernel-project-variants` first, then `dotkernel-handler-naming`,
 `dotkernel-module-structure`, `dotkernel-input-validation`, `dotkernel-responses`,
 `dotkernel-security`, `dotkernel-evolution-pattern`, `dotkernel-psr-standards`,
-`dotkernel-core-submodule`, `dotkernel-qa-gate` and `dotkernel-feature-docs` — plus
+`dotkernel-core-submodule`, `dotkernel-qa-gate`, `dotkernel-feature-docs` and `dotkernel-writing-style` — plus
 `dotkernel-api-endpoint` in an API project.
 
 Report findings grouped as **Blocking / Should fix / Nit**, each with file:line and a concrete
@@ -38,5 +38,11 @@ replacement. Check at minimum:
   diff appear in some doc's `routes:` / `handlers:` frontmatter, and a changed contract is reflected
   there. Missing or stale is **Should fix**, not blocking. Do not write it here; tell me to run
   `/dk-document`.
+- Prose follows ASD-STE100, at the level from `dotkernel-writing-style`.
+  Check only the lines that the diff adds or changes, and the commit messages on this branch that are not on the default branch.
+  Prose includes comments, docblock descriptions, Markdown prose, exception and error messages, CLI output and OpenAPI descriptions.
+  Look for instructions longer than 20 words, descriptions longer than 25 words, the passive voice, semicolons, phrasal verbs, and more than one instruction in a sentence.
+  A finding is **Should fix**, with the rewritten sentence as the replacement.
+  Do not report the code itself.
 
 End with a one-line verdict: ready / not ready, and why.

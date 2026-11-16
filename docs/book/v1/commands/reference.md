@@ -33,3 +33,7 @@
 `/dk-review` is read-only by design.
 If it finds a missing or stale feature doc, it tells you to run `/dk-document` rather than writing one itself.
 See [Feature Documentation](../feature-docs.md).
+
+`/dk-review` also checks that new and changed prose follows ASD-STE100, with the rules from `dotkernel-writing-style`.
+The check covers comments, docblock descriptions, Markdown prose, messages, CLI output, OpenAPI descriptions and the commit messages on the branch.
+A finding is *Should fix*, not *Blocking*.
