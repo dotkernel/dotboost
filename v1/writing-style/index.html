@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="description" content="Claude Code configuration for Dotkernel projects">
+        
+        
+
+        
+        
+            
+        
+        <meta name="docsearch:version" content="1.0.0,latest">
+        <meta name="docsearch:language" content="en">
+        <meta name="docsearch:component" content="Dotboost">
+
+        <meta property="og:title"        content="Dotkernel Documentation"/>
+        <meta property="og:description"  content="Official Dotkernel documentation covering APIs, Admin, Queue, developer tools, packages, and modern PHP application development"/>
+        <meta property="og:image"        content="https://docs.dotkernel.org/img/open-graph/twitter-card-docs.png"/>
+        <meta property="og:type"         content="website"/>
+        <meta property="og:site_name"    content="Dotkernel Documentation"/>
+        <meta property="og:url"          content="https://docs.dotkernel.org/"/>
+        <meta property="og:locale"       content="en_US"/>
+        <meta name="twitter:card"        content="summary_large_image"/>
+        <meta name="twitter:site"        content="@dotkernel"/>
+        <meta name="twitter:title"       content="Dotkernel Documentation"/>
+        <meta name="twitter:description" content="Official Dotkernel documentation covering APIs, Admin, Queue, developer tools, packages, and modern PHP application development"/>
+        <meta name="twitter:image"       content="https://docs.dotkernel.org/img/open-graph/twitter-card-docs.png"/>
+
+        
+        <link rel="canonical" href="https://docs.dotkernel.org/dotboost/v1/writing-style/">
+        
+        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
+
+        <title>Writing Style - Dotboost - Dotkernel Documentation</title>
+
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/docs.css">
+        <script src="https://docs.dotkernel.org/js/bootstrap.js" defer></script>
+        <script src="https://docs.dotkernel.org/js/docs.js" defer></script>
+        <script src="https://docs.dotkernel.org/js/scripts.js" defer></script>
+    </head>
+    <body data-bs-spy="scroll" data-bs-target=".toc" data-bs-offset="100">
+
+        
+        <nav class="navbar navbar-expand-lg dk-docs-nav py-2" data-bs-theme="dark">
+    <div class="container-fluid dk-docs-nav__inner">
+        <a class="navbar-brand dk-docs-nav__brand" href="https://docs.dotkernel.org/">
+            <img alt="Dotkernel" class="d-inline-block align-text-top" height="28"
+                 src="https://docs.dotkernel.org/img/dk_logo_2024_white.svg" width="152"/>
+        </a>
+
+        <ul class="dk-docs-nav__projects list-unstyled d-none d-lg-flex align-items-center mb-0">
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/frontend-documentation/">Frontend</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/packages/">Packages</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/development/">Development</a>
+            </li>
+            
+            <li class="">
+                <a href="https://docs.dotkernel.org/headless-documentation/">Headless Platform</a>
+            </li>
+            
+            <li class="dk-docs-nav__projects-item--active">
+                <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+            </li>
+            
+        </ul>
+
+        <div class="flex-grow-1"></div>
+
+        <a href="#" class="dk-docs-nav__search d-none d-md-flex align-items-center" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal" title="Open search">
+            <i class="bi bi-search"></i>
+            <span>Search docs</span>
+            <span class="dk-docs-nav__search-key">/</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse flex-grow-0" id="navbarText">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 dk-docs-nav__projects dk-docs-nav__projects--collapsed d-lg-none">
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/frontend-documentation/">Frontend</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/packages/">Packages</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/development/">Development</a>
+                </li>
+                
+                <li class="">
+                    <a href="https://docs.dotkernel.org/headless-documentation/">Headless Platform</a>
+                </li>
+                
+                <li class="dk-docs-nav__projects-item--active">
+                    <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+                </li>
+                
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-white" href="https://github.com/dotkernel/dotboost" title="Go to Dotboost repository" target="_blank">
+                        <i class="bi bi-github"></i>
+                        GitHub
+                    </a>
+                </li>
+                <li class="nav-item">
+                    
+    
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        
+        <div class="container-fluid docs-shell">
+            <div class="row gx-0">
+                <div class="col-lg-3 col-xl-2 right_sidebar">
+                    
+                    
+    <div class="subnavigation hidden-print">
+<!--        <h4 class="subnavigation__title">-->
+<!--            <a href="../..">Dotboost</a>-->
+<!--        </h4>-->
+
+        <h5 class="subnavigation__title">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#overview" role="button" class="collapsed" aria-expanded="false" aria-controls="overview">
+        <span class="subnavigation__headline">Overview</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="overview">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../introduction/" class="subnavigation__link">Introduction</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../architecture/" class="subnavigation__link">Architecture Overview</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#installation" role="button" class="collapsed" aria-expanded="false" aria-controls="installation">
+        <span class="subnavigation__headline">Installation</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="installation">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../getting-started/" class="subnavigation__link">Getting Started</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../verifying-an-install/" class="subnavigation__link">Verifying an Install</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../windows-and-line-endings/" class="subnavigation__link">Windows & Line Endings</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../status-line/" class="subnavigation__link">Status Line</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#guardrails" role="button" class="collapsed" aria-expanded="false" aria-controls="guardrails">
+        <span class="subnavigation__headline">Guardrails</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="guardrails">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../permissions/introduction/" class="subnavigation__link">Permissions</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../permissions/reference/" class="subnavigation__link">Permission Reference</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../permissions/customization/" class="subnavigation__link">Permission Customization</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../hooks/introduction/" class="subnavigation__link">Hooks</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../hooks/reference/" class="subnavigation__link">Hooks Reference</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../hooks/guardrails-vs-permissions/" class="subnavigation__link">Guardrails vs. Permissions</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#workflows" role="button" class="" aria-expanded="true" aria-controls="workflows">
+        <span class="subnavigation__headline">Workflows</span>
+    </a>
+    <ul class="subnavigation__list collapse show" id="workflows">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../commands/introduction/" class="subnavigation__link">Commands</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../commands/reference/" class="subnavigation__link">Commands Reference</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../skills/introduction/" class="subnavigation__link">Skills</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../skills/reference/" class="subnavigation__link">Skills Reference</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../skills/dotkernel-package-status/" class="subnavigation__link">Package Status</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../feature-docs/" class="subnavigation__link">Feature Documentation</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item subnavigation__list-item--active">
+    <a href="./" class="subnavigation__link">Writing Style</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#reference--maintenance" role="button" class="collapsed" aria-expanded="false" aria-controls="reference--maintenance">
+        <span class="subnavigation__headline">Reference & Maintenance</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="reference--maintenance">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../maintaining/" class="subnavigation__link">Maintaining</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../glossary/" class="subnavigation__link">Glossary</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                
+            
+        </ul>
+    </div>
+
+                    
+                </div>
+                <div class="col-lg-9 col-xl-8 main_docs">
+                    
+                    <nav aria-label="breadcrumb" class="nav_breadcrumb">
+    <ol class="breadcrumb">
+        
+            <li class="breadcrumb-item"><a href="https://docs.dotkernel.org/">Overview</a></li>
+            
+
+            
+                <li class="breadcrumb-item"><a href="../..">Dotboost</a></li>
+
+                
+                    
+                        
+                        
+                    
+                
+                    
+                        
+                        
+                            <li class="breadcrumb-item">Workflows</li>
+                        
+                    
+                
+
+                <li class="breadcrumb-item active" aria-current="page">Writing Style</li>
+            
+        
+    </ol>
+</nav>
+
+                    
+                    
+
+
+
+
+    
+    
+<!--        <h2 class="chapter__headline text-black-50">Workflows</h2>-->
+    
+
+    
+    
+        
+        
+            
+        
+        
+        <div class="md-actions-bar">
+            <div class="md-actions">
+                <button type="button" class="md-actions-toggle" aria-haspopup="true" aria-expanded="false"
+                        onclick="toggleMdActionsMenu(this)">
+                    <span class="md-actions-toggle-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h9l7 7v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M13 4v6h6"/></svg>
+                        <span>Copy Page</span>
+                    </span>
+                    <span class="md-actions-toggle-chev">
+                        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                </button>
+                <div class="md-actions-menu" role="menu">
+                    <button type="button" class="md-actions-item" role="menuitem" data-copy-url="../writing-style.md"
+                            onclick="copyMarkdownPage(this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                        <span class="label">Copy Page (as Markdown)</span>
+                    </button>
+                    <a href="../writing-style.md" target="_blank" rel="alternate noopener noreferrer" type="text/markdown"
+                       class="md-actions-item" role="menuitem" title="View the Markdown source of this page">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h9l7 7v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M13 4v6h6"/><path d="M8 15h8M8 11h4"/></svg>
+                        <span class="label">View as Markdown</span>
+                    </a>
+                    <a href="https://claude.ai/new?q=Read%20from%20https%3A//docs.dotkernel.org/dotboost/v1/writing-style.md%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="noopener noreferrer"
+                       class="md-actions-item" role="menuitem" title="Open this page in Claude">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 5.5L20 11l-5.5 2.5L12 19l-2.5-5.5L4 11l5.5-2.5z"/></svg>
+                        <span class="label">Open in Claude</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+
+    <h1 id="writing-style">Writing Style</h1>
+<p>Dotboost writes all its prose in ASD-STE100 Simplified Technical English (STE).
+STE is a controlled language from ASD, the Aerospace, Security and Defence Industries Association of Europe.
+It makes technical text clear for all readers, also for readers whose first language is not English.
+It also helps a second agent or a translation tool, which cannot ask the author what a sentence means.</p>
+<p>This page tells what changed in Dotboost to apply STE, and how the rule works in your project.</p>
+<h2 id="summary-of-the-update">Summary of the update</h2>
+<p>The update came in four pull requests:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>PR</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/dotkernel/dotboost/pull/25">#25</a></td>
+<td>Adds the <code>dotkernel-writing-style</code> skill and a "Writing style" block for the <code>CLAUDE.md</code> of the project</td>
+</tr>
+<tr>
+<td><a href="https://github.com/dotkernel/dotboost/pull/26">#26</a></td>
+<td>Adds an STE check to <code>dotkernel-reviewer</code> and to <code>/dk-review</code></td>
+</tr>
+<tr>
+<td><a href="https://github.com/dotkernel/dotboost/pull/28">#28</a></td>
+<td>Rewrites the skills, the commands, the agent, the README and the docs in STE</td>
+</tr>
+<tr>
+<td><a href="https://github.com/dotkernel/dotboost/pull/29">#29</a></td>
+<td>Rewrites the last three skill lines and updates the README</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="the-dotkernel-writing-style-skill">The <code>dotkernel-writing-style</code> skill</h2>
+<p>The skill applies to all Dotkernel projects and to all Dotkernel packages.</p>
+<h3 id="what-the-skill-applies-to">What the skill applies to</h3>
+<p>STE applies to:</p>
+<ul>
+<li>chat answers</li>
+<li>commit messages, tag messages, and MR and PR descriptions</li>
+<li>prose in Markdown files: headings, paragraphs, list items, table cells and blockquotes</li>
+<li>code comments and docblock descriptions</li>
+<li>exception messages, error messages, CLI output, and OpenAPI summaries and descriptions</li>
+</ul>
+<p>STE does not apply to the code itself: identifiers, keywords, syntax and docblock tags such as <code>@param</code>.
+It also does not apply to inline code, file names, command names and configuration keys.
+Do not change an identifier or a configuration key to make it "more STE".</p>
+<h3 id="two-levels">Two levels</h3>
+<p>The skill selects a level from the type of text.</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Use it for</th>
+<th>Apply</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strict</td>
+<td>Exception and error messages, CLI output, OpenAPI descriptions, procedures, and instructions for Claude in <code>CLAUDE.md</code>, skills and commands</td>
+<td>All the rules, with the word rules as close as possible</td>
+</tr>
+<tr>
+<td>Standard</td>
+<td>Chat answers, README files, feature docs, release notes, commit and PR text, and code comments</td>
+<td>All the structural rules, with the word rules as a direction only</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="structural-rules">Structural rules</h3>
+<p>The structural rules control the form of a sentence.
+They do not need the ASD-STE100 dictionary, so the skill applies them fully:</p>
+<ul>
+<li>A procedural sentence has 20 words or fewer.
+  A descriptive sentence has 25 words or fewer.</li>
+<li>An instruction uses the imperative form, with one instruction in each sentence.</li>
+<li>A sentence has no semicolon.</li>
+<li>A sentence keeps its subject, its verb and its articles.</li>
+<li>A noun cluster has three words or fewer.</li>
+<li>A sentence uses the active voice and the simple tenses.</li>
+<li>A sentence uses a verb for an action, not a noun made from the verb.</li>
+<li>A sentence does not use phrasal verbs, for example "spin up" or "take off".</li>
+<li>A paragraph has one topic and six sentences or fewer.</li>
+</ul>
+<h3 id="word-rules">Word rules</h3>
+<p>The word rules come from the ASD-STE100 dictionary.
+Dotboost does not include the dictionary, because ASD owns its copyright.
+Thus the word rules are a direction only, for example "use one word for one meaning" and "write <code>use</code>, not <code>utilize</code>".
+The skill never says that a word is "approved".
+To check a word, use the official specification at https://www.asd-ste100.org/.</p>
+<h3 id="keep-the-meaning">Keep the meaning</h3>
+<p>STE changes the form of a text.
+It must not change what the text says.
+The skill keeps each fact, condition, number, limit and hedge, and it adds no new fact.</p>
+<p>A client or a test can compare a message character by character.
+Thus a changed error message can be a breaking change.
+Before you change a message on an existing route, load <code>dotkernel-evolution-pattern</code>.</p>
+<h2 id="make-the-rule-always-active">Make the rule always active</h2>
+<p>A skill loads only when its description matches the task.
+To make the writing style always active, paste this block into the <code>CLAUDE.md</code> of your project:</p>
+<pre class="highlight"><code class="language-markdown">## Writing style
+
+Write all prose in ASD-STE100 Simplified Technical English.
+This includes chat answers, commit and tag messages, MR/PR descriptions, Markdown files, code comments, docblock descriptions, exception messages, CLI output and OpenAPI descriptions.
+Do not apply it to the code itself: identifiers, keywords, syntax and docblock tags stay as they are.
+Load the `dotkernel-writing-style` skill before you write any of this prose.</code></pre>
+<p><a href="../getting-started/">Getting Started</a> has the same block, together with the other <code>CLAUDE.md</code> blocks.</p>
+<h2 id="the-review-check">The review check</h2>
+<p><code>dotkernel-reviewer</code> and <code>/dk-review</code> load <code>dotkernel-writing-style</code> and check prose against it:</p>
+<ul>
+<li>The check examines only the lines that the diff adds or changes.
+  Old text gives no findings.</li>
+<li>It also examines the commit messages on the branch that are not on the default branch.</li>
+<li>It finds long sentences, the passive voice, semicolons, phrasal verbs, and sentences with more than one instruction.</li>
+<li>It uses the Strict or the Standard level for each type of text.</li>
+<li>It reports a finding as <strong>Should fix</strong>, not <strong>Blocking</strong>, and gives a rewritten sentence.</li>
+<li>It does not report the code itself.</li>
+</ul>
+<p><code>dotkernel-reviewer</code> also writes its own review in STE.</p>
+<h2 id="the-rewrite-of-dotboost">The rewrite of Dotboost</h2>
+<p>PR #28 and PR #29 rewrote the existing prose of Dotboost in STE:</p>
+<ul>
+<li>18 skills, at the Strict level</li>
+<li>10 <code>/dk-*</code> commands and the <code>dotkernel-reviewer</code> agent, at the Strict level</li>
+<li><code>README.md</code> and 21 pages in <code>docs/book/</code>, at the Standard level</li>
+</ul>
+<p>All prose now has one sentence on each line.</p>
+<h3 id="what-did-not-change">What did not change</h3>
+<ul>
+<li>each rule, condition, number, command, path and cross-reference</li>
+<li>the trigger words and the quoted phrases in the skill descriptions</li>
+<li>the <code>allowed-tools</code> lines of the commands</li>
+<li>code blocks, identifiers, URLs and link targets</li>
+<li>the headings that other pages link to</li>
+</ul>
+<p>A script compared the skill descriptions before and after the rewrite.
+It found no lost trigger word.</p>
+<h3 id="example">Example</h3>
+<p>This text is from <a href="../hooks/guardrails-vs-permissions/">Guardrails vs. Permissions</a>.</p>
+<p>Before:</p>
+<pre class="highlight"><code class="language-text">This is deliberate — the hook can see into compound Bash commands that a path/prefix
+permission rule cannot — but it means the approval prompt you'd expect from the `ask`
+tier never appears.</code></pre>
+<p>After:</p>
+<pre class="highlight"><code class="language-text">This is on purpose.
+The hook can see into compound Bash commands, and a path or prefix permission rule cannot.
+But because of this, you do not get the approval prompt that the `ask` tier gives.</code></pre>
+<h3 id="wording-changes-to-know">Wording changes to know</h3>
+<p>Some phrases changed more than their form.
+The meaning is the same, but search for the new text:</p>
+<div class="table-responsive"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dotkernel-evolution-pattern</code></td>
+<td>"do not shorten it silently"</td>
+<td>"Do not make it earlier without an announcement"</td>
+</tr>
+<tr>
+<td><code>status-line.md</code></td>
+<td>"growth is credited to whatever state holds"</td>
+<td>"It assigns each increase to the state that is true when the status line redraws"</td>
+</tr>
+<tr>
+<td><code>feature-docs.md</code>, <code>glossary.md</code></td>
+<td>"how to exercise it"</td>
+<td>"how to try it"</td>
+</tr>
+<tr>
+<td><code>skills/reference.md</code></td>
+<td>table header "Fires on"</td>
+<td>table header "Loads on"</td>
+</tr>
+<tr>
+<td><code>dotkernel-troubleshooting</code></td>
+<td>"Config cache."</td>
+<td>"The config cache is stale. Run <code>composer clear-config-cache</code>."</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="write-new-text-in-ste">Write new text in STE</h2>
+<p>When you add a skill, a command or a docs page to Dotboost, write it in STE.
+Use the Strict level for a skill or a command.
+Use the Standard level for a docs page.
+Before you open a pull request, run <code>/dk-review</code> to check the prose.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>ASD-STE100 official site: https://www.asd-ste100.org/</li>
+<li>The two levels, the scan checklist and the rules that keep the meaning come from the MIT-licensed <a href="https://github.com/danyuchn/asd-ste100-skill">danyuchn/asd-ste100-skill</a>.
+  The skill gives these ideas in its own words.</li>
+</ul>
+
+
+
+
+    <nav>
+    <ul class="list-unstyled page-nav row w-100 mt-5 mb-3 pt-5 pb-3">
+        
+        <li class="col text-nowrap text-md-start">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../feature-docs/">
+                    <i class="bi bi-chevron-left"></i>
+                    Feature Documentation
+                </a>
+            
+        </li>
+
+        
+        <li class="col text-nowrap text-md-end pe-0">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../maintaining/">
+                    Maintaining
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+                    
+                </div>
+
+                
+                
+                <div class="col-xl-2 d-none d-xl-block page_toc">
+                    
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">On this page</h6>
+            <ul class="toc__list">
+            
+                <li class="toc__entry">
+                    <a href="#summary-of-the-update" class="toc__link nav-link">Summary of the update</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#the-dotkernel-writing-style-skill" class="toc__link nav-link">The dotkernel-writing-style skill</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#make-the-rule-always-active" class="toc__link nav-link">Make the rule always active</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#the-review-check" class="toc__link nav-link">The review check</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#the-rewrite-of-dotboost" class="toc__link nav-link">The rewrite of Dotboost</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#write-new-text-in-ste" class="toc__link nav-link">Write new text in STE</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#sources" class="toc__link nav-link">Sources</a>
+                </li>
+            
+            </ul>
+        </div>
+    
+
+                </div>
+                
+            </div>
+        </div>
+
+        
+        <footer class="dk-home-footer">
+    <div class="dk-home-footer__grid">
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Products</div>
+            <a href="https://docs.dotkernel.org/api-documentation/">API</a>
+            <a href="https://docs.dotkernel.org/admin-documentation/">Admin</a>
+            <a href="https://docs.dotkernel.org/queue-documentation/">Queue</a>
+            <a href="https://docs.dotkernel.org/light-documentation/">Light</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Resources</div>
+            <a href="https://docs.dotkernel.org/dotboost/">Dotboost</a>
+            <a href="https://docs.dotkernel.org/headless-documentation/">Architecture</a>
+            <a href="https://www.dotkernel.com/dotkernel-packages-oss-lifecycle/">Packages Lifecycle</a>
+            <a href="https://docs.dotkernel.org/development/">WSL2 Dev Stack</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">More</div>
+            <a href="https://www.dotkernel.com/">Categories</a>
+            <a href="https://www.dotkernel.com/blog/">Blog</a>
+            <a href="https://github.com/orgs/dotkernel/discussions">Discussion</a>
+            <a href="https://www.dotkernel.com/about/">About</a>
+            <a href="https://www.dotkernel.com/contact/">Contact us</a>
+        </div>
+        <div class="dk-home-footer__col">
+            <div class="dk-home-footer__label">Follow</div>
+            <a href="https://github.com/dotkernel" target="_blank">GitHub</a>
+            <a href="https://www.dotkernel.com/feed/" target="_blank">Dotkernel RSS Feed</a>
+            <div class="dk-home-footer__note">Open-source tooling supported by JetBrains.</div>
+        </div>
+    </div>
+
+    <div class="dk-home-footer__bottom">
+        <img src="https://docs.dotkernel.org/img/dk_logo_2024_white.svg" alt="Dotkernel Logo" width="112" height="21" style="opacity:.75" />
+        <div class="dk-home-footer__tagline">Built with Mezzio, Laminas &amp; Doctrine - for PHP developers, by PHP developers. The Laminas logo is copyright of the Laminas Foundation.</div>
+        <div class="flex-grow-1"></div>
+        <div class="dk-home-footer__copyright">&#169; Copyright Dotkernel <span id="current-year"></span>. All rights reserved.</div>
+    </div>
+</footer>
+
+        <script>
+            let base_url = '../..',
+                project  = "dotboost",
+                siteName = 'Dotboost';
+        </script>
+        
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search in Dotboost" id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+</html>
