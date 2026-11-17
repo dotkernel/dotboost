@@ -30,6 +30,7 @@ nav:
           - "Skills Reference": v1/skills/reference.md
           - "Package Status": v1/skills/dotkernel-package-status.md
           - "Feature Documentation": v1/feature-docs.md
+          - "Writing Style": v1/writing-style.md
       - "Reference & Maintenance":
           - Maintaining: v1/maintaining.md
           - Glossary: v1/glossary.md
